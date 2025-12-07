@@ -430,6 +430,7 @@ body {
 .team-section {
     padding: 8rem 0;
     position: relative;
+    overflow: visible;
 }
 
 .team-grid {
@@ -968,8 +969,21 @@ body {
         top: auto;
         margin: calc(2rem + 15px) 0 0 0 !important;
         width: 60px;
-        z-index: 10;
+        z-index: 1000 !important;
         text-align: left !important;
+        transform: none !important;
+    }
+    
+    .duck-contact-mobile {
+        display: block !important;
+        position: absolute !important;
+        right: 0 !important;
+        left: auto !important;
+        top: auto;
+        margin: calc(2rem + 15px) 0 0 0 !important;
+        width: 60px;
+        z-index: 1000 !important;
+        text-align: right !important;
         transform: none !important;
     }
     
@@ -986,6 +1000,18 @@ body {
     .duck-team-mobile .duck-speech::before {
         left: 20px !important;
         right: auto !important;
+        transform: translateX(0) !important;
+    }
+    
+    .duck-contact-mobile .duck-speech {
+        right: 0 !important;
+        left: auto !important;
+        transform: translateX(0) translateY(-10px) !important;
+    }
+    
+    .duck-contact-mobile .duck-speech::before {
+        right: 20px !important;
+        left: auto !important;
         transform: translateX(0) !important;
     }
     
@@ -1080,6 +1106,10 @@ body {
     
     /* Nascondi paperella team mobile su desktop */
     .duck-team-mobile {
+        display: none;
+    }
+    
+    .duck-contact-mobile {
         display: none;
     }
     
@@ -1372,6 +1402,18 @@ body {
     .container {
         overflow-x: hidden;
         max-width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* Assicura che la paperella non venga tagliata dal container */
+    .team-section .container {
+        overflow: visible !important;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    
+    .team-section .container > * {
         padding-left: 1rem;
         padding-right: 1rem;
     }
