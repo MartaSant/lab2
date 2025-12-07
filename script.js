@@ -332,28 +332,114 @@ window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
         if (window.innerWidth > 768) {
-            // Reset team slider position on desktop
+            // Reset slider position on desktop
             if (teamSlider) {
                 teamSlider.style.transform = 'translateX(0)';
             }
             currentSlide = 0;
             updateSlider();
-            
-            // Reset services slider position on desktop
-            if (servicesSlider) {
-                servicesSlider.style.transform = 'translateX(0)';
-            }
-            currentServiceSlide = 0;
-            updateServicesSlider();
         } else {
-            // Update sliders on mobile
+            // Update slider on mobile
             updateSlider();
-            updateServicesSlider();
         }
     }, 250);
 });
 
-// Services Slider for Mobile
+// Services Slider Mobile for Mobile (dopo paperella team)
+let currentServiceMobileSlide = 0;
+const totalServiceMobileSlides = 5;
+const servicesSliderMobile = document.querySelector('.services-slider-mobile');
+const servicesDotsMobile = document.querySelectorAll('.services-dot-mobile');
+const servicesPrevBtnMobile = document.querySelector('.services-prev-btn-mobile');
+const servicesNextBtnMobile = document.querySelector('.services-next-btn-mobile');
+
+function updateServicesMobileSlider() {
+    if (servicesSliderMobile && window.innerWidth <= 768) {
+        const translateX = -currentServiceMobileSlide * (100 / totalServiceMobileSlides);
+        servicesSliderMobile.style.transform = `translateX(${translateX}%)`;
+        
+        // Update dots
+        servicesDotsMobile.forEach((dot, index) => {
+            if (index === currentServiceMobileSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+}
+
+// Navigation buttons
+if (servicesPrevBtnMobile && servicesNextBtnMobile) {
+    servicesPrevBtnMobile.addEventListener('click', () => {
+        if (currentServiceMobileSlide > 0) {
+            currentServiceMobileSlide--;
+        } else {
+            currentServiceMobileSlide = totalServiceMobileSlides - 1;
+        }
+        updateServicesMobileSlider();
+    });
+
+    servicesNextBtnMobile.addEventListener('click', () => {
+        if (currentServiceMobileSlide < totalServiceMobileSlides - 1) {
+            currentServiceMobileSlide++;
+        } else {
+            currentServiceMobileSlide = 0;
+        }
+        updateServicesMobileSlider();
+    });
+}
+
+// Dot navigation
+servicesDotsMobile.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+        currentServiceMobileSlide = index;
+        updateServicesMobileSlider();
+    });
+});
+
+// Touch/Swipe support for services mobile
+let servicesMobileTouchStartX = 0;
+let servicesMobileTouchEndX = 0;
+
+if (servicesSliderMobile) {
+    servicesSliderMobile.addEventListener('touchstart', (e) => {
+        servicesMobileTouchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    servicesSliderMobile.addEventListener('touchend', (e) => {
+        servicesMobileTouchEndX = e.changedTouches[0].screenX;
+        handleServicesMobileSwipe();
+    }, { passive: true });
+}
+
+function handleServicesMobileSwipe() {
+    if (window.innerWidth > 768) return; // Only on mobile
+    
+    const swipeThreshold = 50;
+    const diff = servicesMobileTouchStartX - servicesMobileTouchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            // Swipe left - next slide
+            if (currentServiceMobileSlide < totalServiceMobileSlides - 1) {
+                currentServiceMobileSlide++;
+            } else {
+                currentServiceMobileSlide = 0;
+            }
+        } else {
+            // Swipe right - previous slide
+            if (currentServiceMobileSlide > 0) {
+                currentServiceMobileSlide--;
+            } else {
+                currentServiceMobileSlide = totalServiceMobileSlides - 1;
+            }
+        }
+        updateServicesMobileSlider();
+    }
+}
+
+// Services Slider for Desktop (rimosso, non più necessario)
 let currentServiceSlide = 0;
 const totalServiceSlides = 11;
 const servicesSlider = document.querySelector('.services-slider');
@@ -369,15 +455,13 @@ function updateServicesSlider() {
         servicesSlider.style.transform = `translateX(${translateX}%)`;
         
         // Update dots
-        if (servicesDots && servicesDots.length > 0) {
-            servicesDots.forEach((dot, index) => {
-                if (index === currentServiceSlide) {
-                    dot.classList.add('active');
-                } else {
-                    dot.classList.remove('active');
-                }
-            });
-        }
+        servicesDots.forEach((dot, index) => {
+            if (index === currentServiceSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
     }
 }
 
@@ -451,7 +535,23 @@ function handleServicesSwipe() {
     }
 }
 
-// Resize handler is already unified above with team slider
+// Handle window resize for services slider
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        if (window.innerWidth > 768) {
+            // Reset services slider position on desktop
+            if (servicesSlider) {
+                servicesSlider.style.transform = 'translateX(0)';
+            }
+            currentServiceSlide = 0;
+            updateServicesSlider();
+        } else {
+            // Update services slider on mobile
+            updateServicesSlider();
+        }
+    }, 250);
+});
 
 // Add typing effect to hero title (optional enhancement)
 const titleLines = document.querySelectorAll('.title-line');
