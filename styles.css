@@ -19,6 +19,8 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 body {
@@ -26,7 +28,9 @@ body {
     background: var(--dark-bg);
     color: var(--text-primary);
     overflow-x: hidden;
+    max-width: 100%;
     line-height: 1.6;
+    position: relative;
 }
 
 /* Navigation */
@@ -850,6 +854,18 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden;
+        max-width: 100vw;
+        position: relative;
+    }
+    
+    .nav-container {
+        max-width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
     .nav-menu {
         position: fixed;
         left: -100%;
@@ -1243,6 +1259,41 @@ body {
 
 /* Responsive per paperelle */
 @media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden;
+        max-width: 100vw;
+        position: relative;
+    }
+    
+    * {
+        max-width: 100%;
+    }
+    
+    html, body {
+        overflow-x: hidden;
+        max-width: 100vw;
+        position: relative;
+    }
+    
+    .container {
+        overflow-x: hidden;
+        max-width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    section {
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+    
+    /* Prevenire overflow da elementi posizionati assolutamente */
+    [class*="duck-"] {
+        max-width: 100vw;
+        right: auto;
+        left: auto;
+    }
+    
     .duck-guide {
         width: 60px;
     }
@@ -1323,6 +1374,22 @@ body {
 }
 
 @media (max-width: 480px) {
+    html, body {
+        overflow-x: hidden;
+        max-width: 100vw;
+        position: relative;
+    }
+    
+    section {
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+    
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
     .duck-guide {
         width: 50px;
     }
