@@ -80,7 +80,12 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                     const viewportHeight = window.innerHeight;
                     const gridOffset = teamGrid.offsetTop - teamSection.offsetTop;
                     // Scroll to show section title at top and cards below, fully visible
-                    offsetTop = teamSection.offsetTop + 200;
+                    let baseOffset = 200;
+                    // Su mobile aggiungi 30px in più
+                    if (window.innerWidth <= 768) {
+                        baseOffset += 30;
+                    }
+                    offsetTop = teamSection.offsetTop + baseOffset;
                 }
             }
             
@@ -517,7 +522,12 @@ duckGuides.forEach(duck => {
                     
                     if (teamGrid) {
                         // Scroll further down to show cards completely
-                        offsetTop = teamSection.offsetTop + 230;
+                        let baseOffset = 230;
+                        // Su mobile aggiungi 30px in più
+                        if (window.innerWidth <= 768) {
+                            baseOffset += 30;
+                        }
+                        offsetTop = teamSection.offsetTop + baseOffset;
                     }
                 }
                 
