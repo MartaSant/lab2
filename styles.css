@@ -971,9 +971,10 @@ body {
     .duck-team-mobile {
         display: block !important;
         position: relative;
-        margin: 2rem auto 0;
+        margin: 2rem 0 0 0;
         width: 60px;
         z-index: 10;
+        align-self: flex-start;
     }
     
     /* Nascondi paperella team desktop su mobile */
@@ -1030,7 +1031,91 @@ body {
     }
 
     .services-grid {
-        grid-template-columns: 1fr;
+        display: block; /* Cambia da grid a block per lo slider mobile */
+        overflow: visible; /* Per mostrare la navigazione */
+    }
+
+    .services-slider-wrapper {
+        overflow: hidden; /* Nasconde le card fuori dal viewport */
+        position: relative;
+        width: 100%;
+    }
+
+    .services-slider {
+        display: flex !important; /* Forza flex su mobile */
+        width: 1100%; /* 11 card al 100% ciascuna */
+        transform: translateX(0);
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .services-slider .service-card-link {
+        flex: 0 0 calc(100% / 11); /* Ogni card occupa 1/11 dello slider (100% del viewport) */
+        min-width: calc(100% / 11);
+        max-width: calc(100% / 11);
+        width: calc(100% / 11);
+        padding: 0 1rem;
+        box-sizing: border-box;
+    }
+
+    /* Services Slider Navigation */
+    .services-slider-nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .services-slider-btn {
+        background: var(--dark-card);
+        border: 2px solid var(--primary-color);
+        color: var(--text-primary);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+
+    .services-slider-btn:hover {
+        background: var(--primary-color);
+        transform: scale(1.1);
+    }
+
+    .services-slider-btn:active {
+        transform: scale(0.95);
+    }
+
+    .services-slider-dots {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .services-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        border: 2px solid var(--primary-color);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .services-dot.active {
+        background: var(--primary-color);
+        transform: scale(1.3);
+    }
+
+    .services-dot:hover {
+        background: var(--text-secondary);
     }
 
     .contact-content {
@@ -1255,11 +1340,12 @@ body {
 .duck-team-mobile {
     display: none; /* Nascosta su desktop */
     position: relative;
-    margin: 2rem auto 0;
+    margin: 2rem 0 0 0;
     width: 60px;
     animation-delay: 0.5s;
-    text-align: center;
+    text-align: left;
     z-index: 10;
+    align-self: flex-start;
 }
 
 .duck-team-mobile .duck-speech {

@@ -355,6 +355,7 @@ const servicesNextBtn = document.querySelector('.services-next-btn');
 
 function updateServicesSlider() {
     if (servicesSlider && window.innerWidth <= 768) {
+        // Calcola la traslazione: ogni card occupa 1/11 dello slider, quindi sposta di (100 / 11)% per ogni slide
         const translateX = -currentServiceSlide * (100 / totalServiceSlides);
         servicesSlider.style.transform = `translateX(${translateX}%)`;
         
