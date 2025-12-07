@@ -971,11 +971,13 @@ body {
     
     .duck-team-mobile .duck-speech {
         left: 0;
+        right: auto;
         transform: translateX(0) translateY(-10px);
     }
     
     .duck-team-mobile .duck-speech::before {
         left: 20px;
+        right: auto;
         transform: translateX(0);
     }
     
