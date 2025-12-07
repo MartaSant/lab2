@@ -639,6 +639,44 @@ document.querySelectorAll('.social-link').forEach(link => {
     });
 });
 
+// Track GA4 event: speech_bubble_click - quando un utente clicca su una speech bubble
+// Questo aiuta a capire se gli utenti capiscono che devono cliccare la paperella o se provano a cliccare la bubble
+document.querySelectorAll('.duck-speech').forEach(speechBubble => {
+    speechBubble.addEventListener('click', function(e) {
+        // Previeni la propagazione per evitare che il click arrivi anche alla paperella
+        e.stopPropagation();
+        
+        // Trova la paperella associata (parent con classe duck-guide)
+        const duckGuide = this.closest('.duck-guide');
+        const duckImage = duckGuide?.querySelector('.duck-image');
+        const duckText = this.textContent?.trim() || '';
+        const duckType = duckImage?.getAttribute('alt') || duckImage?.getAttribute('src')?.split('/').pop() || 'unknown';
+        const duckTarget = duckGuide?.dataset.target || duckGuide?.getAttribute('href') || '';
+        const isClickable = duckGuide?.hasAttribute('href') || duckGuide?.hasAttribute('data-target') || false;
+        
+        // Track GA4 event
+        if (window.sendGA4Event) {
+            window.sendGA4Event('speech_bubble_click', {
+                'speech_text': duckText,
+                'duck_type': duckType,
+                'target_section': duckTarget,
+                'is_duck_clickable': isClickable ? 'yes' : 'no',
+                'page_location': window.location.pathname,
+                'user_action': 'clicked_speech_bubble' // Indica che l'utente ha cliccato la bubble invece della paperella
+            });
+        }
+        
+        console.log('Speech bubble clicked:', {
+            text: duckText,
+            duckType: duckType,
+            isClickable: isClickable
+        });
+    });
+    
+    // Aggiungi stile cursor pointer per indicare che è cliccabile (per test)
+    speechBubble.style.cursor = 'pointer';
+});
+
 console.log('%cStudio IDE', 'font-size: 20px; font-weight: bold; color: #6366f1;');
 console.log('%cSviluppato con ❤️ dal team', 'color: #8b5cf6;');
 
