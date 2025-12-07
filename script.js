@@ -209,14 +209,16 @@ const nextBtn = document.querySelector('.next-btn');
 // Handle card flip on mobile (tap to flip)
 if (window.innerWidth <= 768) {
     teamCards.forEach(card => {
-        let isFlipped = false;
+        // Salva lo stato direttamente sulla card
+        card.isFlipped = false;
         card.addEventListener('click', (e) => {
             // Don't flip if clicking on navigation buttons
             if (e.target.closest('.slider-btn') || e.target.closest('.dot')) {
                 return;
             }
-            isFlipped = !isFlipped;
-            if (isFlipped) {
+            // Toggle flip: se è girata torna normale, se è normale si gira
+            card.isFlipped = !card.isFlipped;
+            if (card.isFlipped) {
                 card.classList.add('active');
             } else {
                 card.classList.remove('active');
@@ -225,10 +227,23 @@ if (window.innerWidth <= 768) {
     });
 }
 
+// Funzione per resettare tutte le card allo stato normale
+function resetAllCards() {
+    if (window.innerWidth <= 768) {
+        teamCards.forEach(card => {
+            card.classList.remove('active');
+            card.isFlipped = false;
+        });
+    }
+}
+
 function updateSlider() {
     if (teamSlider && window.innerWidth <= 768) {
         const translateX = -currentSlide * (100 / totalSlides);
         teamSlider.style.transform = `translateX(${translateX}%)`;
+        
+        // Reset tutte le card quando si cambia slide
+        resetAllCards();
         
         // Update dots
         dots.forEach((dot, index) => {
