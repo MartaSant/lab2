@@ -326,11 +326,27 @@ function handleSwipe() {
     }
 }
 
+// Gestione link Servizi nel menu (mobile -> servizi.html, desktop -> #services)
+function updateServicesLink() {
+    const servicesLink = document.querySelector('.nav-link-services');
+    if (servicesLink) {
+        if (window.innerWidth <= 768) {
+            servicesLink.href = './servizi.html';
+        } else {
+            servicesLink.href = '#services';
+        }
+    }
+}
+
+// Aggiorna il link al caricamento e al resize
+updateServicesLink();
+
 // Handle window resize
 let resizeTimer;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
+        updateServicesLink();
         if (window.innerWidth > 768) {
             // Reset slider position on desktop
             if (teamSlider) {
@@ -525,72 +541,48 @@ duckGuides.forEach(duck => {
     duckObserver.observe(duck);
     
     // Navigazione al click
-    if (duck.dataset.target || duck.dataset.targetMobile || duck.dataset.targetDesktop) {
+    if (duck.dataset.target) {
         duck.addEventListener('click', () => {
-            // Su mobile, se c'è data-target-mobile, usa quello, altrimenti usa data-target
-            // Su desktop, se c'è data-target-desktop, usa quello, altrimenti usa data-target
-            let targetSelector = null;
-            
-            if (window.innerWidth <= 768) {
-                // Mobile
-                if (duck.dataset.targetMobile) {
-                    // Su mobile, se c'è un link a una pagina, vai direttamente lì
-                    window.location.href = duck.dataset.targetMobile;
-                    return;
-                } else if (duck.dataset.target) {
-                    targetSelector = duck.dataset.target;
-                }
-            } else {
-                // Desktop
-                if (duck.dataset.targetDesktop) {
-                    targetSelector = duck.dataset.targetDesktop;
-                } else if (duck.dataset.target) {
-                    targetSelector = duck.dataset.target;
-                }
-            }
-            
-            if (targetSelector) {
-                const target = document.querySelector(targetSelector);
-                if (target) {
-                    let offsetTop = target.offsetTop - 80;
+            const target = document.querySelector(duck.dataset.target);
+            if (target) {
+                let offsetTop = target.offsetTop - 80;
+                
+                // Special handling for team section when clicked from duck - scroll more down
+                if (target.id === 'team') {
+                    const teamSection = document.getElementById('team');
+                    const teamGrid = teamSection.querySelector('.team-grid');
                     
-                    // Special handling for team section when clicked from duck - scroll more down
-                    if (target.id === 'team') {
-                        const teamSection = document.getElementById('team');
-                        const teamGrid = teamSection.querySelector('.team-grid');
-                        
-                        if (teamGrid) {
-                            // Scroll further down to show cards completely
-                            let baseOffset = 230;
-                            // Su mobile aggiungi 30px in più
-                            if (window.innerWidth <= 768) {
-                                baseOffset += 30;
-                            }
-                            offsetTop = teamSection.offsetTop + baseOffset;
+                    if (teamGrid) {
+                        // Scroll further down to show cards completely
+                        let baseOffset = 230;
+                        // Su mobile aggiungi 30px in più
+                        if (window.innerWidth <= 768) {
+                            baseOffset += 30;
                         }
+                        offsetTop = teamSection.offsetTop + baseOffset;
                     }
-                    
-                    // Special handling for services section when clicked from duck - scroll more down
-                    if (target.id === 'services') {
-                        offsetTop = target.offsetTop + 60;
-                    }
-                    
-                    // Special handling for contact section when clicked from duck - scroll 50px higher
-                    if (target.id === 'contact') {
-                        offsetTop = target.offsetTop + 60;
-                    }
-                    
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Animazione di feedback
-                    duck.style.transform = 'scale(0.9)';
-                    setTimeout(() => {
-                        duck.style.transform = '';
-                    }, 200);
                 }
+                
+                // Special handling for services section when clicked from duck - scroll more down
+                if (target.id === 'services') {
+                    offsetTop = target.offsetTop + 60;
+                }
+                
+                // Special handling for contact section when clicked from duck - scroll 50px higher
+                if (target.id === 'contact') {
+                    offsetTop = target.offsetTop + 60;
+                }
+                
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+                
+                // Animazione di feedback
+                duck.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    duck.style.transform = '';
+                }, 200);
             }
         });
     }
