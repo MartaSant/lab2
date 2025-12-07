@@ -348,78 +348,74 @@ window.addEventListener('resize', () => {
 // Services Slider for Mobile
 let currentServiceSlide = 0;
 const totalServiceSlides = 11;
-const servicesSlider = document.querySelector('.services-slider');
-const servicesDots = document.querySelectorAll('.services-dot');
-const servicesPrevBtn = document.querySelector('.services-prev-btn');
-const servicesNextBtn = document.querySelector('.services-next-btn');
+let servicesSlider = null;
+let servicesDots = null;
+let servicesPrevBtn = null;
+let servicesNextBtn = null;
 
-function updateServicesSlider() {
+// Rileggi gli elementi quando il DOM è pronto (per sicurezza)
+function initServicesSlider() {
+    servicesSlider = document.querySelector('.services-slider');
+    servicesDots = document.querySelectorAll('.services-dot');
+    servicesPrevBtn = document.querySelector('.services-prev-btn');
+    servicesNextBtn = document.querySelector('.services-next-btn');
+    
     if (servicesSlider && window.innerWidth <= 768) {
-        // Calcola la percentuale di spostamento: ogni card è 1/11 dello slider (9.0909%)
-        // Per mostrare una card per volta, spostiamo di 9.0909% per ogni slide
-        const translateX = -currentServiceSlide * (100 / totalServiceSlides);
-        servicesSlider.style.transform = `translateX(${translateX}%)`;
-        
-        // Update dots
-        servicesDots.forEach((dot, index) => {
-            if (index === currentServiceSlide) {
-                dot.classList.add('active');
+        updateServicesSlider();
+    }
+    
+    // Setup navigation buttons
+    if (servicesPrevBtn && servicesNextBtn) {
+        servicesPrevBtn.addEventListener('click', () => {
+            if (currentServiceSlide > 0) {
+                currentServiceSlide--;
             } else {
-                dot.classList.remove('active');
+                currentServiceSlide = totalServiceSlides - 1;
             }
+            updateServicesSlider();
         });
+
+        servicesNextBtn.addEventListener('click', () => {
+            if (currentServiceSlide < totalServiceSlides - 1) {
+                currentServiceSlide++;
+            } else {
+                currentServiceSlide = 0;
+            }
+            updateServicesSlider();
+        });
+    }
+
+    // Dot navigation
+    if (servicesDots && servicesDots.length > 0) {
+        servicesDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentServiceSlide = index;
+                updateServicesSlider();
+            });
+        });
+    }
+
+    // Touch/Swipe support for services
+    if (servicesSlider) {
+        let servicesTouchStartX = 0;
+        let servicesTouchEndX = 0;
+        
+        servicesSlider.addEventListener('touchstart', (e) => {
+            servicesTouchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        servicesSlider.addEventListener('touchend', (e) => {
+            servicesTouchEndX = e.changedTouches[0].screenX;
+            handleServicesSwipe(servicesTouchStartX, servicesTouchEndX);
+        }, { passive: true });
     }
 }
 
-// Navigation buttons
-if (servicesPrevBtn && servicesNextBtn) {
-    servicesPrevBtn.addEventListener('click', () => {
-        if (currentServiceSlide > 0) {
-            currentServiceSlide--;
-        } else {
-            currentServiceSlide = totalServiceSlides - 1;
-        }
-        updateServicesSlider();
-    });
-
-    servicesNextBtn.addEventListener('click', () => {
-        if (currentServiceSlide < totalServiceSlides - 1) {
-            currentServiceSlide++;
-        } else {
-            currentServiceSlide = 0;
-        }
-        updateServicesSlider();
-    });
-}
-
-// Dot navigation
-servicesDots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
-        currentServiceSlide = index;
-        updateServicesSlider();
-    });
-});
-
-// Touch/Swipe support for services
-let servicesTouchStartX = 0;
-let servicesTouchEndX = 0;
-
-if (servicesSlider) {
-    servicesSlider.addEventListener('touchstart', (e) => {
-        servicesTouchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-
-    servicesSlider.addEventListener('touchend', (e) => {
-        servicesTouchEndX = e.changedTouches[0].screenX;
-        handleServicesSwipe();
-    }, { passive: true });
-}
-
-function handleServicesSwipe() {
-    if (window.innerWidth > 768) return; // Only on mobile
+function handleServicesSwipe(touchStartX, touchEndX) {
+    if (window.innerWidth > 768 || !servicesSlider) return; // Only on mobile
     
     const swipeThreshold = 50;
-    const diff = servicesTouchStartX - servicesTouchEndX;
+    const diff = touchStartX - touchEndX;
     
     if (Math.abs(diff) > swipeThreshold) {
         if (diff > 0) {
@@ -440,6 +436,38 @@ function handleServicesSwipe() {
         updateServicesSlider();
     }
 }
+
+function updateServicesSlider() {
+    if (servicesSlider && window.innerWidth <= 768) {
+        // Calcola la percentuale di spostamento: ogni card è 1/11 dello slider (9.0909%)
+        // Per mostrare una card per volta, spostiamo di 9.0909% per ogni slide
+        const translateX = -currentServiceSlide * (100 / totalServiceSlides);
+        servicesSlider.style.transform = `translateX(${translateX}%)`;
+        
+        // Update dots
+        if (servicesDots && servicesDots.length > 0) {
+            servicesDots.forEach((dot, index) => {
+                if (dot) {
+                    if (index === currentServiceSlide) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                }
+            });
+        }
+    }
+}
+
+// Inizializza lo slider dei servizi quando il DOM è pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initServicesSlider);
+} else {
+    initServicesSlider();
+}
+
+window.addEventListener('load', initServicesSlider);
+
 
 // Handle window resize for services slider
 window.addEventListener('resize', () => {
