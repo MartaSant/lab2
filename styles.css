@@ -630,6 +630,23 @@ body {
     margin-top: 2rem;
 }
 
+/* Services Slider for Mobile - Desktop: normale grid layout */
+.services-slider-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Su desktop, lo slider wrapper e slider non interferiscono con il grid */
+@media (min-width: 769px) {
+    .services-slider-wrapper {
+        display: contents; /* Le card sono direttamente nel grid */
+    }
+    
+    .services-slider {
+        display: contents; /* Le card sono direttamente nel grid */
+    }
+}
+
 
 .service-card-link {
     text-decoration: none;
@@ -1015,8 +1032,91 @@ body {
     }
 
     .services-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+        display: block; /* Cambia da grid a block per lo slider mobile */
+        overflow: hidden; /* Previene scroll orizzontale */
+    }
+
+    .services-slider-wrapper {
+        overflow: hidden; /* Previene scroll orizzontale - nasconde le card fuori dal viewport */
+        position: relative;
+        width: 100%;
+    }
+
+    .services-slider {
+        display: flex !important; /* Forza flex su mobile */
+        width: 1100%; /* 11 card al 100% ciascuna = 11x viewport */
+        transform: translateX(0);
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .services-slider .service-card-link {
+        flex: 0 0 calc(100% / 11); /* Ogni card occupa 1/11 dello slider (100% del viewport) */
+        min-width: calc(100% / 11);
+        max-width: calc(100% / 11);
+        width: calc(100% / 11);
+        padding: 0 1rem;
+        box-sizing: border-box;
+    }
+
+    /* Services Slider Navigation */
+    .services-slider-nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .services-slider-btn {
+        background: var(--dark-card);
+        border: 2px solid var(--primary-color);
+        color: var(--text-primary);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+
+    .services-slider-btn:hover {
+        background: var(--primary-color);
+        transform: scale(1.1);
+    }
+
+    .services-slider-btn:active {
+        transform: scale(0.95);
+    }
+
+    .services-slider-dots {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .services-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        border: 2px solid var(--primary-color);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .services-dot.active {
+        background: var(--primary-color);
+        transform: scale(1.3);
+    }
+
+    .services-dot:hover {
+        background: var(--text-secondary);
     }
 
     .contact-content {
@@ -1094,6 +1194,29 @@ body {
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
         overflow: visible;
+    }
+
+    .services-slider-wrapper {
+        overflow: visible;
+        position: static;
+    }
+
+    .services-slider {
+        display: contents; /* Le card sono direttamente nel grid */
+        width: auto;
+        transform: none;
+    }
+
+    .services-slider .service-card-link {
+        flex: none;
+        min-width: auto;
+        max-width: none;
+        width: 100%;
+        padding: 0;
+    }
+
+    .services-slider-nav {
+        display: none;
     }
 }
 
