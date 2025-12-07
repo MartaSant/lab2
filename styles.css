@@ -962,23 +962,31 @@ body {
     /* Mostra paperella team mobile solo su mobile */
     .duck-team-mobile {
         display: block !important;
-        position: relative;
-        margin: calc(2rem + 200px) 0 0 0;
+        position: absolute !important;
+        left: 0 !important;
+        right: auto !important;
+        top: auto;
+        margin: calc(2rem + 200px) 0 0 0 !important;
         width: 60px;
         z-index: 10;
-        text-align: left;
+        text-align: left !important;
+        transform: none !important;
+    }
+    
+    .team-slider-wrapper {
+        text-align: left !important;
     }
     
     .duck-team-mobile .duck-speech {
-        left: 0;
-        right: auto;
-        transform: translateX(0) translateY(-10px);
+        left: 0 !important;
+        right: auto !important;
+        transform: translateX(0) translateY(-10px) !important;
     }
     
     .duck-team-mobile .duck-speech::before {
-        left: 20px;
-        right: auto;
-        transform: translateX(0);
+        left: 20px !important;
+        right: auto !important;
+        transform: translateX(0) !important;
     }
     
     /* Nascondi paperella team desktop su mobile */
