@@ -1,3 +1,6 @@
+// Inizializza dataLayer per GA4
+window.dataLayer = window.dataLayer || [];
+
 // Service Worker Registration - Modalità sviluppo (Network Only)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -73,6 +76,19 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         e.preventDefault();
         const target = document.querySelector(href);
         if (target) {
+            const sectionId = target.id || '';
+            const linkText = this.textContent.trim() || '';
+            
+            // Track GA4 event: navigation_click
+            if (window.sendGA4Event) {
+                window.sendGA4Event('navigation_click', {
+                    'link_text': linkText,
+                    'section_id': sectionId,
+                    'link_href': href,
+                    'page_location': window.location.pathname
+                });
+            }
+            
             let offsetTop = target.offsetTop - 80;
             
             // Special handling for team section - scroll to show cards completely
@@ -109,6 +125,17 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 top: Math.max(0, offsetTop),
                 behavior: 'smooth'
             });
+            
+            // Track GA4 event: scroll_to_section (after scroll)
+            setTimeout(() => {
+                if (window.sendGA4Event) {
+                    window.sendGA4Event('scroll_to_section', {
+                        'section_id': sectionId,
+                        'section_name': linkText,
+                        'page_location': window.location.pathname
+                    });
+                }
+            }, 500);
         }
     });
 });
@@ -161,6 +188,17 @@ contactForm.addEventListener('submit', (e) => {
     if (!name || !email || !message) {
         alert('Per favore, compila tutti i campi.');
         return;
+    }
+    
+    // Track GA4 event: contact_form_submit
+    if (window.sendGA4Event) {
+        window.sendGA4Event('contact_form_submit', {
+            'form_name': 'contact_form',
+            'form_location': window.location.pathname,
+            'has_name': name ? 'yes' : 'no',
+            'has_email': email ? 'yes' : 'no',
+            'has_message': message ? 'yes' : 'no'
+        });
     }
     
     // Simulate form submission
@@ -223,11 +261,24 @@ if (window.innerWidth <= 768) {
                 return;
             }
             // Toggle flip: se è girata torna normale, se è normale si gira
+            const wasFlipped = card.isFlipped;
             card.isFlipped = !card.isFlipped;
             if (card.isFlipped) {
                 card.classList.add('active');
             } else {
                 card.classList.remove('active');
+            }
+            
+            // Track GA4 event: team_card_flip
+            if (window.sendGA4Event) {
+                const cardName = card.querySelector('.team-name')?.textContent?.trim() || 'Unknown';
+                const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
+                window.sendGA4Event('team_card_flip', {
+                    'card_name': cardName,
+                    'card_role': cardRole,
+                    'flip_action': card.isFlipped ? 'flipped' : 'unflipped',
+                    'page_location': window.location.pathname
+                });
             }
         });
     });
@@ -440,6 +491,26 @@ serviceCards.forEach((card, index) => {
             otherCard.style.opacity = '';
         });
     });
+    
+    // Track GA4 event: service_card_click
+    card.addEventListener('click', (e) => {
+        // Verifica se il click è su un link interno
+        const link = card.querySelector('a');
+        if (link) {
+            const serviceName = card.querySelector('h3')?.textContent?.trim() || 'Unknown';
+            const serviceDescription = card.querySelector('p')?.textContent?.trim()?.substring(0, 50) || '';
+            const linkHref = link.getAttribute('href') || '';
+            
+            if (window.sendGA4Event) {
+                window.sendGA4Event('service_card_click', {
+                    'service_name': serviceName,
+                    'service_description': serviceDescription,
+                    'link_href': linkHref,
+                    'page_location': window.location.pathname
+                });
+            }
+        }
+    });
 });
 
 // Add cursor trail effect (optional creative feature)
@@ -551,6 +622,23 @@ function createParticles(x, y) {
     }
 }
 
+// Track GA4 event: social_link_click
+document.querySelectorAll('.social-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        const socialName = this.textContent.trim() || 'Unknown';
+        const socialHref = this.getAttribute('href') || '';
+        
+        if (window.sendGA4Event) {
+            window.sendGA4Event('social_link_click', {
+                'social_name': socialName,
+                'social_type': socialName.toLowerCase(),
+                'link_href': socialHref,
+                'page_location': window.location.pathname
+            });
+        }
+    });
+});
+
 console.log('%cStudio IDE', 'font-size: 20px; font-weight: bold; color: #6366f1;');
 console.log('%cSviluppato con ❤️ dal team', 'color: #8b5cf6;');
 
@@ -584,6 +672,19 @@ duckGuides.forEach(duck => {
     if (duck.dataset.target) {
         duck.addEventListener('click', () => {
             const target = document.querySelector(duck.dataset.target);
+            const duckText = duck.querySelector('.duck-speech')?.textContent?.trim() || '';
+            const duckImage = duck.querySelector('.duck-image')?.getAttribute('alt') || 'duck_guide';
+            
+            // Track GA4 event: duck_guide_click
+            if (window.sendGA4Event) {
+                window.sendGA4Event('duck_guide_click', {
+                    'duck_text': duckText,
+                    'duck_type': duckImage,
+                    'target_section': duck.dataset.target || '',
+                    'page_location': window.location.pathname
+                });
+            }
+            
             if (target) {
                 let offsetTop = target.offsetTop - 80;
                 
@@ -623,6 +724,22 @@ duckGuides.forEach(duck => {
                 setTimeout(() => {
                     duck.style.transform = '';
                 }, 200);
+            }
+        });
+    } else if (duck.getAttribute('href')) {
+        // Track GA4 event: duck_guide_click per duck con href (es. servizi.html)
+        duck.addEventListener('click', () => {
+            const duckText = duck.querySelector('.duck-speech')?.textContent?.trim() || '';
+            const duckImage = duck.querySelector('.duck-image')?.getAttribute('alt') || 'duck_guide';
+            const duckHref = duck.getAttribute('href') || '';
+            
+            if (window.sendGA4Event) {
+                window.sendGA4Event('duck_guide_click', {
+                    'duck_text': duckText,
+                    'duck_type': duckImage,
+                    'target_section': duckHref,
+                    'page_location': window.location.pathname
+                });
             }
         });
     }
