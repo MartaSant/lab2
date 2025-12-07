@@ -1047,15 +1047,17 @@ body {
         width: 1100%; /* 11 card al 100% ciascuna = 11x viewport */
         transform: translateX(0);
         transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
     }
 
     .services-slider .service-card-link {
-        flex: 0 0 calc(100% / 11); /* Ogni card occupa 1/11 dello slider (100% del viewport) */
-        min-width: calc(100% / 11);
-        max-width: calc(100% / 11);
-        width: calc(100% / 11);
+        flex: 0 0 calc(100% / 11) !important; /* Ogni card occupa 1/11 dello slider (100% del viewport) */
+        min-width: calc(100% / 11) !important;
+        max-width: calc(100% / 11) !important;
+        width: calc(100% / 11) !important;
         padding: 0 1rem;
         box-sizing: border-box;
+        flex-shrink: 0 !important;
     }
 
     /* Services Slider Navigation */

@@ -360,7 +360,18 @@ function initServicesSlider() {
     servicesPrevBtn = document.querySelector('.services-prev-btn');
     servicesNextBtn = document.querySelector('.services-next-btn');
     
+    console.log('Services Slider Init:', {
+        slider: servicesSlider,
+        dots: servicesDots?.length,
+        prevBtn: servicesPrevBtn,
+        nextBtn: servicesNextBtn,
+        width: window.innerWidth
+    });
+    
     if (servicesSlider && window.innerWidth <= 768) {
+        // Forza lo stile flex
+        servicesSlider.style.display = 'flex';
+        servicesSlider.style.width = '1100%';
         updateServicesSlider();
     }
     
@@ -443,6 +454,7 @@ function updateServicesSlider() {
         // Per mostrare una card per volta, spostiamo di 9.0909% per ogni slide
         const translateX = -currentServiceSlide * (100 / totalServiceSlides);
         servicesSlider.style.transform = `translateX(${translateX}%)`;
+        servicesSlider.style.display = 'flex';
         
         // Update dots
         if (servicesDots && servicesDots.length > 0) {
