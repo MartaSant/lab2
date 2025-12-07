@@ -345,6 +345,118 @@ window.addEventListener('resize', () => {
     }, 250);
 });
 
+// Services Slider for Mobile
+let currentServiceSlide = 0;
+const totalServiceSlides = 11;
+const servicesSlider = document.querySelector('.services-slider');
+const servicesDots = document.querySelectorAll('.services-dot');
+const servicesPrevBtn = document.querySelector('.services-prev-btn');
+const servicesNextBtn = document.querySelector('.services-next-btn');
+
+function updateServicesSlider() {
+    if (servicesSlider && window.innerWidth <= 768) {
+        const translateX = -currentServiceSlide * (100 / totalServiceSlides);
+        servicesSlider.style.transform = `translateX(${translateX}%)`;
+        
+        // Update dots
+        servicesDots.forEach((dot, index) => {
+            if (index === currentServiceSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+}
+
+// Navigation buttons
+if (servicesPrevBtn && servicesNextBtn) {
+    servicesPrevBtn.addEventListener('click', () => {
+        if (currentServiceSlide > 0) {
+            currentServiceSlide--;
+        } else {
+            currentServiceSlide = totalServiceSlides - 1;
+        }
+        updateServicesSlider();
+    });
+
+    servicesNextBtn.addEventListener('click', () => {
+        if (currentServiceSlide < totalServiceSlides - 1) {
+            currentServiceSlide++;
+        } else {
+            currentServiceSlide = 0;
+        }
+        updateServicesSlider();
+    });
+}
+
+// Dot navigation
+servicesDots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+        currentServiceSlide = index;
+        updateServicesSlider();
+    });
+});
+
+// Touch/Swipe support for services
+let servicesTouchStartX = 0;
+let servicesTouchEndX = 0;
+
+if (servicesSlider) {
+    servicesSlider.addEventListener('touchstart', (e) => {
+        servicesTouchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    servicesSlider.addEventListener('touchend', (e) => {
+        servicesTouchEndX = e.changedTouches[0].screenX;
+        handleServicesSwipe();
+    }, { passive: true });
+}
+
+function handleServicesSwipe() {
+    if (window.innerWidth > 768) return; // Only on mobile
+    
+    const swipeThreshold = 50;
+    const diff = servicesTouchStartX - servicesTouchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            // Swipe left - next slide
+            if (currentServiceSlide < totalServiceSlides - 1) {
+                currentServiceSlide++;
+            } else {
+                currentServiceSlide = 0;
+            }
+        } else {
+            // Swipe right - previous slide
+            if (currentServiceSlide > 0) {
+                currentServiceSlide--;
+            } else {
+                currentServiceSlide = totalServiceSlides - 1;
+            }
+        }
+        updateServicesSlider();
+    }
+}
+
+// Handle window resize for services slider
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        if (window.innerWidth > 768) {
+            // Reset services slider position on desktop
+            if (servicesSlider) {
+                servicesSlider.style.transform = 'translateX(0)';
+            }
+            currentServiceSlide = 0;
+            updateServicesSlider();
+        } else {
+            // Update services slider on mobile
+            updateServicesSlider();
+        }
+    }, 250);
+});
+
 // Add typing effect to hero title (optional enhancement)
 const titleLines = document.querySelectorAll('.title-line');
 let currentLine = 0;
