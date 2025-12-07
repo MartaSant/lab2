@@ -949,6 +949,16 @@ body {
         gap: 1rem;
         margin-top: 2rem;
     }
+    
+    /* Mostra paperella team mobile solo su mobile */
+    .duck-team-mobile {
+        display: block;
+    }
+    
+    /* Nascondi paperella team desktop su mobile */
+    .duck-team {
+        display: none;
+    }
 
     .slider-btn {
         background: var(--dark-card);
@@ -1035,6 +1045,16 @@ body {
 @media (min-width: 769px) {
     .slider-nav {
         display: none;
+    }
+    
+    /* Nascondi paperella team mobile su desktop */
+    .duck-team-mobile {
+        display: none;
+    }
+    
+    /* Mostra paperella team desktop su desktop */
+    .duck-team {
+        display: block;
     }
 
     .team-grid {
@@ -1173,6 +1193,32 @@ body {
 }
 
 .duck-team .duck-speech::before {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px 8px 0 8px;
+    border-color: var(--primary-color) transparent transparent transparent;
+}
+
+/* Paperella Team Mobile - solo visibile su mobile, sotto lo slider */
+.duck-team-mobile {
+    display: none; /* Nascosta su desktop */
+    position: relative;
+    margin: 2rem auto 0;
+    width: 60px;
+    animation-delay: 0.5s;
+    text-align: center;
+}
+
+.duck-team-mobile .duck-speech {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    margin-bottom: 10px;
+    max-width: 160px;
+}
+
+.duck-team-mobile .duck-speech::before {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
