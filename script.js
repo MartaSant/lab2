@@ -64,8 +64,14 @@ document.querySelectorAll('.nav-link').forEach(link => {
 // Smooth scroll for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+        // Se il link non inizia più con # (es. su mobile punta a servizi.html), non fare preventDefault
+        const href = this.getAttribute('href');
+        if (!href || !href.startsWith('#')) {
+            return; // Lascia che il browser gestisca la navigazione normalmente
+        }
+        
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const target = document.querySelector(href);
         if (target) {
             let offsetTop = target.offsetTop - 80;
             
@@ -123,7 +129,7 @@ const observer = new IntersectionObserver((entries) => {
 
 // Observe all elements that need animation
 const animatedElements = document.querySelectorAll(
-    '.section-title, .section-subtitle, .team-card, .service-card, .info-card, .contact-form'
+    '.section-title, .section-subtitle, .team-card, .service-card, .info-card, .contact-form, .form-title, .form-subtitle'
 );
 
 animatedElements.forEach(el => observer.observe(el));
@@ -341,12 +347,46 @@ function updateServicesLink() {
 // Aggiorna il link al caricamento e al resize
 updateServicesLink();
 
+// Scroll al form quando si clicca sulla paperella "Compila il form" su mobile
+function setupDuckContactScroll() {
+    const duckContact = document.querySelector('.duck-contact');
+    if (duckContact) {
+        // Rimuovi listener esistenti clonando l'elemento
+        const newDuckContact = duckContact.cloneNode(true);
+        duckContact.parentNode.replaceChild(newDuckContact, duckContact);
+        
+        // Aggiungi listener solo su mobile
+        if (window.innerWidth <= 768) {
+            const currentDuck = document.querySelector('.duck-contact');
+            currentDuck.style.cursor = 'pointer';
+            currentDuck.addEventListener('click', function(e) {
+                e.preventDefault();
+                const formWrapper = document.querySelector('.form-wrapper');
+                const contactForm = document.getElementById('contactForm');
+                const target = formWrapper || contactForm;
+                
+                if (target) {
+                    const offsetTop = target.offsetTop - 100 + 1500; // Offset per l'header + 1500px più in basso
+                    window.scrollTo({
+                        top: Math.max(0, offsetTop),
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+    }
+}
+
+// Setup al caricamento
+setupDuckContactScroll();
+
 // Handle window resize
 let resizeTimer;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
         updateServicesLink();
+        setupDuckContactScroll(); // Ricalcola il listener della paperella contatti
         if (window.innerWidth > 768) {
             // Reset slider position on desktop
             if (teamSlider) {

@@ -755,6 +755,44 @@ body {
     color: var(--text-secondary);
 }
 
+.form-wrapper {
+    position: relative;
+}
+
+.form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease 0.3s;
+}
+
+.form-title.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.form-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease 0.4s;
+}
+
+.form-subtitle.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .contact-form {
     background: var(--dark-card);
     padding: 3rem;
@@ -1009,15 +1047,22 @@ body {
     }
     
     .duck-contact-mobile .duck-speech {
+        bottom: 100% !important;
+        top: auto !important;
         right: 0 !important;
         left: auto !important;
         transform: translateX(0) translateY(-10px) !important;
+        margin-bottom: 10px;
     }
     
     .duck-contact-mobile .duck-speech::before {
+        top: 100% !important;
+        bottom: auto !important;
         right: 20px !important;
         left: auto !important;
         transform: translateX(0) !important;
+        border-width: 8px 8px 0 8px !important;
+        border-color: var(--primary-color) transparent transparent transparent !important;
     }
     
     /* Nascondi paperella team desktop su mobile */
@@ -1503,7 +1548,7 @@ body {
     }
     
     .duck-contact {
-        top: 12%;
+        top: calc(12% + 335px);
         right: 1%;
     }
     
@@ -1596,7 +1641,7 @@ body {
     }
     
     .duck-contact {
-        top: 10%;
+        top: calc(10% + 335px);
         right: 0;
     }
     
