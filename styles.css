@@ -930,6 +930,8 @@ body {
     .team-slider .team-card {
         flex: 0 0 33.333%;
         min-width: 33.333%;
+        max-width: 33.333%;
+        width: 33.333%;
         padding: 0 1rem;
         box-sizing: border-box;
     }
@@ -1267,6 +1269,13 @@ body {
     
     * {
         max-width: 100%;
+    }
+    
+    /* Escludere le card del team dal max-width per mantenere la larghezza corretta dello slider */
+    .team-slider .team-card,
+    .team-slider,
+    .team-slider-wrapper {
+        max-width: none;
     }
     
     html, body {
