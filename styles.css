@@ -965,121 +965,6 @@ body {
     .duck-team {
         display: none;
     }
-    
-    /* Services Slider Mobile - solo su mobile */
-    .services-slider-mobile-wrapper {
-        display: block;
-        overflow: hidden;
-        position: relative;
-        width: 100%;
-        margin-top: 2rem;
-    }
-
-    .services-slider-mobile {
-        display: flex !important;
-        width: 500%; /* 5 card al 100% ciascuna */
-        transform: translateX(0);
-        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .services-slider-mobile .service-card-mobile {
-        flex: 0 0 20%; /* Ogni card occupa 1/5 dello slider (100% del viewport) */
-        min-width: 20%;
-        max-width: 20%;
-        width: 20%;
-        padding: 0 1rem;
-        box-sizing: border-box;
-        background: var(--dark-card);
-        padding: 2rem 1.5rem;
-        border-radius: 20px;
-        text-align: center;
-        border: 2px solid transparent;
-        transition: all 0.4s ease;
-    }
-
-    .services-slider-mobile .service-card-mobile:hover {
-        border-color: var(--primary-color);
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
-    }
-
-    .services-slider-mobile .service-card-mobile .service-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .services-slider-mobile .service-card-mobile h3 {
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-        color: var(--text-primary);
-    }
-
-    .services-slider-mobile .service-card-mobile p {
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        line-height: 1.5;
-    }
-
-    /* Services Slider Navigation Mobile */
-    .services-slider-nav-mobile {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
-        margin-top: 2rem;
-    }
-
-    .services-slider-btn-mobile {
-        background: var(--dark-card);
-        border: 2px solid var(--primary-color);
-        color: var(--text-primary);
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        font-size: 1.5rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        font-weight: bold;
-    }
-
-    .services-slider-btn-mobile:hover {
-        background: var(--primary-color);
-        transform: scale(1.1);
-    }
-
-    .services-slider-btn-mobile:active {
-        transform: scale(0.95);
-    }
-
-    .services-slider-dots-mobile {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .services-dot-mobile {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        border: 2px solid var(--primary-color);
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .services-dot-mobile.active {
-        background: var(--primary-color);
-        transform: scale(1.3);
-    }
-
-    .services-dot-mobile:hover {
-        background: var(--text-secondary);
-    }
 
     .slider-btn {
         background: var(--dark-card);
@@ -1134,6 +1019,26 @@ body {
         gap: 1.5rem;
     }
 
+    .service-card {
+        padding: 2.5rem 1.5rem;
+        min-height: 300px;
+    }
+
+    .service-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .service-card p {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .service-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+    }
+
     .contact-content {
         grid-template-columns: 1fr;
     }
@@ -1177,11 +1082,6 @@ body {
     /* Mostra paperella team desktop su desktop */
     .duck-team {
         display: block;
-    }
-    
-    /* Nascondi services slider mobile su desktop */
-    .services-slider-mobile-wrapper {
-        display: none;
     }
 
     .team-grid {
@@ -1469,8 +1369,8 @@ body {
     .container {
         overflow-x: hidden;
         max-width: 100%;
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
     }
     
     section {
