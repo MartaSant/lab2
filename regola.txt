@@ -1,0 +1,126 @@
+SPIEGAZIONE SEZIONE MOBILE TEAM - SLIDER CON CARD FLIP
+=======================================================
+
+STRUTTURA HTML
+--------------
+La sezione team è strutturata così:
+
+1. Container principale: .team-section > .container > .team-grid
+2. Wrapper dello slider: .team-slider-wrapper (solo su mobile)
+3. Slider: .team-slider (contenitore flex per le card)
+4. Card: .team-card (ogni card ha .card-inner con .card-front e .card-back)
+5. Navigazione: .slider-nav con:
+   - Bottoni: .prev-btn e .next-btn
+   - Dots: .slider-dots > .dot (uno per ogni card)
+
+STRUTTURA CSS
+-------------
+
+DESKTOP (min-width: 769px):
+- .team-grid: display: grid (layout normale a griglia)
+- .team-slider-wrapper: display: contents (non interferisce con il grid)
+- .team-slider: display: contents (le card sono direttamente nel grid)
+- .slider-nav: display: none (navigazione nascosta)
+
+MOBILE (max-width: 768px):
+- .team-grid: display: block (cambia da grid a block)
+- .team-slider-wrapper: 
+  * overflow: visible (per mostrare la paperella)
+  * position: relative
+  * width: 100%
+
+- .team-slider:
+  * display: flex !important (forza flex su mobile)
+  * width: 300% (3 card al 100% ciascuna = 3x viewport)
+  * transform: translateX(0) (posizione iniziale)
+  * transition: transform 0.5s (animazione smooth)
+
+- .team-slider .team-card:
+  * flex: 0 0 33.333% (ogni card occupa 1/3 dello slider = 100% viewport)
+  * min-width: 33.333%
+  * max-width: 33.333%
+  * width: 33.333%
+  * padding: 0 1rem (spazio laterale)
+
+- .slider-nav:
+  * display: flex
+  * justify-content: center
+  * align-items: center
+  * gap: 1rem
+  * margin-top: 2rem
+
+- Bottoni e dots: stili standard con hover effects
+
+LOGICA JAVASCRIPT
+-----------------
+
+1. VARIABILI:
+   - currentSlide: indice della slide corrente (0, 1, 2)
+   - totalSlides: numero totale di slide (3)
+   - teamSlider: elemento .team-slider
+   - dots: array di elementi .dot
+   - prevBtn, nextBtn: bottoni di navigazione
+
+2. FUNZIONE updateSlider():
+   - Calcola translateX: -currentSlide * (100 / totalSlides)
+     Esempio: slide 0 = 0%, slide 1 = -33.333%, slide 2 = -66.666%
+   - Applica transform al teamSlider
+   - Aggiorna i dots (aggiunge/rimuove classe .active)
+   - Resetta tutte le card girate quando cambia slide
+
+3. NAVIGAZIONE BOTTONI:
+   - Prev: decrementa currentSlide (con wrap: se 0 va a 2)
+   - Next: incrementa currentSlide (con wrap: se 2 va a 0)
+   - Chiama updateSlider() dopo ogni cambio
+
+4. NAVIGAZIONE DOTS:
+   - Ogni dot ha data-slide="0/1/2"
+   - Al click: imposta currentSlide = index del dot
+   - Chiama updateSlider()
+
+5. TOUCH/SWIPE:
+   - touchstart: salva touchStartX
+   - touchend: salva touchEndX
+   - handleSwipe(): calcola differenza
+     * Se > 50px: swipe left = next, swipe right = prev
+     * Chiama updateSlider()
+
+6. FLIP CARD AL TAP:
+   - Su mobile (<= 768px): ogni card ha listener click
+   - Salva stato isFlipped direttamente sulla card (card.isFlipped)
+   - Toggle: se girata torna normale, se normale si gira
+   - Aggiunge/rimuove classe .active alla card
+   - CSS: .team-card.active .card-inner { transform: rotateY(180deg) }
+
+7. RESIZE HANDLER:
+   - Se passa a desktop: resetta slider (translateX(0))
+   - Se passa a mobile: aggiorna slider
+
+REGOLA CHIAVE PER IL CALCOLO
+-----------------------------
+Per uno slider con N card che mostra 1 card per volta:
+
+1. Larghezza slider: N * 100% (es: 3 card = 300%)
+2. Larghezza singola card: 100% / N (es: 3 card = 33.333%)
+3. TranslateX per slide N: -N * (100 / totalSlides)
+   Esempio con 3 card:
+   - Slide 0: 0%
+   - Slide 1: -33.333%
+   - Slide 2: -66.666%
+
+ESEMPIO PRATICO
+---------------
+Con 3 card:
+- .team-slider: width: 300%
+- .team-card: flex: 0 0 33.333%, width: 33.333%
+- Slide 0: translateX(0%) → mostra card 1
+- Slide 1: translateX(-33.333%) → mostra card 2
+- Slide 2: translateX(-66.666%) → mostra card 3
+
+NOTA IMPORTANTE
+---------------
+- Su desktop: layout normale a griglia, nessuno slider
+- Su mobile: layout slider con 1 card per volta
+- Le card mantengono l'animazione flip anche nello slider
+- Al cambio slide, tutte le card girate tornano normali automaticamente
+

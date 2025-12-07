@@ -1019,26 +1019,6 @@ body {
         gap: 1.5rem;
     }
 
-    .service-card {
-        padding: 2.5rem 1.5rem;
-        min-height: 300px;
-    }
-
-    .service-card h3 {
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
-    }
-
-    .service-card p {
-        font-size: 1rem;
-        line-height: 1.7;
-    }
-
-    .service-icon {
-        font-size: 3.5rem;
-        margin-bottom: 1.5rem;
-    }
-
     .contact-content {
         grid-template-columns: 1fr;
     }
@@ -1369,8 +1349,8 @@ body {
     .container {
         overflow-x: hidden;
         max-width: 100%;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
     
     section {
