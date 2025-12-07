@@ -1032,7 +1032,7 @@ body {
 
     .services-grid {
         display: block; /* Cambia da grid a block per lo slider mobile */
-        overflow: visible; /* Per mostrare la navigazione */
+        overflow: hidden; /* Nasconde le card fuori dal viewport */
     }
 
     .services-slider-wrapper {
@@ -1049,7 +1049,7 @@ body {
     }
 
     .services-slider .service-card-link {
-        flex: 0 0 calc(100% / 11); /* Ogni card occupa 1/11 dello slider (100% del viewport) */
+        flex: 0 0 calc(100% / 11); /* Ogni card occupa 1/11 dello slider */
         min-width: calc(100% / 11);
         max-width: calc(100% / 11);
         width: calc(100% / 11);
