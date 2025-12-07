@@ -345,194 +345,6 @@ window.addEventListener('resize', () => {
     }, 250);
 });
 
-// Services Slider for Mobile
-let currentServiceSlide = 0;
-const totalServiceSlides = 11;
-let servicesSlider = null;
-let servicesDots = null;
-let servicesPrevBtn = null;
-let servicesNextBtn = null;
-
-// Rileggi gli elementi quando il DOM è pronto (per sicurezza)
-function initServicesSlider() {
-    servicesSlider = document.querySelector('.services-slider');
-    servicesDots = document.querySelectorAll('.services-dot');
-    servicesPrevBtn = document.querySelector('.services-prev-btn');
-    servicesNextBtn = document.querySelector('.services-next-btn');
-    
-    console.log('Services Slider Init:', {
-        slider: servicesSlider,
-        dots: servicesDots?.length,
-        prevBtn: servicesPrevBtn,
-        nextBtn: servicesNextBtn,
-        width: window.innerWidth
-    });
-    
-    if (servicesSlider && window.innerWidth <= 768) {
-        // Forza gli stili sul wrapper
-        const wrapper = servicesSlider.parentElement;
-        if (wrapper && wrapper.classList.contains('services-slider-wrapper')) {
-            wrapper.style.overflow = 'hidden';
-            wrapper.style.position = 'relative';
-            wrapper.style.width = '100%';
-        }
-        
-        // Forza lo stile flex
-        servicesSlider.style.display = 'flex';
-        servicesSlider.style.width = '1100%';
-        servicesSlider.style.flexDirection = 'row';
-        servicesSlider.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-        
-        updateServicesSlider();
-    }
-    
-    // Setup navigation buttons
-    if (servicesPrevBtn && servicesNextBtn) {
-        servicesPrevBtn.addEventListener('click', () => {
-            if (currentServiceSlide > 0) {
-                currentServiceSlide--;
-            } else {
-                currentServiceSlide = totalServiceSlides - 1;
-            }
-            updateServicesSlider();
-        });
-
-        servicesNextBtn.addEventListener('click', () => {
-            if (currentServiceSlide < totalServiceSlides - 1) {
-                currentServiceSlide++;
-            } else {
-                currentServiceSlide = 0;
-            }
-            updateServicesSlider();
-        });
-    }
-
-    // Dot navigation
-    if (servicesDots && servicesDots.length > 0) {
-        servicesDots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                currentServiceSlide = index;
-                updateServicesSlider();
-            });
-        });
-    }
-
-    // Touch/Swipe support for services
-    if (servicesSlider) {
-        let servicesTouchStartX = 0;
-        let servicesTouchEndX = 0;
-        
-        servicesSlider.addEventListener('touchstart', (e) => {
-            servicesTouchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        servicesSlider.addEventListener('touchend', (e) => {
-            servicesTouchEndX = e.changedTouches[0].screenX;
-            handleServicesSwipe(servicesTouchStartX, servicesTouchEndX);
-        }, { passive: true });
-    }
-}
-
-function handleServicesSwipe(touchStartX, touchEndX) {
-    if (window.innerWidth > 768 || !servicesSlider) return; // Only on mobile
-    
-    const swipeThreshold = 50;
-    const diff = touchStartX - touchEndX;
-    
-    if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0) {
-            // Swipe left - next slide
-            if (currentServiceSlide < totalServiceSlides - 1) {
-                currentServiceSlide++;
-            } else {
-                currentServiceSlide = 0;
-            }
-        } else {
-            // Swipe right - previous slide
-            if (currentServiceSlide > 0) {
-                currentServiceSlide--;
-            } else {
-                currentServiceSlide = totalServiceSlides - 1;
-            }
-        }
-        updateServicesSlider();
-    }
-}
-
-function updateServicesSlider() {
-    if (servicesSlider && window.innerWidth <= 768) {
-        // Forza gli stili necessari
-        servicesSlider.style.display = 'flex';
-        servicesSlider.style.width = '1100%';
-        servicesSlider.style.flexDirection = 'row';
-        servicesSlider.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-        
-        // Calcola la percentuale di spostamento: ogni card è 1/11 dello slider (9.0909%)
-        // Per mostrare una card per volta, spostiamo di 9.0909% per ogni slide
-        const translateX = -currentServiceSlide * (100 / totalServiceSlides);
-        servicesSlider.style.transform = `translateX(${translateX}%)`;
-        
-        // Forza gli stili sulle card
-        const serviceCards = servicesSlider.querySelectorAll('.service-card-link');
-        serviceCards.forEach(card => {
-            card.style.flex = '0 0 calc(100% / 11)';
-            card.style.minWidth = 'calc(100% / 11)';
-            card.style.maxWidth = 'calc(100% / 11)';
-            card.style.width = 'calc(100% / 11)';
-            card.style.flexShrink = '0';
-            card.style.padding = '0';
-            card.style.margin = '0';
-            card.style.boxSizing = 'border-box';
-        });
-        
-        console.log('Slider updated:', {
-            translateX: translateX,
-            currentSlide: currentServiceSlide,
-            cards: serviceCards.length
-        });
-        
-        // Update dots
-        if (servicesDots && servicesDots.length > 0) {
-            servicesDots.forEach((dot, index) => {
-                if (dot) {
-                    if (index === currentServiceSlide) {
-                        dot.classList.add('active');
-                    } else {
-                        dot.classList.remove('active');
-                    }
-                }
-            });
-        }
-    }
-}
-
-// Inizializza lo slider dei servizi quando il DOM è pronto
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initServicesSlider);
-} else {
-    initServicesSlider();
-}
-
-window.addEventListener('load', initServicesSlider);
-
-
-// Handle window resize for services slider
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-        if (window.innerWidth > 768) {
-            // Reset services slider position on desktop
-            if (servicesSlider) {
-                servicesSlider.style.transform = 'translateX(0)';
-            }
-            currentServiceSlide = 0;
-            updateServicesSlider();
-        } else {
-            // Update services slider on mobile
-            updateServicesSlider();
-        }
-    }, 250);
-});
 
 // Add typing effect to hero title (optional enhancement)
 const titleLines = document.querySelectorAll('.title-line');
@@ -713,48 +525,72 @@ duckGuides.forEach(duck => {
     duckObserver.observe(duck);
     
     // Navigazione al click
-    if (duck.dataset.target) {
+    if (duck.dataset.target || duck.dataset.targetMobile || duck.dataset.targetDesktop) {
         duck.addEventListener('click', () => {
-            const target = document.querySelector(duck.dataset.target);
-            if (target) {
-                let offsetTop = target.offsetTop - 80;
-                
-                // Special handling for team section when clicked from duck - scroll more down
-                if (target.id === 'team') {
-                    const teamSection = document.getElementById('team');
-                    const teamGrid = teamSection.querySelector('.team-grid');
+            // Su mobile, se c'è data-target-mobile, usa quello, altrimenti usa data-target
+            // Su desktop, se c'è data-target-desktop, usa quello, altrimenti usa data-target
+            let targetSelector = null;
+            
+            if (window.innerWidth <= 768) {
+                // Mobile
+                if (duck.dataset.targetMobile) {
+                    // Su mobile, se c'è un link a una pagina, vai direttamente lì
+                    window.location.href = duck.dataset.targetMobile;
+                    return;
+                } else if (duck.dataset.target) {
+                    targetSelector = duck.dataset.target;
+                }
+            } else {
+                // Desktop
+                if (duck.dataset.targetDesktop) {
+                    targetSelector = duck.dataset.targetDesktop;
+                } else if (duck.dataset.target) {
+                    targetSelector = duck.dataset.target;
+                }
+            }
+            
+            if (targetSelector) {
+                const target = document.querySelector(targetSelector);
+                if (target) {
+                    let offsetTop = target.offsetTop - 80;
                     
-                    if (teamGrid) {
-                        // Scroll further down to show cards completely
-                        let baseOffset = 230;
-                        // Su mobile aggiungi 30px in più
-                        if (window.innerWidth <= 768) {
-                            baseOffset += 30;
+                    // Special handling for team section when clicked from duck - scroll more down
+                    if (target.id === 'team') {
+                        const teamSection = document.getElementById('team');
+                        const teamGrid = teamSection.querySelector('.team-grid');
+                        
+                        if (teamGrid) {
+                            // Scroll further down to show cards completely
+                            let baseOffset = 230;
+                            // Su mobile aggiungi 30px in più
+                            if (window.innerWidth <= 768) {
+                                baseOffset += 30;
+                            }
+                            offsetTop = teamSection.offsetTop + baseOffset;
                         }
-                        offsetTop = teamSection.offsetTop + baseOffset;
                     }
+                    
+                    // Special handling for services section when clicked from duck - scroll more down
+                    if (target.id === 'services') {
+                        offsetTop = target.offsetTop + 60;
+                    }
+                    
+                    // Special handling for contact section when clicked from duck - scroll 50px higher
+                    if (target.id === 'contact') {
+                        offsetTop = target.offsetTop + 60;
+                    }
+                    
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Animazione di feedback
+                    duck.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        duck.style.transform = '';
+                    }, 200);
                 }
-                
-                // Special handling for services section when clicked from duck - scroll more down
-                if (target.id === 'services') {
-                    offsetTop = target.offsetTop + 60;
-                }
-                
-                // Special handling for contact section when clicked from duck - scroll 50px higher
-                if (target.id === 'contact') {
-                    offsetTop = target.offsetTop + 60;
-                }
-                
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
-                
-                // Animazione di feedback
-                duck.style.transform = 'scale(0.9)';
-                setTimeout(() => {
-                    duck.style.transform = '';
-                }, 200);
             }
         });
     }

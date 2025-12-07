@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Nostri Servizi - Studio IDE</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .services-page {
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            padding-top: 100px;
+        }
+        
+        .services-page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .services-page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .services-page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .services-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .service-item {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .service-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        }
+        
+        .service-item-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .service-item-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+        
+        .service-item-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .service-item-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .service-item-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s ease;
+        }
+        
+        .service-item-link:hover {
+            gap: 1rem;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: gap 0.3s ease;
+        }
+        
+        .back-button:hover {
+            gap: 1rem;
+        }
+        
+        @media (min-width: 769px) {
+            .services-page {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="./index.html" class="logo-link">
+                    <img src="./logo.png" alt="Studio IDE" class="logo-image">
+                </a>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html#home" class="nav-link">Home</a></li>
+                <li><a href="./index.html#team" class="nav-link">Team</a></li>
+                <li><a href="./index.html#services" class="nav-link">Servizi</a></li>
+                <li><a href="./index.html#contact" class="nav-link">Contatti</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="services-page">
+        <div class="container">
+            <a href="./index.html#team" class="back-button">
+                ← Torna indietro
+            </a>
+            
+            <div class="services-page-header">
+                <h1 class="services-page-title">I Nostri Servizi</h1>
+                <p class="services-page-subtitle">Soluzioni complete per il tuo locale digitale</p>
+            </div>
+            
+            <div class="services-list">
+                <a href="./servizi/menu-digitali.html" class="service-item">
+                    <div class="service-item-header">
+                        <div class="service-item-icon">📋</div>
+                        <h2 class="service-item-title">Menu Digitali Interattivi</h2>
+                    </div>
+                    <p class="service-item-description">Menu completi per pub, bar e ristoranti con categorie, prezzi chiari e lettura ottimale da smartphone</p>
+                    <span class="service-item-link">Scopri di più →</span>
+                </a>
+                
+                <a href="./servizi/siti-vetrina-mobile.html" class="service-item">
+                    <div class="service-item-header">
+                        <div class="service-item-icon">📱</div>
+                        <h2 class="service-item-title">Siti Vetrina Mobile</h2>
+                    </div>
+                    <p class="service-item-description">Siti ottimizzati per smartphone: niente PDF, pulsanti grandi, testi leggibili, struttura intuitiva</p>
+                    <span class="service-item-link">Scopri di più →</span>
+                </a>
+                
+                <a href="./servizi/progressive-web-app.html" class="service-item">
+                    <div class="service-item-header">
+                        <div class="service-item-icon">📲</div>
+                        <h2 class="service-item-title">Progressive Web App</h2>
+                    </div>
+                    <p class="service-item-description">Menu installabile come app: icona home, apertura veloce, funziona offline, aggiornamenti automatici</p>
+                    <span class="service-item-link">Scopri di più →</span>
+                </a>
+                
+                <a href="./servizi/funzioni-interattive.html" class="service-item">
+                    <div class="service-item-header">
+                        <div class="service-item-icon">❤️</div>
+                        <h2 class="service-item-title">Funzioni Interattive</h2>
+                    </div>
+                    <p class="service-item-description">Preferiti, schede prodotto dettagliate con descrizioni, ingredienti e informazioni complete</p>
+                    <span class="service-item-link">Scopri di più →</span>
+                </a>
+                
+                <a href="./servizi/barra-contatti.html" class="service-item">
+                    <div class="service-item-header">
+                        <div class="service-item-icon">💬</div>
+                        <h2 class="service-item-title">Barra Contatti</h2>
+                    </div>
+                    <p class="service-item-description">Barra fissa con WhatsApp, Instagram e chiamata sempre visibile per contattarti con un tocco</p>
+                    <span class="service-item-link">Scopri di più →</span>
+                </a>
+                
+                <a href="./servizi/google-analytics.html" class="service-item">
+                    <div class="service-item-header">
+                        <div class="service-item-icon">📊</div>
+                        <h2 class="service-item-title">Google Analytics 4</h2>
+                    </div>
+                    <p class="service-item-description">Analisi completa: pagine viste, prodotti aperti, preferiti, clic su contatti - marketing data-driven</p>
+                    <span class="service-item-link">Scopri di più →</span>
+                </a>
+                
+                <a href="./servizi/tracciamento-eventi.html" class="service-item">
+                    <div class="service-item-header">
+                        <div class="service-item-icon">🎯</div>
+                        <h2 class="service-item-title">Tracciamento Eventi</h2>
+                    </div>
+                    <p class="service-item-description">Eventi personalizzati per capire cosa funziona prodotto per prodotto nel tuo locale</p>
+                    <span class="service-item-link">Scopri di più →</span>
+                </a>
+                
+                <a href="./servizi/privacy-gdpr.html" class="service-item">
+                    <div class="service-item-header">
+                        <div class="service-item-icon">🔒</div>
+                        <h2 class="service-item-title">Privacy & GDPR</h2>
+                    </div>
+                    <p class="service-item-description">Cookie banner, gestione consenso (Consent Mode v2), Privacy Policy - tutto a norma di legge</p>
+                    <span class="service-item-link">Scopri di più →</span>
+                </a>
+                
+                <a href="./servizi/seo-ottimizzazione.html" class="service-item">
+                    <div class="service-item-header">
+                        <div class="service-item-icon">🔍</div>
+                        <h2 class="service-item-title">SEO & Ottimizzazione</h2>
+                    </div>
+                    <p class="service-item-description">Tag title/description, HTML corretto, sitemap, Open Graph per condivisioni social ottimizzate</p>
+                    <span class="service-item-link">Scopri di più →</span>
+                </a>
+                
+                <a href="./servizi/performance-sicurezza.html" class="service-item">
+                    <div class="service-item-header">
+                        <div class="service-item-icon">⚡</div>
+                        <h2 class="service-item-title">Performance & Sicurezza</h2>
+                    </div>
+                    <p class="service-item-description">Velocità, cache, immagini ottimizzate, HTTPS, Service Worker - sito veloce e sicuro</p>
+                    <span class="service-item-link">Scopri di più →</span>
+                </a>
+                
+                <a href="./servizi/design-personalizzato.html" class="service-item">
+                    <div class="service-item-header">
+                        <div class="service-item-icon">🎨</div>
+                        <h2 class="service-item-title">Design Personalizzato</h2>
+                    </div>
+                    <p class="service-item-description">Colori, font e stile su misura del tuo locale per un'immagine moderna e coerente</p>
+                    <span class="service-item-link">Scopri di più →</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -167,7 +167,7 @@
                     </div>
                     
                     <!-- Paperella guida Team Mobile (solo mobile) -->
-                    <div class="duck-guide duck-team-mobile" data-target="#services">
+                    <div class="duck-guide duck-team-mobile" data-target-mobile="./servizi.html" data-target-desktop="#services">
                         <img src="./paperelle/b.png" alt="Guida" class="duck-image">
                         <div class="duck-speech">Scopri i nostri servizi! 🚀</div>
                     </div>
@@ -191,106 +191,83 @@
             </div>
             
             <div class="services-grid">
-                <div class="services-slider-wrapper">
-                    <div class="services-slider">
-                            <a href="./servizi/menu-digitali.html" class="service-card-link">
-                                <div class="service-card">
-                                    <div class="service-icon">📋</div>
-                                    <h3>Menu Digitali Interattivi</h3>
-                                    <p>Menu completi per pub, bar e ristoranti con categorie, prezzi chiari e lettura ottimale da smartphone</p>
-                                </div>
-                            </a>
-                            <a href="./servizi/siti-vetrina-mobile.html" class="service-card-link">
-                                <div class="service-card">
-                                    <div class="service-icon">📱</div>
-                                    <h3>Siti Vetrina Mobile</h3>
-                                    <p>Siti ottimizzati per smartphone: niente PDF, pulsanti grandi, testi leggibili, struttura intuitiva</p>
-                                </div>
-                            </a>
-                            <a href="./servizi/progressive-web-app.html" class="service-card-link">
-                                <div class="service-card">
-                                    <div class="service-icon">📲</div>
-                                    <h3>Progressive Web App</h3>
-                                    <p>Menu installabile come app: icona home, apertura veloce, funziona offline, aggiornamenti automatici</p>
-                                </div>
-                            </a>
-                            <a href="./servizi/funzioni-interattive.html" class="service-card-link">
-                                <div class="service-card">
-                                    <div class="service-icon">❤️</div>
-                                    <h3>Funzioni Interattive</h3>
-                                    <p>Preferiti, schede prodotto dettagliate con descrizioni, ingredienti e informazioni complete</p>
-                                </div>
-                            </a>
-                            <a href="./servizi/barra-contatti.html" class="service-card-link">
-                                <div class="service-card">
-                                    <div class="service-icon">💬</div>
-                                    <h3>Barra Contatti</h3>
-                                    <p>Barra fissa con WhatsApp, Instagram e chiamata sempre visibile per contattarti con un tocco</p>
-                                </div>
-                            </a>
-                            <a href="./servizi/google-analytics.html" class="service-card-link">
-                                <div class="service-card">
-                                    <div class="service-icon">📊</div>
-                                    <h3>Google Analytics 4</h3>
-                                    <p>Analisi completa: pagine viste, prodotti aperti, preferiti, clic su contatti - marketing data-driven</p>
-                                </div>
-                            </a>
-                            <a href="./servizi/tracciamento-eventi.html" class="service-card-link">
-                                <div class="service-card">
-                                    <div class="service-icon">🎯</div>
-                                    <h3>Tracciamento Eventi</h3>
-                                    <p>Eventi personalizzati per capire cosa funziona prodotto per prodotto nel tuo locale</p>
-                                </div>
-                            </a>
-                            <a href="./servizi/privacy-gdpr.html" class="service-card-link">
-                                <div class="service-card">
-                                    <div class="service-icon">🔒</div>
-                                    <h3>Privacy & GDPR</h3>
-                                    <p>Cookie banner, gestione consenso (Consent Mode v2), Privacy Policy - tutto a norma di legge</p>
-                                </div>
-                            </a>
-                            <a href="./servizi/seo-ottimizzazione.html" class="service-card-link">
-                                <div class="service-card">
-                                    <div class="service-icon">🔍</div>
-                                    <h3>SEO & Ottimizzazione</h3>
-                                    <p>Tag title/description, HTML corretto, sitemap, Open Graph per condivisioni social ottimizzate</p>
-                                </div>
-                            </a>
-                            <a href="./servizi/performance-sicurezza.html" class="service-card-link">
-                                <div class="service-card">
-                                    <div class="service-icon">⚡</div>
-                                    <h3>Performance & Sicurezza</h3>
-                                    <p>Velocità, cache, immagini ottimizzate, HTTPS, Service Worker - sito veloce e sicuro</p>
-                                </div>
-                            </a>
-                            <a href="./servizi/design-personalizzato.html" class="service-card-link">
-                                <div class="service-card">
-                                    <div class="service-icon">🎨</div>
-                                    <h3>Design Personalizzato</h3>
-                                    <p>Colori, font e stile su misura del tuo locale per un'immagine moderna e coerente</p>
-                                </div>
-                            </a>
-                        </div>
-                        <!-- Services Slider Navigation -->
-                        <div class="services-slider-nav">
-                            <button class="services-slider-btn services-prev-btn" aria-label="Previous">‹</button>
-                            <div class="services-slider-dots">
-                                <span class="services-dot active" data-slide="0"></span>
-                                <span class="services-dot" data-slide="1"></span>
-                                <span class="services-dot" data-slide="2"></span>
-                                <span class="services-dot" data-slide="3"></span>
-                                <span class="services-dot" data-slide="4"></span>
-                                <span class="services-dot" data-slide="5"></span>
-                                <span class="services-dot" data-slide="6"></span>
-                                <span class="services-dot" data-slide="7"></span>
-                                <span class="services-dot" data-slide="8"></span>
-                                <span class="services-dot" data-slide="9"></span>
-                                <span class="services-dot" data-slide="10"></span>
-                            </div>
-                            <button class="services-slider-btn services-next-btn" aria-label="Next">›</button>
-                        </div>
+                <a href="./servizi/menu-digitali.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">📋</div>
+                        <h3>Menu Digitali Interattivi</h3>
+                        <p>Menu completi per pub, bar e ristoranti con categorie, prezzi chiari e lettura ottimale da smartphone</p>
                     </div>
-                </div>
+                </a>
+                <a href="./servizi/siti-vetrina-mobile.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">📱</div>
+                        <h3>Siti Vetrina Mobile</h3>
+                        <p>Siti ottimizzati per smartphone: niente PDF, pulsanti grandi, testi leggibili, struttura intuitiva</p>
+                    </div>
+                </a>
+                <a href="./servizi/progressive-web-app.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">📲</div>
+                        <h3>Progressive Web App</h3>
+                        <p>Menu installabile come app: icona home, apertura veloce, funziona offline, aggiornamenti automatici</p>
+                    </div>
+                </a>
+                <a href="./servizi/funzioni-interattive.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">❤️</div>
+                        <h3>Funzioni Interattive</h3>
+                        <p>Preferiti, schede prodotto dettagliate con descrizioni, ingredienti e informazioni complete</p>
+                    </div>
+                </a>
+                <a href="./servizi/barra-contatti.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">💬</div>
+                        <h3>Barra Contatti</h3>
+                        <p>Barra fissa con WhatsApp, Instagram e chiamata sempre visibile per contattarti con un tocco</p>
+                    </div>
+                </a>
+                <a href="./servizi/google-analytics.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">📊</div>
+                        <h3>Google Analytics 4</h3>
+                        <p>Analisi completa: pagine viste, prodotti aperti, preferiti, clic su contatti - marketing data-driven</p>
+                    </div>
+                </a>
+                <a href="./servizi/tracciamento-eventi.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">🎯</div>
+                        <h3>Tracciamento Eventi</h3>
+                        <p>Eventi personalizzati per capire cosa funziona prodotto per prodotto nel tuo locale</p>
+                    </div>
+                </a>
+                <a href="./servizi/privacy-gdpr.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">🔒</div>
+                        <h3>Privacy & GDPR</h3>
+                        <p>Cookie banner, gestione consenso (Consent Mode v2), Privacy Policy - tutto a norma di legge</p>
+                    </div>
+                </a>
+                <a href="./servizi/seo-ottimizzazione.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">🔍</div>
+                        <h3>SEO & Ottimizzazione</h3>
+                        <p>Tag title/description, HTML corretto, sitemap, Open Graph per condivisioni social ottimizzate</p>
+                    </div>
+                </a>
+                <a href="./servizi/performance-sicurezza.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">⚡</div>
+                        <h3>Performance & Sicurezza</h3>
+                        <p>Velocità, cache, immagini ottimizzate, HTTPS, Service Worker - sito veloce e sicuro</p>
+                    </div>
+                </a>
+                <a href="./servizi/design-personalizzato.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">🎨</div>
+                        <h3>Design Personalizzato</h3>
+                        <p>Colori, font e stile su misura del tuo locale per un'immagine moderna e coerente</p>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
