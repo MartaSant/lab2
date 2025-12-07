@@ -11,7 +11,7 @@ console.log('ga-consent.js caricato');
 
 // ⚙️ CONFIGURAZIONE - MODIFICA QUESTI VALORI
 // ⚠️ IMPORTANTE: Sostituisci 'G-XXXXXXXXXX' con il tuo ID Google Analytics 4
-const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // ⬅️ SOSTITUISCI CON IL TUO ID GA4 (formato: G-XXXXXXXXXX)
+const GA_MEASUREMENT_ID = 'G-5NW6SFP8TW'; // ⬅️ SOSTITUISCI CON IL TUO ID GA4 (formato: G-XXXXXXXXXX)
 const CONSENT_KEY = 'cookie_consent_idelab2'; // ⬅️ (Opzionale) Cambia se necessario
 
 // Esponi CONSENT_KEY globalmente per uso in tutte le pagine
