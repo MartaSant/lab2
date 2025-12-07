@@ -630,6 +630,23 @@ body {
     margin-top: 2rem;
 }
 
+/* Services Slider for Mobile - Desktop: normale grid layout */
+.services-slider-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Su desktop, lo slider wrapper e slider non interferiscono con il grid */
+@media (min-width: 769px) {
+    .services-slider-wrapper {
+        display: contents; /* Le card sono direttamente nel grid */
+    }
+    
+    .services-slider {
+        display: contents; /* Le card sono direttamente nel grid */
+    }
+}
+
 
 .service-card-link {
     text-decoration: none;
@@ -1094,6 +1111,29 @@ body {
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
         overflow: visible;
+    }
+
+    .services-slider-wrapper {
+        overflow: visible;
+        position: static;
+    }
+
+    .services-slider {
+        display: contents; /* Le card sono direttamente nel grid */
+        width: auto;
+        transform: none;
+    }
+
+    .services-slider .service-card-link {
+        flex: none;
+        min-width: auto;
+        max-width: none;
+        width: 100%;
+        padding: 0;
+    }
+
+    .services-slider-nav {
+        display: none;
     }
 }
 

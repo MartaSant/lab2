@@ -332,15 +332,23 @@ window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
         if (window.innerWidth > 768) {
-            // Reset slider position on desktop
+            // Reset team slider position on desktop
             if (teamSlider) {
                 teamSlider.style.transform = 'translateX(0)';
             }
             currentSlide = 0;
             updateSlider();
+            
+            // Reset services slider position on desktop
+            if (servicesSlider) {
+                servicesSlider.style.transform = 'translateX(0)';
+            }
+            currentServiceSlide = 0;
+            updateServicesSlider();
         } else {
-            // Update slider on mobile
+            // Update sliders on mobile
             updateSlider();
+            updateServicesSlider();
         }
     }, 250);
 });
@@ -361,13 +369,15 @@ function updateServicesSlider() {
         servicesSlider.style.transform = `translateX(${translateX}%)`;
         
         // Update dots
-        servicesDots.forEach((dot, index) => {
-            if (index === currentServiceSlide) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
+        if (servicesDots && servicesDots.length > 0) {
+            servicesDots.forEach((dot, index) => {
+                if (index === currentServiceSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
     }
 }
 
@@ -441,23 +451,7 @@ function handleServicesSwipe() {
     }
 }
 
-// Handle window resize for services slider
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-        if (window.innerWidth > 768) {
-            // Reset services slider position on desktop
-            if (servicesSlider) {
-                servicesSlider.style.transform = 'translateX(0)';
-            }
-            currentServiceSlide = 0;
-            updateServicesSlider();
-        } else {
-            // Update services slider on mobile
-            updateServicesSlider();
-        }
-    }, 250);
-});
+// Resize handler is already unified above with team slider
 
 // Add typing effect to hero title (optional enhancement)
 const titleLines = document.querySelectorAll('.title-line');
