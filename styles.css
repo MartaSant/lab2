@@ -966,7 +966,7 @@ body {
         left: 0 !important;
         right: auto !important;
         top: auto;
-        margin: calc(2rem + 25px) 0 0 0 !important;
+        margin: calc(2rem + 20px) 0 0 0 !important;
         width: 60px;
         z-index: 10;
         text-align: left !important;
