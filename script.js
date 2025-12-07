@@ -369,9 +369,20 @@ function initServicesSlider() {
     });
     
     if (servicesSlider && window.innerWidth <= 768) {
+        // Forza gli stili sul wrapper
+        const wrapper = servicesSlider.parentElement;
+        if (wrapper && wrapper.classList.contains('services-slider-wrapper')) {
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.position = 'relative';
+            wrapper.style.width = '100%';
+        }
+        
         // Forza lo stile flex
         servicesSlider.style.display = 'flex';
         servicesSlider.style.width = '1100%';
+        servicesSlider.style.flexDirection = 'row';
+        servicesSlider.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        
         updateServicesSlider();
     }
     
@@ -450,11 +461,32 @@ function handleServicesSwipe(touchStartX, touchEndX) {
 
 function updateServicesSlider() {
     if (servicesSlider && window.innerWidth <= 768) {
+        // Forza gli stili necessari
+        servicesSlider.style.display = 'flex';
+        servicesSlider.style.width = '1100%';
+        servicesSlider.style.flexDirection = 'row';
+        servicesSlider.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        
         // Calcola la percentuale di spostamento: ogni card è 1/11 dello slider (9.0909%)
         // Per mostrare una card per volta, spostiamo di 9.0909% per ogni slide
         const translateX = -currentServiceSlide * (100 / totalServiceSlides);
         servicesSlider.style.transform = `translateX(${translateX}%)`;
-        servicesSlider.style.display = 'flex';
+        
+        // Forza gli stili sulle card
+        const serviceCards = servicesSlider.querySelectorAll('.service-card-link');
+        serviceCards.forEach(card => {
+            card.style.flex = '0 0 calc(100% / 11)';
+            card.style.minWidth = 'calc(100% / 11)';
+            card.style.maxWidth = 'calc(100% / 11)';
+            card.style.width = 'calc(100% / 11)';
+            card.style.flexShrink = '0';
+        });
+        
+        console.log('Slider updated:', {
+            translateX: translateX,
+            currentSlide: currentServiceSlide,
+            cards: serviceCards.length
+        });
         
         // Update dots
         if (servicesDots && servicesDots.length > 0) {
