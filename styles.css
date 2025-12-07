@@ -1259,7 +1259,7 @@ body {
     }
     
     .duck-hero {
-        bottom: 1.5rem;
+        bottom: calc(1.5rem + 50px);
         right: 1.5rem;
     }
     
@@ -1338,7 +1338,7 @@ body {
     }
     
     .duck-hero {
-        bottom: 1rem;
+        bottom: calc(1rem + 50px);
         right: 1rem;
     }
     
