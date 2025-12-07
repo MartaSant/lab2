@@ -480,6 +480,9 @@ function updateServicesSlider() {
             card.style.maxWidth = 'calc(100% / 11)';
             card.style.width = 'calc(100% / 11)';
             card.style.flexShrink = '0';
+            card.style.padding = '0';
+            card.style.margin = '0';
+            card.style.boxSizing = 'border-box';
         });
         
         console.log('Slider updated:', {

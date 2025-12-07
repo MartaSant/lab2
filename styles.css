@@ -1055,9 +1055,15 @@ body {
         min-width: calc(100% / 11) !important;
         max-width: calc(100% / 11) !important;
         width: calc(100% / 11) !important;
-        padding: 0 1rem;
+        padding: 0;
+        margin: 0;
         box-sizing: border-box;
         flex-shrink: 0 !important;
+    }
+    
+    .services-slider .service-card {
+        margin: 0;
+        padding: 3rem 2rem;
     }
 
     /* Services Slider Navigation */
