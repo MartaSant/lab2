@@ -911,11 +911,11 @@ body {
 
     .team-grid {
         display: block; /* Cambia da grid a block per lo slider mobile */
-        overflow: hidden;
+        overflow: visible; /* Cambiato per mostrare la paperella */
     }
 
     .team-slider-wrapper {
-        overflow: hidden;
+        overflow: visible; /* Cambiato per mostrare la paperella */
         position: relative;
         width: 100%;
     }
@@ -952,7 +952,11 @@ body {
     
     /* Mostra paperella team mobile solo su mobile */
     .duck-team-mobile {
-        display: block;
+        display: block !important;
+        position: relative;
+        margin: 2rem auto 0;
+        width: 60px;
+        z-index: 10;
     }
     
     /* Nascondi paperella team desktop su mobile */
@@ -1208,6 +1212,7 @@ body {
     width: 60px;
     animation-delay: 0.5s;
     text-align: center;
+    z-index: 10;
 }
 
 .duck-team-mobile .duck-speech {
