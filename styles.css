@@ -963,10 +963,20 @@ body {
     .duck-team-mobile {
         display: block !important;
         position: relative;
-        margin: calc(2rem + 150px) auto 0 auto;
+        margin: calc(2rem + 200px) 0 0 0;
         width: 60px;
         z-index: 10;
-        text-align: center;
+        text-align: left;
+    }
+    
+    .duck-team-mobile .duck-speech {
+        left: 0;
+        transform: translateX(0) translateY(-10px);
+    }
+    
+    .duck-team-mobile .duck-speech::before {
+        left: 20px;
+        transform: translateX(0);
     }
     
     /* Nascondi paperella team desktop su mobile */
