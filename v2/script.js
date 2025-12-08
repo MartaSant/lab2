@@ -1,8 +1,14 @@
 // ============================================
 // SCRIPT.JS CARICATO - DEBUG
 // ============================================
-// Alert per verificare che lo script venga caricato
-alert('SCRIPT.JS CARICATO! Controlla la console.');
+// Log immediato per verificare che lo script venga eseguito
+try {
+    console.log('🔵 [SCRIPT START] Script.js inizio esecuzione');
+    // Alert potrebbe essere bloccato, usiamo solo console
+    // alert('SCRIPT.JS CARICATO! Controlla la console.');
+} catch (e) {
+    console.error('❌ [SCRIPT START] Errore all\'inizio:', e);
+}
 
 console.log('%c═══════════════════════════════════════', 'font-size: 16px; font-weight: bold; color: #6366f1;');
 console.log('%cSCRIPT.JS CARICATO CON SUCCESSO', 'font-size: 18px; font-weight: bold; color: #6366f1; background: #1e293b; padding: 10px; border-radius: 8px;');
