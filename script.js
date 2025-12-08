@@ -277,6 +277,8 @@ if (window.innerWidth <= 768) {
     teamCards.forEach(card => {
         // Salva lo stato direttamente sulla card
         card.isFlipped = false;
+        card.flipStartTime = null; // Traccia quando inizia il flip
+        
         card.addEventListener('click', (e) => {
             // Don't flip if clicking on navigation buttons
             if (e.target.closest('.slider-btn') || e.target.closest('.dot')) {
@@ -284,10 +286,23 @@ if (window.innerWidth <= 768) {
             }
             // Toggle flip: se è girata torna normale, se è normale si gira
             const wasFlipped = card.isFlipped;
+            const now = Date.now();
+            
+            // Se la carta viene unflippata, calcola la durata
+            let flipDuration = 0;
+            if (wasFlipped && card.flipStartTime) {
+                flipDuration = now - card.flipStartTime;
+            }
+            
             card.isFlipped = !card.isFlipped;
+            
             if (card.isFlipped) {
+                // Card appena flippata: salva il tempo di inizio
+                card.flipStartTime = now;
                 card.classList.add('active');
             } else {
+                // Card unflippata: reset del tempo
+                card.flipStartTime = null;
                 card.classList.remove('active');
             }
             
@@ -296,13 +311,21 @@ if (window.innerWidth <= 768) {
                 const cardName = card.querySelector('.team-name')?.textContent?.trim() || 'Unknown';
                 const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
                 const engagementTime = getEngagementTime();
-                window.sendGA4Event('team_card_flip', {
+                
+                const eventData = {
                     'card_name': cardName,
                     'card_role': cardRole,
                     'flip_action': card.isFlipped ? 'flipped' : 'unflipped',
                     'page_location': window.location.pathname,
-                    'flip_engagement_time_msec': engagementTime // Tempo in millisecondi dalla sessione (rinominato per evitare conflitti con parametri riservati GA4)
-                });
+                    'flip_engagement_time_msec': engagementTime
+                };
+                
+                // Aggiungi la durata solo quando viene unflippata
+                if (!card.isFlipped && flipDuration > 0) {
+                    eventData['flip_duration_msec'] = flipDuration;
+                }
+                
+                window.sendGA4Event('team_card_flip', eventData);
             }
         });
     });
