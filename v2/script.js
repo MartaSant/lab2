@@ -186,6 +186,7 @@ contactForm.addEventListener('submit', (e) => {
 
 // Inizializza team cards quando il DOM è pronto
 function initTeamCards() {
+    console.log('initTeamCards chiamata - larghezza finestra:', window.innerWidth);
     const teamCards = document.querySelectorAll('.team-card');
     
     if (teamCards.length === 0) {
@@ -194,7 +195,7 @@ function initTeamCards() {
         return;
     }
     
-    console.log('Team cards trovate:', teamCards.length);
+    console.log('Team cards trovate:', teamCards.length, 'larghezza:', window.innerWidth);
     
     // Add mouse move parallax effect to team cards (DESKTOP ONLY - completamente disattivato su mobile)
     // Funzionalità desktop: parallax effect solo su desktop
@@ -340,10 +341,16 @@ function initTeamCards() {
 }
 
 // Chiama initTeamCards quando il DOM è pronto
+console.log('Script caricato, stato DOM:', document.readyState);
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTeamCards);
+    console.log('DOM in caricamento, aspetto DOMContentLoaded...');
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOMContentLoaded evento, chiamo initTeamCards');
+        initTeamCards();
+    });
 } else {
     // DOM già pronto
+    console.log('DOM già pronto, chiamo initTeamCards immediatamente');
     initTeamCards();
 }
 
