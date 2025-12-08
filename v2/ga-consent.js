@@ -85,9 +85,17 @@ function loadGA4() {
         gtag('js', new Date());
         // Configurazione esplicita del dominio per evitare errori del cookie
         const currentDomain = window.location.hostname; // Es: martasant.github.io
-        const cookieDomain = currentDomain.startsWith('localhost') 
-            ? 'auto'  // Per sviluppo locale, usa auto
-            : currentDomain;  // Per produzione, usa il dominio esatto
+        let cookieDomain;
+        
+        if (currentDomain.startsWith('localhost')) {
+            cookieDomain = 'auto';  // Per sviluppo locale, usa auto
+        } else if (currentDomain.endsWith('.github.io')) {
+            // Per GitHub Pages, usa il dominio con punto iniziale per funzionare su tutti i sottodomini
+            cookieDomain = '.github.io';
+        } else {
+            // Per altri domini, usa il dominio esatto
+            cookieDomain = currentDomain;
+        }
         
         gtag('config', GA_MEASUREMENT_ID, {
             'send_page_view': true,  // Assicura che page_view venga inviato
