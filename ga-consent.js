@@ -82,9 +82,18 @@ function loadGA4() {
     // Inizializza GA4 quando lo script è caricato
     script.onload = function() {
         console.log('Script GA4 caricato, inizializzo...');
+        console.log('Device info:', {
+            userAgent: navigator.userAgent,
+            isMobile: window.innerWidth <= 768,
+            isDesktop: window.innerWidth > 768,
+            screenWidth: window.innerWidth,
+            screenHeight: window.innerHeight
+        });
+        
         gtag('js', new Date());
         gtag('config', GA_MEASUREMENT_ID, {
-            'send_page_view': true  // Assicura che page_view venga inviato
+            'send_page_view': true,  // Assicura che page_view venga inviato
+            'debug_mode': false
         });
         ga4Loading = false;
         ga4Ready = true;
@@ -110,7 +119,14 @@ function loadGA4() {
                     'page_location': window.location.href,
                     'page_path': window.location.pathname
                 });
-                console.log('Page view inviato manualmente');
+                console.log('Page view inviato manualmente', {
+                    title: document.title,
+                    location: window.location.href,
+                    path: window.location.pathname,
+                    isDesktop: window.innerWidth > 768
+                });
+            } else {
+                console.error('gtag non disponibile per inviare page_view');
             }
         }, 200);
     };
@@ -269,7 +285,10 @@ function initCookieBanner() {
         
         if (consent === 'granted') {
             // Consenso accettato: nascondi banner e carica GA4
-            console.log('Consenso granted, nascondo banner e carico GA4');
+            console.log('Consenso granted, nascondo banner e carico GA4', {
+                isDesktop: window.innerWidth > 768,
+                isMobile: window.innerWidth <= 768
+            });
             banner.style.display = 'none';
             loadGA4();
             return;
