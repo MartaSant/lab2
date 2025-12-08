@@ -341,18 +341,34 @@ function initTeamCards() {
 }
 
 // Chiama initTeamCards quando il DOM è pronto
-console.log('Script caricato, stato DOM:', document.readyState);
+console.log('Script caricato, stato DOM:', document.readyState, 'larghezza:', window.innerWidth);
 if (document.readyState === 'loading') {
     console.log('DOM in caricamento, aspetto DOMContentLoaded...');
     document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOMContentLoaded evento, chiamo initTeamCards');
+        console.log('DOMContentLoaded evento, chiamo initTeamCards - larghezza:', window.innerWidth);
         initTeamCards();
     });
 } else {
     // DOM già pronto
-    console.log('DOM già pronto, chiamo initTeamCards immediatamente');
+    console.log('DOM già pronto, chiamo initTeamCards immediatamente - larghezza:', window.innerWidth);
     initTeamCards();
 }
+
+// Listener per resize (utile quando apri/chiudi dev tools o cambi modalità)
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        console.log('Finestra ridimensionata, larghezza:', window.innerWidth);
+        // Reinizializza se necessario (solo se siamo su mobile e prima eravamo su desktop o viceversa)
+        const teamCards = document.querySelectorAll('.team-card');
+        if (teamCards.length > 0) {
+            console.log('Reinizializzazione team cards dopo resize');
+            // Rimuovi event listener vecchi e riaggiungi
+            initTeamCards();
+        }
+    }, 300);
+});
 
 // Track GA4 event: card_hover (solo desktop, quando si passa il mouse sulle card - specifico per ogni card)
 if (window.innerWidth > 768) {
