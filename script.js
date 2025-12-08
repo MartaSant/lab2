@@ -1,28 +1,6 @@
 // Inizializza dataLayer per GA4
 window.dataLayer = window.dataLayer || [];
 
-// Funzione helper per calcolare l'engagement time (tempo trascorso dalla sessione)
-function getEngagementTime() {
-    // Usa sessionStorage per tracciare il tempo di inizio sessione
-    const sessionStartKey = 'session_start_time';
-    let sessionStartTime = sessionStorage.getItem(sessionStartKey);
-    
-    if (!sessionStartTime) {
-        // Prima visita della sessione, salva il tempo corrente
-        sessionStartTime = Date.now();
-        sessionStorage.setItem(sessionStartKey, sessionStartTime.toString());
-    } else {
-        sessionStartTime = parseInt(sessionStartTime);
-    }
-    
-    // Calcola il tempo trascorso in millisecondi
-    const engagementTime = Date.now() - sessionStartTime;
-    
-    // Converti in secondi e poi in millisecondi per GA4 (GA4 si aspetta millisecondi)
-    // Ma limitiamo a max 1 ora (3600000 ms) per evitare valori troppo alti
-    return Math.min(engagementTime, 3600000);
-}
-
 // Service Worker Registration - Modalità sviluppo (Network Only)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -101,16 +79,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             const sectionId = target.id || '';
             const linkText = this.textContent.trim() || '';
             
-            // Track GA4 event: navigation_click
-            if (window.sendGA4Event) {
-                window.sendGA4Event('navigation_click', {
-                    'link_text': linkText,
-                    'section_id': sectionId,
-                    'link_href': href,
-                    'page_location': window.location.pathname
-                });
-            }
-            
             let offsetTop = target.offsetTop - 80;
             
             // Special handling for team section - scroll to show cards completely
@@ -147,17 +115,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 top: Math.max(0, offsetTop),
                 behavior: 'smooth'
             });
-            
-            // Track GA4 event: scroll_to_section (after scroll)
-            setTimeout(() => {
-                if (window.sendGA4Event) {
-                    window.sendGA4Event('scroll_to_section', {
-                        'section_id': sectionId,
-                        'section_name': linkText,
-                        'page_location': window.location.pathname
-                    });
-                }
-            }, 500);
         }
     });
 });
@@ -210,17 +167,6 @@ contactForm.addEventListener('submit', (e) => {
     if (!name || !email || !message) {
         alert('Per favore, compila tutti i campi.');
         return;
-    }
-    
-    // Track GA4 event: contact_form_submit
-    if (window.sendGA4Event) {
-        window.sendGA4Event('contact_form_submit', {
-            'form_name': 'contact_form',
-            'form_location': window.location.pathname,
-            'has_name': name ? 'yes' : 'no',
-            'has_email': email ? 'yes' : 'no',
-            'has_message': message ? 'yes' : 'no'
-        });
     }
     
     // Simulate form submission
@@ -284,6 +230,7 @@ if (window.innerWidth <= 768) {
             if (e.target.closest('.slider-btn') || e.target.closest('.dot')) {
                 return;
             }
+            
             // Toggle flip: se è girata torna normale, se è normale si gira
             const wasFlipped = card.isFlipped;
             const now = Date.now();
@@ -304,30 +251,84 @@ if (window.innerWidth <= 768) {
                 // Card unflippata: reset del tempo
                 card.flipStartTime = null;
                 card.classList.remove('active');
-            }
-            
-            // Track GA4 event: team_card_flip
-            if (window.sendGA4Event) {
-                const cardName = card.querySelector('.team-name')?.textContent?.trim() || 'Unknown';
-                const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
-                const engagementTime = getEngagementTime();
                 
-                const eventData = {
-                    'card_name': cardName,
-                    'card_role': cardRole,
-                    'flip_action': card.isFlipped ? 'flipped' : 'unflipped',
-                    'page_location': window.location.pathname,
-                    'flip_engagement_time_msec': engagementTime
-                };
-                
-                // Aggiungi la durata solo quando viene unflippata
-                if (!card.isFlipped && flipDuration > 0) {
-                    eventData['flip_duration_msec'] = flipDuration;
+                // Track GA4 event: card_flip_duration (specifico per ogni card)
+                const cardName = card.querySelector('.team-name')?.textContent?.trim() || '';
+                if (flipDuration > 0 && window.sendGA4Event) {
+                    const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
+                    
+                    // Eventi specifici per ogni card
+                    if (cardName === 'Kero') {
+                        window.sendGA4Event('kero_card_flip_duration', {
+                            'card_name': 'Kero',
+                            'card_role': cardRole,
+                            'flip_duration_msec': flipDuration,
+                            'page_location': window.location.pathname
+                        });
+                    } else if (cardName === 'Kram') {
+                        window.sendGA4Event('kram_card_flip_duration', {
+                            'card_name': 'Kram',
+                            'card_role': cardRole,
+                            'flip_duration_msec': flipDuration,
+                            'page_location': window.location.pathname
+                        });
+                    } else if (cardName === 'Eve') {
+                        window.sendGA4Event('eve_card_flip_duration', {
+                            'card_name': 'Eve',
+                            'card_role': cardRole,
+                            'flip_duration_msec': flipDuration,
+                            'page_location': window.location.pathname
+                        });
+                    }
                 }
-                
-                window.sendGA4Event('team_card_flip', eventData);
             }
         });
+    });
+}
+
+// Track GA4 event: card_hover (solo desktop, quando si passa il mouse sulle card - specifico per ogni card)
+if (window.innerWidth > 768) {
+    teamCards.forEach(card => {
+        const cardName = card.querySelector('.team-name')?.textContent?.trim() || '';
+        const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
+        
+        // Applica solo a Kero, Kram ed Eve
+        if (cardName === 'Kero' || cardName === 'Kram' || cardName === 'Eve') {
+            let hoverStartTime = null;
+            let hoverTracked = false;
+            
+            card.addEventListener('mouseenter', () => {
+                hoverStartTime = Date.now();
+                hoverTracked = false;
+                
+                // Track GA4 event: card_hover (specifico per ogni card)
+                if (window.sendGA4Event) {
+                    const eventName = `${cardName.toLowerCase()}_card_hover`;
+                    window.sendGA4Event(eventName, {
+                        'card_name': cardName,
+                        'card_role': cardRole,
+                        'hover_action': 'mouse_enter',
+                        'page_location': window.location.pathname
+                    });
+                    hoverTracked = true;
+                }
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                if (hoverStartTime && hoverTracked && window.sendGA4Event) {
+                    const hoverDuration = Date.now() - hoverStartTime;
+                    const eventName = `${cardName.toLowerCase()}_card_hover`;
+                    window.sendGA4Event(eventName, {
+                        'card_name': cardName,
+                        'card_role': cardRole,
+                        'hover_action': 'mouse_leave',
+                        'hover_duration_msec': hoverDuration,
+                        'page_location': window.location.pathname
+                    });
+                }
+                hoverStartTime = null;
+            });
+        }
     });
 }
 
@@ -539,24 +540,9 @@ serviceCards.forEach((card, index) => {
         });
     });
     
-    // Track GA4 event: service_card_click
+    // Service card click handling
     card.addEventListener('click', (e) => {
-        // Verifica se il click è su un link interno
-        const link = card.querySelector('a');
-        if (link) {
-            const serviceName = card.querySelector('h3')?.textContent?.trim() || 'Unknown';
-            const serviceDescription = card.querySelector('p')?.textContent?.trim()?.substring(0, 50) || '';
-            const linkHref = link.getAttribute('href') || '';
-            
-            if (window.sendGA4Event) {
-                window.sendGA4Event('service_card_click', {
-                    'service_name': serviceName,
-                    'service_description': serviceDescription,
-                    'link_href': linkHref,
-                    'page_location': window.location.pathname
-                });
-            }
-        }
+        // Service card click handling
     });
 });
 
@@ -669,58 +655,21 @@ function createParticles(x, y) {
     }
 }
 
-// Track GA4 event: social_link_click
+// Social links handling
 document.querySelectorAll('.social-link').forEach(link => {
     link.addEventListener('click', function(e) {
-        const socialName = this.textContent.trim() || 'Unknown';
-        const socialHref = this.getAttribute('href') || '';
-        
-        if (window.sendGA4Event) {
-            window.sendGA4Event('social_link_click', {
-                'social_name': socialName,
-                'social_type': socialName.toLowerCase(),
-                'link_href': socialHref,
-                'page_location': window.location.pathname
-            });
-        }
+        // Social link click handling
     });
 });
 
-// Track GA4 event: speech_bubble_click - quando un utente clicca su una speech bubble
-// Questo aiuta a capire se gli utenti capiscono che devono cliccare la paperella o se provano a cliccare la bubble
+// Speech bubble click handling
 document.querySelectorAll('.duck-speech').forEach(speechBubble => {
     speechBubble.addEventListener('click', function(e) {
         // Previeni la propagazione per evitare che il click arrivi anche alla paperella
         e.stopPropagation();
-        
-        // Trova la paperella associata (parent con classe duck-guide)
-        const duckGuide = this.closest('.duck-guide');
-        const duckImage = duckGuide?.querySelector('.duck-image');
-        const duckText = this.textContent?.trim() || '';
-        const duckType = duckImage?.getAttribute('alt') || duckImage?.getAttribute('src')?.split('/').pop() || 'unknown';
-        const duckTarget = duckGuide?.dataset.target || duckGuide?.getAttribute('href') || '';
-        const isClickable = duckGuide?.hasAttribute('href') || duckGuide?.hasAttribute('data-target') || false;
-        
-        // Track GA4 event
-        if (window.sendGA4Event) {
-            window.sendGA4Event('speech_bubble_click', {
-                'speech_text': duckText,
-                'duck_type': duckType,
-                'target_section': duckTarget,
-                'is_duck_clickable': isClickable ? 'yes' : 'no',
-                'page_location': window.location.pathname,
-                'user_action': 'clicked_speech_bubble' // Indica che l'utente ha cliccato la bubble invece della paperella
-            });
-        }
-        
-        console.log('Speech bubble clicked:', {
-            text: duckText,
-            duckType: duckType,
-            isClickable: isClickable
-        });
     });
     
-    // Aggiungi stile cursor pointer per indicare che è cliccabile (per test)
+    // Aggiungi stile cursor pointer per indicare che è cliccabile
     speechBubble.style.cursor = 'pointer';
 });
 
@@ -812,20 +761,9 @@ duckGuides.forEach(duck => {
             }
         });
     } else if (duck.getAttribute('href')) {
-        // Track GA4 event: duck_guide_click per duck con href (es. servizi.html)
+        // Duck con href (es. servizi.html)
         duck.addEventListener('click', () => {
-            const duckText = duck.querySelector('.duck-speech')?.textContent?.trim() || '';
-            const duckImage = duck.querySelector('.duck-image')?.getAttribute('alt') || 'duck_guide';
-            const duckHref = duck.getAttribute('href') || '';
-            
-            if (window.sendGA4Event) {
-                window.sendGA4Event('duck_guide_click', {
-                    'duck_text': duckText,
-                    'duck_type': duckImage,
-                    'target_section': duckHref,
-                    'page_location': window.location.pathname
-                });
-            }
+            // Navigation handling
         });
     }
     
