@@ -88,6 +88,11 @@ function loadGA4() {
             // Non specifichiamo cookie_domain per lasciare che GA4 rilevi automaticamente il dominio
             // Questo funziona correttamente per GitHub Pages e domini custom
         });
+        
+        // Log per verificare quale dominio viene rilevato automaticamente
+        console.log('[GA4] Dominio rilevato automaticamente:', window.location.hostname);
+        console.log('[GA4] Dominio completo:', window.location.host);
+        console.log('[GA4] URL completo:', window.location.href);
         ga4Loading = false;
         ga4Ready = true;
         window.ga4Loading = false;
