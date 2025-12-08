@@ -716,12 +716,18 @@ function trackSpeechBubbleClick(element, isDesktop) {
 
 // Funzione per inizializzare il tracking delle speech bubble
 function initSpeechBubbleTracking() {
+    console.log('🚀 [INIT] Funzione initSpeechBubbleTracking chiamata');
     const isDesktop = window.innerWidth > 768;
     console.log(`%c[INIT SPEECH BUBBLE TRACKING - ${isDesktop ? 'DESKTOP' : 'MOBILE'}]`, 'font-size: 12px; font-weight: bold; color: #8b5cf6; background: #1e293b; padding: 4px 8px; border-radius: 4px;');
+    console.log('🚀 [INIT] Window width:', window.innerWidth);
     
     // Traccia tutte le .duck-speech (visibili su desktop e mobile)
     const duckSpeechElements = document.querySelectorAll('.duck-speech');
     console.log(`📋 Trovate ${duckSpeechElements.length} speech bubble .duck-speech`);
+    
+    if (duckSpeechElements.length === 0) {
+        console.warn('⚠️ [INIT] Nessuna speech bubble .duck-speech trovata!');
+    }
     duckSpeechElements.forEach((speechBubble, index) => {
         const style = window.getComputedStyle(speechBubble);
         const isVisible = style.display !== 'none' && style.visibility !== 'hidden';
@@ -760,6 +766,15 @@ function initSpeechBubbleTracking() {
     // Traccia le speech bubble autonome (solo desktop, ma aggiungiamo il listener sempre)
     const autonomousBubbles = document.querySelectorAll('.duck-team-speech-bubble, .duck-services-speech-bubble');
     console.log(`📋 Trovate ${autonomousBubbles.length} speech bubble autonome (desktop)`);
+    
+    if (autonomousBubbles.length === 0) {
+        console.warn('⚠️ [INIT] Nessuna speech bubble autonoma trovata!');
+        // Prova a cercare con selettori alternativi
+        const teamBubble = document.querySelector('.duck-team-speech-bubble');
+        const servicesBubble = document.querySelector('.duck-services-speech-bubble');
+        console.log('🔍 [INIT] Team bubble trovata:', !!teamBubble);
+        console.log('🔍 [INIT] Services bubble trovata:', !!servicesBubble);
+    }
     autonomousBubbles.forEach((speechBubble, index) => {
         const style = window.getComputedStyle(speechBubble);
         const isVisible = style.display !== 'none' && style.visibility !== 'hidden';
@@ -812,11 +827,30 @@ function initSpeechBubbleTracking() {
 }
 
 // Inizializza il tracking quando il DOM è pronto
+console.log('🚀 [SETUP] Stato DOM:', document.readyState);
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSpeechBubbleTracking);
+    console.log('🚀 [SETUP] DOM in caricamento, aspetto DOMContentLoaded');
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 [SETUP] DOMContentLoaded evento ricevuto');
+        initSpeechBubbleTracking();
+    });
 } else {
+    console.log('🚀 [SETUP] DOM già pronto, inizializzo subito');
     initSpeechBubbleTracking();
 }
+
+// Reinizializza dopo un breve delay per assicurarsi che tutti gli elementi siano caricati
+setTimeout(() => {
+    console.log('🚀 [SETUP] Reinizializzazione dopo delay (1s)');
+    const allBubbles = document.querySelectorAll('.duck-speech, .duck-team-speech-bubble, .duck-services-speech-bubble');
+    console.log('🚀 [SETUP] Totale speech bubble trovate dopo delay:', allBubbles.length);
+    if (allBubbles.length > 0) {
+        console.log('🚀 [SETUP] Reinizializzo tracking...');
+        initSpeechBubbleTracking();
+    } else {
+        console.warn('⚠️ [SETUP] Ancora nessuna speech bubble trovata dopo delay!');
+    }
+}, 1000);
 
 // Debug: listener globale per vedere tutti i click (solo in sviluppo)
 if (window.innerWidth > 768) {
@@ -995,4 +1029,5 @@ function addDecorativeDucks() {
 window.addEventListener('load', () => {
     setTimeout(addDecorativeDucks, 1000);
 });
+
 
