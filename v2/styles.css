@@ -1003,14 +1003,14 @@ body {
         transform: none !important;
     }
     
+    /* Reset di default per tutte le card su mobile */
+    .team-slider .team-card .card-inner {
+        transform: rotateY(0deg) !important;
+    }
+    
     /* Maintain flip animation on mobile - use tap instead of hover */
     .team-slider .team-card.active .card-inner {
         transform: rotateY(180deg) !important;
-    }
-    
-    /* Assicura che quando active viene rimossa, la card torni normale */
-    .team-slider .team-card:not(.active) .card-inner {
-        transform: rotateY(0deg) !important;
     }
 
     /* Slider Navigation */

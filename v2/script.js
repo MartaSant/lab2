@@ -247,10 +247,17 @@ if (window.innerWidth <= 768) {
                 // Card appena flippata: salva il tempo di inizio
                 card.flipStartTime = now;
                 card.classList.add('active');
+                console.log('Card flippata, classe active aggiunta');
             } else {
                 // Card unflippata: reset del tempo
                 card.flipStartTime = null;
                 card.classList.remove('active');
+                // Forza il reset del transform per sicurezza
+                const cardInner = card.querySelector('.card-inner');
+                if (cardInner) {
+                    cardInner.style.transform = 'rotateY(0deg)';
+                }
+                console.log('Card unflippata, classe active rimossa');
                 
                 // Track GA4 event: card_flip_duration (specifico per ogni card)
                 const cardName = card.querySelector('.team-name')?.textContent?.trim() || '';
