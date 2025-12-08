@@ -888,7 +888,12 @@ setTimeout(() => {
 
 // Debug: listener globale per vedere tutti i click (solo in sviluppo)
 console.log('🔴 [GLOBAL] Aggiungo listener globale per click');
+console.error('🔴 [GLOBAL] LISTENER GLOBALE AGGIUNTO - PROVA A CLICCARE!');
+window.testGlobalClick = function() {
+    console.log('🔴 [TEST] Funzione testGlobalClick chiamata - listener funziona!');
+};
 document.addEventListener('click', function(e) {
+    console.error('🔴 [GLOBAL CLICK] CLICK RILEVATO!'); // Usa console.error per essere più visibile
     const target = e.target;
     console.log('🔴 [GLOBAL CLICK] Click rilevato su:', {
         target: target,
@@ -913,6 +918,11 @@ document.addEventListener('click', function(e) {
 
 console.log('%cStudio IDE', 'font-size: 20px; font-weight: bold; color: #6366f1;');
 console.log('%cSviluppato con ❤️ dal team', 'color: #8b5cf6;');
+
+// Test finale: verifica che il listener globale sia stato aggiunto
+console.log('🔴 [TEST FINALE] Verifica listener globale...');
+console.log('🔴 [TEST FINALE] Document listeners:', document.addEventListener.toString().substring(0, 50));
+console.log('🔴 [TEST FINALE] Prova a cliccare ovunque sulla pagina per vedere i log!');
 
 // ============================================
 // DUCK GUIDES - Paperelle Interattive
