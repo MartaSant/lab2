@@ -74,70 +74,129 @@ function loadGA4() {
         'ad_personalization': 'denied'
     });
     
-    // Carica lo script GA4
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+    // Carica lo script GA4 con retry mechanism
+    let retryCount = 0;
+    const maxRetries = 3;
+    const retryDelay = 1000; // 1 secondo
     
-    // Inizializza GA4 quando lo script è caricato
-    script.onload = function() {
-        console.log('Script GA4 caricato, inizializzo...');
-        console.log('Device info:', {
-            userAgent: navigator.userAgent,
-            isMobile: window.innerWidth <= 768,
-            isDesktop: window.innerWidth > 768,
-            screenWidth: window.innerWidth,
-            screenHeight: window.innerHeight
-        });
+    function loadGA4Script() {
+        // Rimuovi script precedente se esiste
+        const existingScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
+        if (existingScript) {
+            existingScript.remove();
+        }
         
-        gtag('js', new Date());
-        gtag('config', GA_MEASUREMENT_ID, {
-            'send_page_view': true,  // Assicura che page_view venga inviato
-            'debug_mode': false
-        });
-        ga4Loading = false;
-        ga4Ready = true;
-        window.ga4Loading = false;
-        window.ga4Ready = true;
-        console.log('GA4 inizializzato e pronto');
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+        script.crossOrigin = 'anonymous';
         
-        // Aggiorna il consenso dopo che GA4 è caricato
-        gtag('consent', 'update', {
-            'ad_storage': 'granted',
-            'analytics_storage': 'granted',
-            'ad_user_data': 'granted',
-            'ad_personalization': 'granted'
-        });
-        
-        // Forza l'invio di page_view se non è stato ancora inviato automaticamente
-        // Questo è importante per le pagine caricate dopo l'accettazione dei cookie
-        setTimeout(function() {
-            if (window.gtag && typeof window.gtag === 'function') {
-                // Invia page_view manualmente per assicurarsi che venga tracciato
-                gtag('event', 'page_view', {
-                    'page_title': document.title,
-                    'page_location': window.location.href,
-                    'page_path': window.location.pathname
+        // Inizializza GA4 quando lo script è caricato
+        script.onload = function() {
+            console.log('Script GA4 caricato, inizializzo...', {
+                retryCount: retryCount,
+                isDesktop: window.innerWidth > 768
+            });
+            console.log('Device info:', {
+                userAgent: navigator.userAgent,
+                isMobile: window.innerWidth <= 768,
+                isDesktop: window.innerWidth > 768,
+                screenWidth: window.innerWidth,
+                screenHeight: window.innerHeight
+            });
+            
+            try {
+                gtag('js', new Date());
+                gtag('config', GA_MEASUREMENT_ID, {
+                    'send_page_view': true,  // Assicura che page_view venga inviato
+                    'debug_mode': false
                 });
-                console.log('Page view inviato manualmente', {
-                    title: document.title,
-                    location: window.location.href,
-                    path: window.location.pathname,
-                    isDesktop: window.innerWidth > 768
+                ga4Loading = false;
+                ga4Ready = true;
+                window.ga4Loading = false;
+                window.ga4Ready = true;
+                console.log('GA4 inizializzato e pronto');
+                
+                // Aggiorna il consenso dopo che GA4 è caricato
+                gtag('consent', 'update', {
+                    'ad_storage': 'granted',
+                    'analytics_storage': 'granted',
+                    'ad_user_data': 'granted',
+                    'ad_personalization': 'granted'
                 });
-            } else {
-                console.error('gtag non disponibile per inviare page_view');
+                
+                // Forza l'invio di page_view se non è stato ancora inviato automaticamente
+                // Questo è importante per le pagine caricate dopo l'accettazione dei cookie
+                setTimeout(function() {
+                    if (window.gtag && typeof window.gtag === 'function') {
+                        // Invia page_view manualmente per assicurarsi che venga tracciato
+                        gtag('event', 'page_view', {
+                            'page_title': document.title,
+                            'page_location': window.location.href,
+                            'page_path': window.location.pathname
+                        });
+                        console.log('Page view inviato manualmente', {
+                            title: document.title,
+                            location: window.location.href,
+                            path: window.location.pathname,
+                            isDesktop: window.innerWidth > 768
+                        });
+                    } else {
+                        console.error('gtag non disponibile per inviare page_view');
+                    }
+                }, 200);
+            } catch (error) {
+                console.error('Errore nell\'inizializzazione di GA4:', error);
+                ga4Loading = false;
+                window.ga4Loading = false;
             }
-        }, 200);
-    };
+        };
+        
+        script.onerror = function(error) {
+            console.error('Errore nel caricamento dello script GA4', {
+                retryCount: retryCount,
+                maxRetries: maxRetries,
+                error: error,
+                isDesktop: window.innerWidth > 768
+            });
+            
+            ga4Loading = false;
+            window.ga4Loading = false;
+            
+            // Retry se non abbiamo raggiunto il limite
+            if (retryCount < maxRetries) {
+                retryCount++;
+                console.log('Tentativo di retry', retryCount, 'di', maxRetries, 'tra', retryDelay, 'ms');
+                setTimeout(function() {
+                    loadGA4Script();
+                }, retryDelay);
+            } else {
+                console.error('Impossibile caricare GA4 dopo', maxRetries, 'tentativi. Possibili cause: ad blocker, firewall, o problemi di rete.');
+                // Prova comunque a inizializzare con gtag inline se possibile
+                try {
+                    if (window.dataLayer && typeof window.gtag === 'function') {
+                        console.log('Tentativo di inizializzazione GA4 senza script esterno...');
+                        gtag('js', new Date());
+                        gtag('config', GA_MEASUREMENT_ID, {
+                            'send_page_view': true
+                        });
+                        gtag('consent', 'update', {
+                            'ad_storage': 'granted',
+                            'analytics_storage': 'granted',
+                            'ad_user_data': 'granted',
+                            'ad_personalization': 'granted'
+                        });
+                    }
+                } catch (e) {
+                    console.error('Anche l\'inizializzazione inline è fallita:', e);
+                }
+            }
+        };
+        
+        document.head.appendChild(script);
+    }
     
-    script.onerror = function() {
-        console.error('Errore nel caricamento dello script GA4');
-        ga4Loading = false;
-        window.ga4Loading = false;
-    };
-    
-    document.head.appendChild(script);
+    loadGA4Script();
 }
 
 // Funzione helper per inviare eventi GA4 (aspetta che GA4 sia pronto)
