@@ -263,10 +263,22 @@ if (window.innerWidth <= 768) {
             // Toggle flip: se è girata torna normale, se è normale si gira
             const wasFlipped = card.isFlipped;
             card.isFlipped = !card.isFlipped;
+            const cardInnerEl = card.querySelector('.card-inner');
+            
             if (card.isFlipped) {
+                // Gira la card: aggiungi classe active e imposta transform esplicitamente
                 card.classList.add('active');
+                if (cardInnerEl) {
+                    cardInnerEl.style.setProperty('transform', 'rotateY(180deg)', 'important');
+                }
             } else {
+                // Torna alla posizione originale: rimuovi classe active e imposta transform a 0deg
                 card.classList.remove('active');
+                if (cardInnerEl) {
+                    cardInnerEl.style.setProperty('transform', 'rotateY(0deg)', 'important');
+                    // Forza un reflow per assicurare che il browser applichi il cambio
+                    void cardInnerEl.offsetHeight;
+                }
             }
             
             // Track GA4 event: team_card_flip
@@ -290,6 +302,10 @@ function resetAllCards() {
         teamCards.forEach(card => {
             card.classList.remove('active');
             card.isFlipped = false;
+            const cardInnerEl = card.querySelector('.card-inner');
+            if (cardInnerEl) {
+                cardInnerEl.style.setProperty('transform', 'rotateY(0deg)', 'important');
+            }
         });
     }
 }
