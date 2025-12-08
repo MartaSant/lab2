@@ -1020,6 +1020,12 @@ body {
         opacity: 0 !important;
     }
     
+    /* MOBILE: Disabilita pointer-events sui link dentro card-back per permettere il tap sulla card */
+    .team-card .card-back a,
+    .team-card .card-back .social-link {
+        pointer-events: none;
+    }
+    
     /* MOBILE: Reset di default - tutte le card partono nella forma base */
     .team-slider .team-card .card-inner {
         transform: rotateY(0deg) !important;

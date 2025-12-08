@@ -240,9 +240,15 @@ if (window.innerWidth <= 768) {
                 return;
             }
             
+            // Se il click è su un link dentro la card, previeni il comportamento di default
+            // ma permetti comunque il flip della card
+            if (e.target.closest('a') || e.target.tagName === 'A') {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
             // Preveni eventi di default che potrebbero interferire
             e.stopPropagation();
-            e.preventDefault();
             
             // Ottieni cardInner dentro l'event listener per essere sicuri
             const cardInnerEl = card.querySelector('.card-inner');
@@ -250,6 +256,12 @@ if (window.innerWidth <= 768) {
             
             const now = Date.now();
             const wasFlipped = card.isFlipped;
+            
+            console.log('Card tapped - stato attuale:', {
+                wasFlipped: wasFlipped,
+                target: e.target.tagName,
+                closestLink: e.target.closest('a') ? 'link trovato' : 'nessun link'
+            });
             
             // STEP 1: SWITCH dello stato (toggle)
             card.isFlipped = !card.isFlipped;
