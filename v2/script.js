@@ -255,15 +255,36 @@ if (window.innerWidth <= 768) {
     teamCards.forEach(card => {
         // Salva lo stato direttamente sulla card
         card.isFlipped = false;
-        card.addEventListener('click', (e) => {
+        const cardInnerEl = card.querySelector('.card-inner');
+        
+        // Funzione per gestire il flip
+        const handleCardFlip = (e) => {
+            console.log('[CARD CLICK] Evento catturato', {
+                target: e.target,
+                currentTarget: e.currentTarget,
+                isFlipped: card.isFlipped,
+                hasActive: card.classList.contains('active')
+            });
+            
             // Don't flip if clicking on navigation buttons
             if (e.target.closest('.slider-btn') || e.target.closest('.dot')) {
+                console.log('[CARD CLICK] Click su pulsante slider, ignorato');
                 return;
             }
+            
+            // Previeni il comportamento di default e ferma la propagazione
+            e.preventDefault();
+            e.stopPropagation();
+            
             // Toggle flip: se è girata torna normale, se è normale si gira
             const wasFlipped = card.isFlipped;
             card.isFlipped = !card.isFlipped;
-            const cardInnerEl = card.querySelector('.card-inner');
+            
+            console.log('[CARD CLICK] Stato cambiato', {
+                wasFlipped: wasFlipped,
+                isFlipped: card.isFlipped,
+                cardInnerEl: !!cardInnerEl
+            });
             
             if (card.isFlipped) {
                 // Gira la card: aggiungi classe active e imposta transform esplicitamente
@@ -292,7 +313,13 @@ if (window.innerWidth <= 768) {
                     'page_location': window.location.pathname
                 });
             }
-        });
+        };
+        
+        // Aggiungi listener sia sulla card che sul card-inner per catturare i click anche quando è girata
+        card.addEventListener('click', handleCardFlip);
+        if (cardInnerEl) {
+            cardInnerEl.addEventListener('click', handleCardFlip);
+        }
     });
 }
 
