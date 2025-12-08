@@ -251,33 +251,39 @@ if (window.innerWidth <= 768) {
             const now = Date.now();
             const wasFlipped = card.isFlipped;
             
+            console.log('Card tapped:', {
+                wasFlipped: wasFlipped,
+                isFlipped: card.isFlipped,
+                hasActive: card.classList.contains('active')
+            });
+            
             // TOGGLE: se è girata torna normale, se è normale si gira
             if (wasFlipped) {
+                console.log('Card già girata, torno alla posizione base');
                 // Card già girata: torna alla posizione base
                 // Calcola durata del flip per GA4 PRIMA di resettare
                 const flipDuration = card.flipStartTime ? (now - card.flipStartTime) : 0;
                 
+                // RIMUOVI la classe active immediatamente
+                card.classList.remove('active');
+                
+                // Aggiorna lo stato
+                card.isFlipped = false;
+                card.flipStartTime = null;
+                
                 // Applica rotateY(-180deg) per animazione fluida di ritorno
+                // Questo crea un'animazione visibile perché parte da 180deg e va a -180deg
                 cardInnerEl.style.setProperty('transform', 'rotateY(-180deg)', 'important');
                 
                 // Forza un reflow per avviare l'animazione
                 void cardInnerEl.offsetHeight;
                 
-                // Dopo un breve delay, rimuovi active e torna a 0deg
+                // Dopo la transizione, rimuovi lo stile inline e applica 0deg
                 setTimeout(() => {
-                    // RIMUOVI la classe active
-                    card.classList.remove('active');
-                    
-                    // Aggiorna lo stato
-                    card.isFlipped = false;
-                    card.flipStartTime = null;
-                    
-                    // FORZA il reset del transform a 0deg
-                    cardInnerEl.style.setProperty('transform', 'rotateY(0deg)', 'important');
-                    
-                    // Forza un reflow per assicurare che il CSS venga applicato
+                    cardInnerEl.style.removeProperty('transform');
+                    // Il CSS applicherà rotateY(0deg) tramite :not(.active)
                     void cardInnerEl.offsetHeight;
-                }, 50); // Piccolo delay per permettere l'animazione
+                }, 600); // Aspetta la fine della transizione CSS (0.6s)
                 const cardName = card.querySelector('.team-name')?.textContent?.trim() || '';
                 
                 // Track GA4 event: card_flip_duration (solo se durata > 0)
@@ -308,6 +314,7 @@ if (window.innerWidth <= 768) {
                     }
                 }
             } else {
+                console.log('Card nella forma base, giro la card');
                 // Card nella forma base: gira la card
                 card.isFlipped = true;
                 card.flipStartTime = now;
