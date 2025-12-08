@@ -728,17 +728,29 @@ function initSpeechBubbleTracking() {
         console.log(`  ${index + 1}. ${speechBubble.textContent?.trim() || 'N/A'} - Visibile: ${isVisible ? 'Sì' : 'No'}`);
         
         speechBubble.addEventListener('click', function(e) {
+            console.log('🔵 [DEBUG] Click rilevato su .duck-speech:', this.textContent?.trim());
+            
             // Verifica se l'elemento è visibile al momento del click
             const style = window.getComputedStyle(this);
+            console.log('🔵 [DEBUG] Display:', style.display, 'Visibility:', style.visibility);
+            
             if (style.display === 'none' || style.visibility === 'hidden') {
+                console.log('⚠️ [DEBUG] Elemento non visibile, skip');
                 return; // Non tracciare se non è visibile
             }
             
             // Previeni la propagazione per evitare che il click arrivi anche alla paperella
             e.stopPropagation();
+            e.preventDefault();
             
             const isDesktop = window.innerWidth > 768;
+            console.log('🔵 [DEBUG] Dispositivo rilevato:', isDesktop ? 'DESKTOP' : 'MOBILE');
             trackSpeechBubbleClick(this, isDesktop);
+        });
+        
+        // Aggiungi anche mousedown per debug
+        speechBubble.addEventListener('mousedown', function(e) {
+            console.log('🟢 [DEBUG] Mousedown su .duck-speech:', this.textContent?.trim());
         });
         
         // Aggiungi stile cursor pointer per indicare che è cliccabile
@@ -755,24 +767,48 @@ function initSpeechBubbleTracking() {
         console.log(`  ${index + 1}. ${bubbleText} - Visibile: ${isVisible ? 'Sì' : 'No'} - Classe: ${speechBubble.className}`);
         
         speechBubble.addEventListener('click', function(e) {
+            console.log('🟡 [DEBUG] Click rilevato su speech bubble autonoma:', bubbleText);
+            
             // Verifica se l'elemento è visibile al momento del click
             const style = window.getComputedStyle(this);
+            console.log('🟡 [DEBUG] Display:', style.display, 'Visibility:', style.visibility, 'Pointer-events:', style.pointerEvents);
+            
             if (style.display === 'none' || style.visibility === 'hidden') {
+                console.log('⚠️ [DEBUG] Elemento non visibile, skip');
                 return; // Non tracciare se non è visibile
             }
             
             // Traccia solo su desktop
             const isDesktop = window.innerWidth > 768;
+            console.log('🟡 [DEBUG] Dispositivo rilevato:', isDesktop ? 'DESKTOP' : 'MOBILE');
+            
             if (!isDesktop) {
+                console.log('⚠️ [DEBUG] Non desktop, skip');
                 return; // Non tracciare su mobile
             }
             
             e.stopPropagation();
+            e.preventDefault();
+            console.log('🟡 [DEBUG] Chiamata trackSpeechBubbleClick');
             trackSpeechBubbleClick(this, true);
         });
         
+        // Aggiungi anche mousedown per debug
+        speechBubble.addEventListener('mousedown', function(e) {
+            console.log('🟢 [DEBUG] Mousedown su speech bubble autonoma:', bubbleText);
+        });
+        
+        // Assicura che pointer-events sia auto
         speechBubble.style.cursor = 'pointer';
+        speechBubble.style.pointerEvents = 'auto';
+        console.log('🟡 [DEBUG] Listener aggiunto a:', bubbleText, 'Classe:', speechBubble.className);
+        
+        // Test: verifica z-index e posizione
+        const computedStyle = window.getComputedStyle(speechBubble);
+        console.log('🟡 [DEBUG] Z-index:', computedStyle.zIndex, 'Position:', computedStyle.position);
     });
+    
+    console.log('✅ [INIT] Tracking speech bubble inizializzato completamente');
 }
 
 // Inizializza il tracking quando il DOM è pronto
@@ -780,6 +816,22 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initSpeechBubbleTracking);
 } else {
     initSpeechBubbleTracking();
+}
+
+// Debug: listener globale per vedere tutti i click (solo in sviluppo)
+if (window.innerWidth > 768) {
+    document.addEventListener('click', function(e) {
+        const target = e.target;
+        const isSpeechBubble = target.closest('.duck-speech, .duck-team-speech-bubble, .duck-services-speech-bubble');
+        if (isSpeechBubble) {
+            console.log('🔴 [GLOBAL CLICK] Click su speech bubble rilevato globalmente:', {
+                target: target,
+                closest: isSpeechBubble,
+                className: target.className,
+                tagName: target.tagName
+            });
+        }
+    }, true); // Usa capture phase per intercettare prima
 }
 
 console.log('%cStudio IDE', 'font-size: 20px; font-weight: bold; color: #6366f1;');
