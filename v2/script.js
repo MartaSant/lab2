@@ -1,6 +1,10 @@
 // Inizializza dataLayer per GA4
 window.dataLayer = window.dataLayer || [];
 
+// LOG DI DEBUG - questo dovrebbe sempre apparire
+console.log('=== SCRIPT.JS CARICATO ===', new Date().toISOString());
+console.log('Larghezza finestra:', window.innerWidth, 'Altezza:', window.innerHeight);
+
 // Service Worker Registration - Modalità sviluppo (Network Only)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
