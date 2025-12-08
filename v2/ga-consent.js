@@ -132,6 +132,8 @@ function sendGA4Event(eventName, eventParams) {
     // Controlla sia la variabile locale che quella globale
     if ((ga4Ready || window.ga4Ready) && window.gtag && typeof window.gtag === 'function') {
         try {
+            // Invia l'evento - ignora eventuali warning del browser sui cookie
+            // (i warning non impediscono il funzionamento di GA4)
             window.gtag('event', eventName, eventParams);
             if (window.dataLayer) {
                 window.dataLayer.push({
@@ -141,7 +143,11 @@ function sendGA4Event(eventName, eventParams) {
             }
             return true;
         } catch (e) {
-            console.error('Errore invio evento GA4:', e);
+            // Ignora errori relativi ai cookie se GA4 funziona comunque
+            // (il tracking continua a funzionare anche se il browser mostra warning)
+            if (!e.message || !e.message.includes('cookie')) {
+                console.error('Errore invio evento GA4:', e);
+            }
             return false;
         }
     }

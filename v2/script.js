@@ -303,15 +303,18 @@ if (window.innerWidth <= 768) {
             }
             
             // Track GA4 event: team_card_flip
+            // Aggiungi un piccolo delay per evitare conflitti con il cookie
             if (window.sendGA4Event) {
-                const cardName = card.querySelector('.team-name')?.textContent?.trim() || 'Unknown';
-                const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
-                window.sendGA4Event('team_card_flip', {
-                    'card_name': cardName,
-                    'card_role': cardRole,
-                    'flip_action': card.isFlipped ? 'flipped' : 'unflipped',
-                    'page_location': window.location.pathname
-                });
+                setTimeout(() => {
+                    const cardName = card.querySelector('.team-name')?.textContent?.trim() || 'Unknown';
+                    const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
+                    window.sendGA4Event('team_card_flip', {
+                        'card_name': cardName,
+                        'card_role': cardRole,
+                        'flip_action': card.isFlipped ? 'flipped' : 'unflipped',
+                        'page_location': window.location.pathname
+                    });
+                }, 50); // Piccolo delay per evitare conflitti con il cookie
             }
         };
         
