@@ -221,7 +221,8 @@ const nextBtn = document.querySelector('.next-btn');
 // Handle card flip on mobile (MOBILE ONLY - completamente disattivato su desktop)
 // Logica semplice: tap per girare, tap di nuovo per tornare normale
 if (window.innerWidth <= 768) {
-    teamCards.forEach(card => {
+    console.log('Inizializzazione card flip mobile - numero card:', teamCards.length);
+    teamCards.forEach((card, index) => {
         // Inizializza: tutte le card partono nella forma base (non girate)
         card.isFlipped = false;
         card.flipStartTime = null;
@@ -234,21 +235,31 @@ if (window.innerWidth <= 768) {
             cardInner.style.transition = 'transform 0.6s'; // Assicura la transizione
         }
         
+        console.log(`Event listener aggiunto alla card ${index}`);
+        
         card.addEventListener('click', (e) => {
+            console.log('CLICK RILEVATO sulla card!', {
+                index: index,
+                target: e.target.tagName,
+                currentTarget: e.currentTarget.className
+            });
             // Ignora click su pulsanti di navigazione
             if (e.target.closest('.slider-btn') || e.target.closest('.dot')) {
+                console.log('Click ignorato: pulsante navigazione');
                 return;
             }
             
             // Se il click è su un link dentro la card, previeni il comportamento di default
             // ma permetti comunque il flip della card
             if (e.target.closest('a') || e.target.tagName === 'A') {
+                console.log('Click su link, prevengo default ma permetto flip');
                 e.preventDefault();
-                e.stopPropagation();
+                // NON fare stopPropagation qui, vogliamo che arrivi alla card
             }
             
             // Preveni eventi di default che potrebbero interferire
             e.stopPropagation();
+            e.preventDefault();
             
             // Ottieni cardInner dentro l'event listener per essere sicuri
             const cardInnerEl = card.querySelector('.card-inner');
