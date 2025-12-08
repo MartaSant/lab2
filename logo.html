@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Studio IDE – Logo Animato</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #020617; /* sfondo scuro elegante */
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #e5e7eb;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 32px 40px;
+      background: radial-gradient(circle at top left, #1f2937, #020617);
+      border-radius: 24px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+    }
+
+    .logo-svg {
+      width: 180px;
+      aspect-ratio: 1 / 1;
+      display: block;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .logo-text h1 {
+      margin: 0;
+      font-size: 2.4rem;
+      letter-spacing: 0.05em;
+    }
+
+    .logo-text span {
+      font-size: 0.95rem;
+      opacity: 0.75;
+    }
+
+    /* --- MACCHIE --- */
+
+    .blob {
+      transform-origin: center;
+    }
+
+    .blob-pink {
+      fill: #ff7aa5;
+      animation: float1 8s ease-in-out infinite alternate;
+    }
+
+    .blob-purple {
+      fill: #9b6dff;
+      animation: float2 10s ease-in-out infinite alternate;
+    }
+
+    .blob-blue {
+      fill: #35b6ff;
+      animation: float3 9s ease-in-out infinite alternate;
+    }
+
+    /* --- ANIMAZIONI --- */
+
+    @keyframes float1 {
+      0%   { transform: translate(-8px, 6px) scale(1); }
+      50%  { transform: translate(4px, -4px) scale(1.05); }
+      100% { transform: translate(-2px, 2px) scale(0.98); }
+    }
+
+    @keyframes float2 {
+      0%   { transform: translate(4px, -10px) scale(1); }
+      50%  { transform: translate(-6px, 4px) scale(1.08); }
+      100% { transform: translate(2px, 6px) scale(0.97); }
+    }
+
+    @keyframes float3 {
+      0%   { transform: translate(2px, 6px) scale(1); }
+      50%  { transform: translate(-4px, -4px) scale(1.06); }
+      100% { transform: translate(1px, 3px) scale(0.99); }
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 640px) {
+      .logo-container {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .logo-text h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo-container">
+    <!-- LOGO SVG CON LE TRE MACCHIE -->
+    <svg class="logo-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <!-- Macchia rosa -->
+      <path class="blob blob-pink"
+        d="M135 70
+           C 95 80 70 120 78 165
+           C 86 210 115 250 155 265
+           C 195 280 235 270 255 245
+           C 275 220 280 185 268 155
+           C 256 125 228 105 198 95
+           C 168 85 155 65 135 70 Z" />
+
+      <!-- Macchia blu (in basso) -->
+      <path class="blob blob-blue"
+        d="M165 220
+           C 150 245 148 275 163 300
+           C 178 325 205 338 233 336
+           C 261 334 285 318 295 295
+           C 305 272 300 245 282 230
+           C 264 215 235 210 210 210
+           C 185 210 175 205 165 220 Z" />
+
+      <!-- Macchia viola (sopra a destra) -->
+      <path class="blob blob-purple"
+        d="M215 80
+           C 240 60 275 60 300 78
+           C 325 96 340 130 338 165
+           C 336 200 318 230 292 245
+           C 266 260 233 260 215 242
+           C 197 224 192 190 195 160
+           C 198 130 190 100 215 80 Z" />
+    </svg>
+
+    <!-- TESTO LOGO -->
+    <div class="logo-text">
+      <h1>Studio IDE</h1>
+      <span>Creative Web & Digital Studio</span>
+    </div>
+  </div>
+
+</body>
+</html>

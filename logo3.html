@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studio IDE – Logo Animato Macchie</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .logo-svg {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      display: block;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    /* --- MACCHIE DI PITTURA CON ANIMAZIONI FLUIDE --- */
+
+    .blob {
+      transform-origin: center;
+      will-change: transform;
+      filter: blur(1px);
+      mix-blend-mode: multiply;
+    }
+
+    /* Effetto macchia con gradienti e texture */
+    .blob-pink {
+      fill: url(#gradientPink);
+      opacity: 0.85;
+      animation: float1 12s ease-in-out infinite;
+    }
+
+    .blob-purple {
+      fill: url(#gradientPurple);
+      opacity: 0.85;
+      animation: float2 14s ease-in-out infinite;
+    }
+
+    .blob-blue {
+      fill: url(#gradientBlue);
+      opacity: 0.85;
+      animation: float3 13s ease-in-out infinite;
+    }
+
+    /* --- ANIMAZIONI FLUIDE E CONTINUE --- */
+
+    @keyframes float1 {
+      0% {
+        transform: translate(-8px, 6px) scale(1) rotate(0deg);
+      }
+      25% {
+        transform: translate(6px, -6px) scale(1.06) rotate(2deg);
+      }
+      50% {
+        transform: translate(4px, 4px) scale(0.98) rotate(-1deg);
+      }
+      75% {
+        transform: translate(-6px, 2px) scale(1.03) rotate(1deg);
+      }
+      100% {
+        transform: translate(-8px, 6px) scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes float2 {
+      0% {
+        transform: translate(4px, -10px) scale(1) rotate(0deg);
+      }
+      25% {
+        transform: translate(-8px, 6px) scale(1.09) rotate(-2deg);
+      }
+      50% {
+        transform: translate(-6px, 8px) scale(0.97) rotate(1deg);
+      }
+      75% {
+        transform: translate(6px, -4px) scale(1.04) rotate(-1deg);
+      }
+      100% {
+        transform: translate(4px, -10px) scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes float3 {
+      0% {
+        transform: translate(2px, 6px) scale(1) rotate(0deg);
+      }
+      25% {
+        transform: translate(-5px, -5px) scale(1.07) rotate(1deg);
+      }
+      50% {
+        transform: translate(-4px, 3px) scale(0.99) rotate(-1deg);
+      }
+      75% {
+        transform: translate(5px, -3px) scale(1.05) rotate(1deg);
+      }
+      100% {
+        transform: translate(2px, 6px) scale(1) rotate(0deg);
+      }
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 640px) {
+      .logo-svg {
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <!-- LOGO SVG CON MACCHIE DI PITTURA ORGANICHE -->
+    <svg class="logo-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Gradiente rosa per effetto pittura -->
+        <radialGradient id="gradientPink" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ff7aa5" stop-opacity="1" />
+          <stop offset="70%" stop-color="#ff7aa5" stop-opacity="0.95" />
+          <stop offset="100%" stop-color="#ff5c8a" stop-opacity="0.85" />
+        </radialGradient>
+        
+        <!-- Gradiente viola per effetto pittura -->
+        <radialGradient id="gradientPurple" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#9b6dff" stop-opacity="1" />
+          <stop offset="70%" stop-color="#9b6dff" stop-opacity="0.95" />
+          <stop offset="100%" stop-color="#7c4dff" stop-opacity="0.85" />
+        </radialGradient>
+        
+        <!-- Gradiente blu per effetto pittura -->
+        <radialGradient id="gradientBlue" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#35b6ff" stop-opacity="1" />
+          <stop offset="70%" stop-color="#35b6ff" stop-opacity="0.95" />
+          <stop offset="100%" stop-color="#1a9fff" stop-opacity="0.85" />
+        </radialGradient>
+      </defs>
+
+      <!-- Macchia rosa - forma organica irregolare come pittura -->
+      <path class="blob blob-pink"
+        d="M110 60
+           C 60 75 35 120 50 180
+           C 65 240 105 285 160 305
+           C 215 325 270 310 300 275
+           C 330 240 335 190 315 150
+           C 295 110 250 85 200 75
+           C 150 65 120 55 110 60 Z" />
+
+      <!-- Macchia blu - forma organica irregolare come pittura (in basso) -->
+      <path class="blob blob-blue"
+        d="M140 200
+           C 115 235 120 280 150 320
+           C 180 360 225 375 265 370
+           C 305 365 340 345 355 315
+           C 370 285 360 250 335 225
+           C 310 200 270 195 230 195
+           C 190 195 160 190 140 200 Z" />
+
+      <!-- Macchia viola - forma organica irregolare come pittura (sopra a destra) -->
+      <path class="blob blob-purple"
+        d="M190 55
+           C 225 30 275 40 315 70
+           C 355 100 375 150 370 200
+           C 365 250 340 290 300 315
+           C 260 340 210 340 180 315
+           C 150 290 145 240 155 195
+           C 165 150 155 80 190 55 Z" />
+    </svg>
+  </div>
+</body>
+</html>
+

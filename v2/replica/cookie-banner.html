@@ -1,0 +1,101 @@
+<!-- 
+    TEMPLATE HTML PER BANNER E BOTTONE COOKIE
+    ==========================================
+    
+    ISTRUZIONI PER L'AI:
+    1. Incolla tutto questo codice PRIMA della chiusura del tag </body> in OGNI pagina HTML
+    2. Cerca e modifica il link alla Privacy Policy (cerca "policy.html" e sostituisci con il percorso corretto)
+    3. Se il progetto non ha una Privacy Policy, rimuovi o commenta il link
+    4. Verifica che Font Awesome sia caricato (necessario per l'icona cookie)
+    
+    NOTA: Assicurati di aver già aggiunto:
+    - Il CSS da cookie-styles.css al file CSS principale
+    - Lo script JavaScript da cookie-settings-script.js
+    - Il file ga-consent.js caricato: <script src="ga-consent.js"></script>
+-->
+
+<!-- Banner Cookie Consenso -->
+<div id="cookie-banner" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.95); color: #ffffff; padding: 1.5rem; z-index: 10000; border-top: 2px solid #FFC928; box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);">
+<script>
+    // Controllo immediato del consenso PRIMA che il DOM sia completamente caricato
+    // Questo assicura che il banner venga mostrato/nascosto correttamente
+    (function() {
+        const CONSENT_KEY = window.CONSENT_KEY || 'cookie_consent_ideflego';
+        
+        // Funzione per gestire il banner - legge il consenso ogni volta
+        function handleBanner() {
+            const banner = document.getElementById('cookie-banner');
+            if (!banner) {
+                // Se il banner non esiste ancora, riprova dopo un breve delay
+                setTimeout(handleBanner, 50);
+                return;
+            }
+            
+            // Leggi il consenso ogni volta (non solo all'inizio)
+            const consent = localStorage.getItem(CONSENT_KEY);
+            
+            // Se il consenso è già stato dato, nascondi il banner
+            if (consent === 'granted') {
+                banner.style.display = 'none';
+            } else {
+                // Se il consenso è negato o non esiste (null), mostra il banner
+                // Questo assicura che il banner venga riproposto ad ogni visita
+                banner.style.display = 'block';
+            }
+        }
+        
+        // Esegui quando il DOM è disponibile
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', handleBanner);
+        } else {
+            // Se il DOM è già pronto, esegui immediatamente
+            handleBanner();
+        }
+        
+        // Riprova anche dopo un breve delay per assicurarsi che il banner sia gestito
+        setTimeout(handleBanner, 200);
+    })();
+</script>
+    <p style="margin: 0 0 1rem 0; font-size: 0.9rem; line-height: 1.5;">
+        Questo sito utilizza Google Analytics 4, Google Signals e dati demografici per migliorare l'esperienza utente. 
+        I dati vengono raccolti solo con il tuo consenso esplicito.
+    </p>
+    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center;">
+        <a href="policy.html" style="color: #FFC928; text-decoration: underline; font-size: 0.85rem;" id="cookie-policy-link">Privacy Policy</a>
+        <button id="cookie-reject" style="padding: 0.6rem 1.5rem; background: transparent; border: 2px solid #FFC928; color: #FFC928; border-radius: 0.5rem; cursor: pointer; font-weight: 600; font-size: 0.9rem;">
+            Rifiuta
+        </button>
+        <button id="cookie-accept" style="padding: 0.6rem 1.5rem; background: #FFC928; border: 2px solid #FFC928; color: #000000; border-radius: 0.5rem; cursor: pointer; font-weight: 600; font-size: 0.9rem;">
+            Accetta
+        </button>
+    </div>
+</div>
+
+<!-- Bottone modifica consenso cookie -->
+<button class="cookie-settings-btn" id="cookieSettingsBtn" aria-label="Impostazioni cookie">
+    <i class="fas fa-cookie"></i>
+</button>
+
+<!-- Banner modifica consenso -->
+<div id="cookie-settings-banner" class="cookie-settings-banner" style="display: none;">
+    <div class="cookie-settings-content">
+        <h3 class="cookie-settings-title">Gestisci le tue preferenze cookie</h3>
+        <p class="cookie-settings-desc">Puoi modificare la tua scelta in qualsiasi momento.</p>
+        <div class="cookie-settings-status">
+            <p id="cookie-settings-status-text">Stato attuale: <strong id="cookie-current-status">Non impostato</strong></p>
+        </div>
+        <div class="cookie-settings-buttons">
+            <button id="cookie-settings-accept" class="cookie-settings-btn-action cookie-settings-accept">
+                Accetta
+            </button>
+            <button id="cookie-settings-reject" class="cookie-settings-btn-action cookie-settings-reject">
+                Rifiuta
+            </button>
+            <button id="cookie-settings-close" class="cookie-settings-btn-action cookie-settings-close">
+                Chiudi
+            </button>
+        </div>
+    </div>
+</div>
+<div id="cookie-settings-overlay" class="cookie-settings-overlay" style="display: none;"></div>
+

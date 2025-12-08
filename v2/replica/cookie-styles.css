@@ -1,0 +1,193 @@
+/* 
+    CSS per Banner Cookie e Bottone Cookie Settings
+    ===============================================
+    
+    ISTRUZIONI PER L'AI:
+    1. Aggiungi tutto questo CSS alla fine del file CSS principale del progetto
+    2. Verifica che non ci siano conflitti di z-index con altri elementi
+    3. Se necessario, adatta i colori sostituendo #FFC928 con il colore principale del progetto
+    4. Verifica che la posizione del bottone (bottom, left) non confligga con altri elementi
+*/
+
+/* Bottone Cookie Settings */
+.cookie-settings-btn {
+    position: fixed;
+    left: 1.4rem;
+    left: calc(1.4rem + env(safe-area-inset-left));
+    bottom: calc(4.6rem + 50px);
+    bottom: calc(4.6rem + 50px + env(safe-area-inset-bottom));
+    z-index: 60;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 201, 40, 0.7);
+    background: rgba(17, 17, 17, 0.9);
+    color: #FFC928;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.cookie-settings-btn:hover {
+    background: #FFC928;
+    color: #111111;
+    transform: translateY(-2px);
+}
+
+.cookie-settings-btn.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Banner modifica consenso */
+.cookie-settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cookie-settings-overlay.show {
+    opacity: 1;
+}
+
+.cookie-settings-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(17, 17, 17, 0.98);
+    border-top: 2px solid #FFC928;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    padding: 1.5rem;
+    max-height: 80vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.cookie-settings-banner.open {
+    transform: translateY(0);
+}
+
+.cookie-settings-content {
+    max-width: 600px;
+    margin: 0 auto;
+    color: #ffffff;
+}
+
+.cookie-settings-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: #FFC928;
+}
+
+.cookie-settings-desc {
+    font-size: 0.9rem;
+    margin: 0 0 1rem 0;
+    opacity: 0.8;
+    line-height: 1.5;
+}
+
+.cookie-settings-status {
+    background: rgba(255, 201, 40, 0.1);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 0 0 1.5rem 0;
+    border: 1px solid rgba(255, 201, 40, 0.3);
+}
+
+.cookie-settings-status p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.cookie-settings-status strong {
+    color: #FFC928;
+    font-weight: 600;
+}
+
+.cookie-settings-buttons {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.cookie-settings-btn-action {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.7rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: 2px solid;
+    transition: all 0.2s ease;
+}
+
+.cookie-settings-accept {
+    background: #FFC928;
+    border-color: #FFC928;
+    color: #000000;
+}
+
+.cookie-settings-accept:hover {
+    background: #ffd54f;
+    border-color: #ffd54f;
+    transform: translateY(-2px);
+}
+
+.cookie-settings-reject {
+    background: transparent;
+    border-color: #FFC928;
+    color: #FFC928;
+}
+
+.cookie-settings-reject:hover {
+    background: rgba(255, 201, 40, 0.1);
+    transform: translateY(-2px);
+}
+
+.cookie-settings-close {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+
+.cookie-settings-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cookie-settings-banner {
+        padding: 1.2rem;
+    }
+    
+    .cookie-settings-title {
+        font-size: 1.1rem;
+    }
+    
+    .cookie-settings-buttons {
+        flex-direction: column;
+    }
+    
+    .cookie-settings-btn-action {
+        width: 100%;
+    }
+}
+

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO & Ottimizzazione - Studio IDE</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .service-page {
+            padding: 120px 0 80px;
+            min-height: 100vh;
+        }
+        .service-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .service-header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .service-header .service-icon-large {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+        }
+        .service-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .service-description {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+        .service-features {
+            background: var(--dark-card);
+            padding: 3rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+        }
+        .service-features h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .feature-list li::before {
+            content: "✓";
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 3rem;
+            padding: 1rem 2rem;
+            background: var(--gradient-1);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html" class="logo-link">
+                    <img src="../logo.png" alt="Studio IDE" class="logo-image">
+                </a>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html#home" class="nav-link">Home</a></li>
+                <li><a href="../index.html#team" class="nav-link">Team</a></li>
+                <li><a href="../index.html#services" class="nav-link">Servizi</a></li>
+                <li><a href="../index.html#contact" class="nav-link">Contatti</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="service-page">
+        <div class="service-header">
+            <div class="service-icon-large">🔍</div>
+            <h1>SEO Tecnica & Ottimizzazione</h1>
+        </div>
+        
+        <div class="service-content">
+            <div class="service-description">
+                Mi occupo della parte "sotto il cofano": tag title e description per ogni pagina, struttura HTML corretta, sitemap, robots.txt, Open Graph e anteprime ottimizzate per condivisioni su WhatsApp, Facebook, Instagram, ecc.
+            </div>
+
+            <div class="service-features">
+                <h2>Ottimizzazioni SEO</h2>
+                <ul class="feature-list">
+                    <li>Tag title e description ottimizzati per ogni pagina</li>
+                    <li>Struttura HTML semantica e corretta</li>
+                    <li>Sitemap XML per indicizzazione Google</li>
+                    <li>File robots.txt configurato</li>
+                    <li>Open Graph per condivisioni social ottimizzate</li>
+                    <li>Anteprime perfette su WhatsApp, Facebook, Instagram</li>
+                    <li>Meta tag ottimizzati per i motori di ricerca</li>
+                    <li>Schema markup per dati strutturati</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="../index.html#contact" class="back-button">Richiedi un Preventivo</a>
+                <a href="../index.html#services" class="back-button" style="background: transparent; border: 2px solid var(--primary-color); margin-left: 1rem;">Torna ai Servizi</a>
+            </div>
+        </div>
+    </section>
+
+    <script src="../script.js"></script>
+</body>
+</html>
+

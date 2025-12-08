@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024"
+     xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <defs>
+    <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff9acb"/>
+      <stop offset="50%" stop-color="#c79cff"/>
+      <stop offset="100%" stop-color="#9fd9ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Cluffy body -->
+  <path d="M512 210
+           C 440 200 370 240 345 305
+             280 305 235 355 235 410
+             190 430 170 475 180 525
+             185 595 240 640 300 645
+             325 705 385 745 455 740
+             500 790 580 795 640 750
+             705 760 765 725 790 675
+             850 670 890 625 890 570
+             925 545 930 490 900 450
+             900 395 860 350 805 340
+             780 280 715 240 645 245
+             605 215 555 205 512 210 Z"
+        fill="url(#cloudGrad)"
+        stroke="#000000"
+        stroke-width="22"
+        stroke-linejoin="round"/>
+
+  <!-- Left arm -->
+  <path d="M340 520
+           C 285 515 260 540 255 565
+             250 595 265 625 295 635
+             315 640 335 635 350 625 Z"
+        fill="url(#cloudGrad)"
+        stroke="#000000"
+        stroke-width="22"
+        stroke-linejoin="round"/>
+
+  <!-- Left hand -->
+  <path d="M255 565
+           C 235 560 220 570 215 585
+             210 600 220 620 235 625
+             245 628 255 625 262 618 Z"
+        fill="url(#cloudGrad)"
+        stroke="#000000"
+        stroke-width="22"
+        stroke-linejoin="round"/>
+
+  <!-- Right arm + hand (thumbs up) -->
+  <path d="M700 520
+           C 760 515 795 535 810 560
+             825 585 830 610 825 640
+             815 640 805 640 795 640
+             800 615 790 595 770 585
+             750 575 725 575 705 585 Z"
+        fill="url(#cloudGrad)"
+        stroke="#000000"
+        stroke-width="22"
+        stroke-linejoin="round"/>
+
+  <!-- Right thumb -->
+  <path d="M825 640
+           C 845 640 860 635 870 625
+             880 615 885 600 880 585
+             875 570 860 560 845 560
+             835 560 825 565 820 575
+             815 585 815 600 820 615 Z"
+        fill="url(#cloudGrad)"
+        stroke="#000000"
+        stroke-width="22"
+        stroke-linejoin="round"/>
+
+  <!-- Left leg -->
+  <path d="M435 735
+           C 410 800 410 860 415 910
+             445 915 475 915 505 910
+             505 860 505 800 490 750 Z"
+        fill="#9fd9ff"
+        stroke="#000000"
+        stroke-width="22"
+        stroke-linejoin="round"/>
+
+  <!-- Right leg -->
+  <path d="M565 735
+           C 540 800 540 860 545 910
+             575 915 605 915 635 910
+             635 860 635 800 620 750 Z"
+        fill="#9fd9ff"
+        stroke="#000000"
+        stroke-width="22"
+        stroke-linejoin="round"/>
+
+  <!-- Eyes -->
+  <circle cx="455" cy="430" r="38" fill="#000000"/>
+  <circle cx="595" cy="430" r="38" fill="#000000"/>
+
+  <!-- Eye highlights -->
+  <circle cx="445" cy="420" r="10" fill="#ffffff"/>
+  <circle cx="585" cy="420" r="10" fill="#ffffff"/>
+
+  <!-- Smile -->
+  <path d="M460 505
+           C 485 535 565 535 590 505"
+        fill="none"
+        stroke="#000000"
+        stroke-width="16"
+        stroke-linecap="round"/>
+
+</svg>

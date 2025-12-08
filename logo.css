@@ -1,0 +1,44 @@
+.logo-studio-ide {
+  width: 200px;
+  aspect-ratio: 1 / 1;
+}
+
+/* stile base */
+.logo-studio-ide .blob {
+  transform-origin: center;
+}
+
+/* colori di base (puoi usare i tuoi esatti) */
+.blob-pink {
+  fill: #ff7aa5;
+  animation: float1 8s ease-in-out infinite alternate;
+}
+
+.blob-purple {
+  fill: #9b6dff;
+  animation: float2 10s ease-in-out infinite alternate;
+}
+
+.blob-blue {
+  fill: #35b6ff;
+  animation: float3 9s ease-in-out infinite alternate;
+}
+
+/* animazioni */
+@keyframes float1 {
+  0%   { transform: translate(-6px, 4px) scale(1); }
+  50%  { transform: translate(4px, -4px) scale(1.05); }
+  100% { transform: translate(-2px, 2px) scale(0.98); }
+}
+
+@keyframes float2 {
+  0%   { transform: translate(3px, -6px) scale(1); }
+  50%  { transform: translate(-4px, 2px) scale(1.08); }
+  100% { transform: translate(2px, 4px) scale(0.97); }
+}
+
+@keyframes float3 {
+  0%   { transform: translate(2px, 4px) scale(1); }
+  50%  { transform: translate(-3px, -3px) scale(1.06); }
+  100% { transform: translate(1px, 2px) scale(0.99); }
+}

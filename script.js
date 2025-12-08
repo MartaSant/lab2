@@ -1,0 +1,469 @@
+// Service Worker Registration - Modalità sviluppo (Network Only)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+            .then((registration) => {
+                console.log('[Service Worker] Registrato con successo:', registration.scope);
+                
+                // Controlla se c'è un aggiornamento disponibile
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('[Service Worker] Nuova versione disponibile');
+                            // Forza l'attivazione immediata
+                            newWorker.postMessage({ type: 'SKIP_WAITING' });
+                        }
+                    });
+                });
+            })
+            .catch((error) => {
+                console.error('[Service Worker] Errore durante la registrazione:', error);
+            });
+        
+        // Gestisce l'aggiornamento del service worker
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!refreshing) {
+                refreshing = true;
+                console.log('[Service Worker] Controller cambiato, ricarica pagina...');
+                // Opzionale: ricarica automatica la pagina quando il service worker viene aggiornato
+                // window.location.reload();
+            }
+        });
+    });
+}
+
+// Navigation scroll effect
+const navbar = document.getElementById('navbar');
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('navMenu');
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// Mobile menu toggle
+hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('active');
+});
+
+// Close mobile menu when clicking on a link
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+    });
+});
+
+// Smooth scroll for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            let offsetTop = target.offsetTop - 80;
+            
+            // Special handling for team section - scroll to show cards completely
+            if (target.id === 'team') {
+                const teamSection = document.getElementById('team');
+                const teamGrid = teamSection.querySelector('.team-grid');
+                
+                if (teamGrid) {
+                    // Calculate position so cards are fully visible
+                    // Position the grid to start lower in viewport
+                    const viewportHeight = window.innerHeight;
+                    const gridOffset = teamGrid.offsetTop - teamSection.offsetTop;
+                    // Scroll to show section title at top and cards below, fully visible
+                    offsetTop = teamSection.offsetTop + 220;
+                }
+            }
+            
+            window.scrollTo({
+                top: Math.max(0, offsetTop),
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+// Intersection Observer for scroll animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, observerOptions);
+
+// Observe all elements that need animation
+const animatedElements = document.querySelectorAll(
+    '.section-title, .section-subtitle, .team-card, .service-card, .info-card, .contact-form'
+);
+
+animatedElements.forEach(el => observer.observe(el));
+
+// Parallax effect for hero shapes
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const shapes = document.querySelectorAll('.shape');
+    
+    shapes.forEach((shape, index) => {
+        const speed = 0.5 + (index * 0.1);
+        const yPos = -(scrolled * speed);
+        shape.style.transform = `translateY(${yPos}px)`;
+    });
+});
+
+// Form submission
+const contactForm = document.getElementById('contactForm');
+
+contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Get form values
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+    
+    // Simple validation
+    if (!name || !email || !message) {
+        alert('Per favore, compila tutti i campi.');
+        return;
+    }
+    
+    // Simulate form submission
+    const submitButton = contactForm.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.textContent = 'Invio in corso...';
+    submitButton.disabled = true;
+    
+    // Simulate API call
+    setTimeout(() => {
+        alert(`Grazie ${name}! Il tuo messaggio è stato inviato. Ti risponderemo presto!`);
+        contactForm.reset();
+        submitButton.textContent = originalText;
+        submitButton.disabled = false;
+    }, 1500);
+});
+
+// Add mouse move parallax effect to team cards (desktop only)
+const teamCards = document.querySelectorAll('.team-card');
+
+teamCards.forEach(card => {
+    // Only apply parallax on desktop (non-touch devices)
+    if (window.innerWidth > 768) {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        });
+    }
+});
+
+// Team Slider for Mobile
+let currentSlide = 0;
+const totalSlides = 3;
+const teamSlider = document.querySelector('.team-slider');
+const dots = document.querySelectorAll('.dot');
+const prevBtn = document.querySelector('.prev-btn');
+const nextBtn = document.querySelector('.next-btn');
+
+// Handle card flip on mobile (tap to flip)
+if (window.innerWidth <= 768) {
+    teamCards.forEach(card => {
+        let isFlipped = false;
+        card.addEventListener('click', (e) => {
+            // Don't flip if clicking on navigation buttons
+            if (e.target.closest('.slider-btn') || e.target.closest('.dot')) {
+                return;
+            }
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
+        });
+    });
+}
+
+function updateSlider() {
+    if (teamSlider && window.innerWidth <= 768) {
+        const translateX = -currentSlide * (100 / totalSlides);
+        teamSlider.style.transform = `translateX(${translateX}%)`;
+        
+        // Update dots
+        dots.forEach((dot, index) => {
+            if (index === currentSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+}
+
+// Navigation buttons
+if (prevBtn && nextBtn) {
+    prevBtn.addEventListener('click', () => {
+        if (currentSlide > 0) {
+            currentSlide--;
+        } else {
+            currentSlide = totalSlides - 1;
+        }
+        updateSlider();
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentSlide < totalSlides - 1) {
+            currentSlide++;
+        } else {
+            currentSlide = 0;
+        }
+        updateSlider();
+    });
+}
+
+// Dot navigation
+dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+        currentSlide = index;
+        updateSlider();
+    });
+});
+
+// Touch/Swipe support
+let touchStartX = 0;
+let touchEndX = 0;
+
+if (teamSlider) {
+    teamSlider.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    teamSlider.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+}
+
+function handleSwipe() {
+    if (window.innerWidth > 768) return; // Only on mobile
+    
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            // Swipe left - next slide
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+            } else {
+                currentSlide = 0;
+            }
+        } else {
+            // Swipe right - previous slide
+            if (currentSlide > 0) {
+                currentSlide--;
+            } else {
+                currentSlide = totalSlides - 1;
+            }
+        }
+        updateSlider();
+    }
+}
+
+// Handle window resize
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        if (window.innerWidth > 768) {
+            // Reset slider position on desktop
+            if (teamSlider) {
+                teamSlider.style.transform = 'translateX(0)';
+            }
+            currentSlide = 0;
+            updateSlider();
+        } else {
+            // Update slider on mobile
+            updateSlider();
+        }
+    }, 250);
+});
+
+// Add typing effect to hero title (optional enhancement)
+const titleLines = document.querySelectorAll('.title-line');
+let currentLine = 0;
+
+function typeWriter(element, text, speed = 100) {
+    let i = 0;
+    element.textContent = '';
+    element.style.opacity = '1';
+    
+    function type() {
+        if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
+    }
+    type();
+}
+
+// Animate service cards on hover with stagger effect
+const serviceCards = document.querySelectorAll('.service-card');
+
+serviceCards.forEach((card, index) => {
+    card.addEventListener('mouseenter', () => {
+        serviceCards.forEach((otherCard, otherIndex) => {
+            if (otherIndex !== index) {
+                otherCard.style.transform = 'scale(0.95)';
+                otherCard.style.opacity = '0.7';
+            }
+        });
+    });
+    
+    card.addEventListener('mouseleave', () => {
+        serviceCards.forEach(otherCard => {
+            otherCard.style.transform = '';
+            otherCard.style.opacity = '';
+        });
+    });
+});
+
+// Add cursor trail effect (optional creative feature)
+let cursorTrail = [];
+const maxTrailLength = 20;
+
+document.addEventListener('mousemove', (e) => {
+    cursorTrail.push({ x: e.clientX, y: e.clientY, time: Date.now() });
+    
+    if (cursorTrail.length > maxTrailLength) {
+        cursorTrail.shift();
+    }
+    
+    // Remove old trail points
+    cursorTrail = cursorTrail.filter(point => Date.now() - point.time < 500);
+});
+
+// Dynamic background gradient animation
+function animateGradient() {
+    const hero = document.querySelector('.hero');
+    let hue = 0;
+    
+    setInterval(() => {
+        hue = (hue + 1) % 360;
+        // Subtle color shift effect
+    }, 50);
+}
+
+// Initialize animations
+window.addEventListener('load', () => {
+    // Trigger initial animations
+    setTimeout(() => {
+        document.querySelectorAll('.title-line').forEach((line, index) => {
+            line.style.opacity = '1';
+        });
+    }, 100);
+});
+
+// Add scroll progress indicator
+const scrollProgress = document.createElement('div');
+scrollProgress.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+    z-index: 9999;
+    transition: width 0.1s ease;
+`;
+document.body.appendChild(scrollProgress);
+
+window.addEventListener('scroll', () => {
+    const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (window.pageYOffset / windowHeight) * 100;
+    scrollProgress.style.width = scrolled + '%';
+});
+
+// Add particle effect on click (creative interactive feature)
+document.addEventListener('click', (e) => {
+    createParticles(e.clientX, e.clientY);
+});
+
+function createParticles(x, y) {
+    const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#4facfe'];
+    
+    for (let i = 0; i < 6; i++) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            left: ${x}px;
+            top: ${y}px;
+        `;
+        
+        document.body.appendChild(particle);
+        
+        const angle = (Math.PI * 2 * i) / 6;
+        const velocity = 50 + Math.random() * 50;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+        
+        let posX = x;
+        let posY = y;
+        let opacity = 1;
+        
+        function animate() {
+            posX += vx * 0.1;
+            posY += vy * 0.1;
+            opacity -= 0.02;
+            
+            particle.style.left = posX + 'px';
+            particle.style.top = posY + 'px';
+            particle.style.opacity = opacity;
+            
+            if (opacity > 0) {
+                requestAnimationFrame(animate);
+            } else {
+                particle.remove();
+            }
+        }
+        
+        animate();
+    }
+}
+
+console.log('%cStudio IDE', 'font-size: 20px; font-weight: bold; color: #6366f1;');
+console.log('%cSviluppato con ❤️ dal team', 'color: #8b5cf6;');
+

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio IDE - Web Development Team</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="#home" class="logo-link">
+                    <img src="./logo.png" alt="Studio IDE" class="logo-image">
+                </a>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#team" class="nav-link">Team</a></li>
+                <li><a href="#services" class="nav-link">Servizi</a></li>
+                <li><a href="#contact" class="nav-link">Contatti</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+                <div class="shape shape-4"></div>
+            </div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="title-line">Creiamo</span>
+                <span class="title-line highlight">esperienze digitali</span>
+                <span class="title-line">straordinarie</span>
+            </h1>
+            <p class="hero-subtitle">Studio IDE - Il tuo team di sviluppo web creativo e innovativo</p>
+            <div class="hero-buttons">
+                <a href="#team" class="btn btn-primary">Conosci il Team</a>
+                <a href="#contact" class="btn btn-secondary">Inizia un Progetto</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse"></div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="team-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-number">01</span>
+                <span class="title-text">Il Nostro Team</span>
+            </h2>
+            <p class="section-subtitle">Professionisti appassionati che trasformano idee in realtà digitali</p>
+            
+            <div class="team-grid">
+                <div class="team-slider-wrapper">
+                    <div class="team-slider">
+                        <!-- Kero - CEO -->
+                        <div class="team-card" data-role="ceo" data-slide="0">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-image-wrapper">
+                                <img src="kero.png" alt="Kero - CEO" class="team-image">
+                                <div class="image-overlay"></div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="team-name">Kero</h3>
+                                <p class="team-role">CEO & Founder</p>
+                                <div class="role-icon">👔</div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <h3>Kero</h3>
+                            <p class="role-title">CEO & Founder</p>
+                            <p class="role-description">Visionario e stratega, guida Studio IDE verso l'innovazione. Trasforma le idee in strategie vincenti.</p>
+                            <div class="social-links">
+                                <a href="#" class="social-link">LinkedIn</a>
+                                <a href="#" class="social-link">Twitter</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                        <!-- Kram - Developer -->
+                        <div class="team-card" data-role="dev" data-slide="1">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-image-wrapper">
+                                <img src="kram.png" alt="Kram - Developer" class="team-image">
+                                <div class="image-overlay"></div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="team-name">Kram</h3>
+                                <p class="team-role">Developer</p>
+                                <div class="role-icon">💻</div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <h3>Kram</h3>
+                            <p class="role-title">Full Stack Developer</p>
+                            <p class="role-description">Maestro del codice, trasforma design in applicazioni funzionali e performanti. Esperto in tecnologie moderne.</p>
+                            <div class="social-links">
+                                <a href="#" class="social-link">GitHub</a>
+                                <a href="#" class="social-link">LinkedIn</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                        <!-- Eve - Graphic Designer -->
+                        <div class="team-card" data-role="graphic" data-slide="2">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-image-wrapper">
+                                <img src="eve.png" alt="Eve - Graphic Designer" class="team-image">
+                                <div class="image-overlay"></div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="team-name">Eve</h3>
+                                <p class="team-role">Graphic Designer</p>
+                                <div class="role-icon">🎨</div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <h3>Eve</h3>
+                            <p class="role-title">Creative Director</p>
+                            <p class="role-description">Artista digitale che dà vita a concetti visivi unici. Trasforma brand in identità visive memorabili.</p>
+                            <div class="social-links">
+                                <a href="#" class="social-link">Behance</a>
+                                <a href="#" class="social-link">Dribbble</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                    <!-- Slider Navigation -->
+                    <div class="slider-nav">
+                        <button class="slider-btn prev-btn" aria-label="Previous">‹</button>
+                        <div class="slider-dots">
+                            <span class="dot active" data-slide="0"></span>
+                            <span class="dot" data-slide="1"></span>
+                            <span class="dot" data-slide="2"></span>
+                        </div>
+                        <button class="slider-btn next-btn" aria-label="Next">›</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-number">02</span>
+                <span class="title-text">I Nostri Servizi</span>
+            </h2>
+            
+            <div class="services-grid">
+                <a href="./servizi/menu-digitali.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">📋</div>
+                        <h3>Menu Digitali Interattivi</h3>
+                        <p>Menu completi per pub, bar e ristoranti con categorie, prezzi chiari e lettura ottimale da smartphone</p>
+                    </div>
+                </a>
+                <a href="./servizi/siti-vetrina-mobile.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">📱</div>
+                        <h3>Siti Vetrina Mobile</h3>
+                        <p>Siti ottimizzati per smartphone: niente PDF, pulsanti grandi, testi leggibili, struttura intuitiva</p>
+                    </div>
+                </a>
+                <a href="./servizi/progressive-web-app.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">📲</div>
+                        <h3>Progressive Web App</h3>
+                        <p>Menu installabile come app: icona home, apertura veloce, funziona offline, aggiornamenti automatici</p>
+                    </div>
+                </a>
+                <a href="./servizi/funzioni-interattive.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">❤️</div>
+                        <h3>Funzioni Interattive</h3>
+                        <p>Preferiti, schede prodotto dettagliate con descrizioni, ingredienti e informazioni complete</p>
+                    </div>
+                </a>
+                <a href="./servizi/barra-contatti.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">💬</div>
+                        <h3>Barra Contatti</h3>
+                        <p>Barra fissa con WhatsApp, Instagram e chiamata sempre visibile per contattarti con un tocco</p>
+                    </div>
+                </a>
+                <a href="./servizi/google-analytics.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">📊</div>
+                        <h3>Google Analytics 4</h3>
+                        <p>Analisi completa: pagine viste, prodotti aperti, preferiti, clic su contatti - marketing data-driven</p>
+                    </div>
+                </a>
+                <a href="./servizi/tracciamento-eventi.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">🎯</div>
+                        <h3>Tracciamento Eventi</h3>
+                        <p>Eventi personalizzati per capire cosa funziona prodotto per prodotto nel tuo locale</p>
+                    </div>
+                </a>
+                <a href="./servizi/privacy-gdpr.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">🔒</div>
+                        <h3>Privacy & GDPR</h3>
+                        <p>Cookie banner, gestione consenso (Consent Mode v2), Privacy Policy - tutto a norma di legge</p>
+                    </div>
+                </a>
+                <a href="./servizi/seo-ottimizzazione.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">🔍</div>
+                        <h3>SEO & Ottimizzazione</h3>
+                        <p>Tag title/description, HTML corretto, sitemap, Open Graph per condivisioni social ottimizzate</p>
+                    </div>
+                </a>
+                <a href="./servizi/performance-sicurezza.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">⚡</div>
+                        <h3>Performance & Sicurezza</h3>
+                        <p>Velocità, cache, immagini ottimizzate, HTTPS, Service Worker - sito veloce e sicuro</p>
+                    </div>
+                </a>
+                <a href="./servizi/design-personalizzato.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">🎨</div>
+                        <h3>Design Personalizzato</h3>
+                        <p>Colori, font e stile su misura del tuo locale per un'immagine moderna e coerente</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-number">03</span>
+                <span class="title-text">Inizia un Progetto</span>
+            </h2>
+            <p class="section-subtitle">Hai un'idea? Trasformiamola insieme in realtà</p>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="info-card">
+                        <div class="info-icon">📧</div>
+                        <h3>Email</h3>
+                        <p>info@studioide.com</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">💬</div>
+                        <h3>Social</h3>
+                        <p>@studioide</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">📍</div>
+                        <h3>Location</h3>
+                        <p>Italia, Remoto</p>
+                    </div>
+                </div>
+                
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" placeholder="Il tuo nome" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder="La tua email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" name="message" placeholder="Raccontaci il tuo progetto" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">Invia Messaggio</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="./logo.png" alt="Studio IDE" class="logo-image footer-logo-img">
+                </div>
+                <p class="footer-text">Creiamo esperienze digitali straordinarie</p>
+                <div class="footer-links">
+                    <a href="#home">Home</a>
+                    <a href="#team">Team</a>
+                    <a href="#services">Servizi</a>
+                    <a href="#contact">Contatti</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Studio IDE. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

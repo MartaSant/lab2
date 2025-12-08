@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Nostri Servizi - Studio IDE</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* Stili specifici per servizi.html - solo mobile */
+        @media (min-width: 769px) {
+            body {
+                display: none;
+            }
+        }
+        
+        .services-page {
+            min-height: 100vh;
+            background: var(--dark-bg);
+            padding-top: 80px;
+        }
+        
+        .services-header {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        }
+        
+        .services-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .services-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .services-container {
+            padding: 2rem 1rem;
+            max-width: 100%;
+        }
+        
+        .service-item {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid transparent;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+        
+        .service-item:nth-child(1) { animation-delay: 0.1s; }
+        .service-item:nth-child(2) { animation-delay: 0.2s; }
+        .service-item:nth-child(3) { animation-delay: 0.3s; }
+        .service-item:nth-child(4) { animation-delay: 0.4s; }
+        .service-item:nth-child(5) { animation-delay: 0.5s; }
+        .service-item:nth-child(6) { animation-delay: 0.6s; }
+        .service-item:nth-child(7) { animation-delay: 0.7s; }
+        .service-item:nth-child(8) { animation-delay: 0.8s; }
+        .service-item:nth-child(9) { animation-delay: 0.9s; }
+        .service-item:nth-child(10) { animation-delay: 1s; }
+        .service-item:nth-child(11) { animation-delay: 1.1s; }
+        
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .service-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+        }
+        
+        .service-item-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .service-item-icon {
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+        
+        .service-item-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .service-item-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .service-item-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .service-item-link:hover {
+            gap: 1rem;
+            transform: translateX(5px);
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 90px;
+            left: 1rem;
+            z-index: 1000;
+            background: var(--dark-card);
+            border: 2px solid var(--primary-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .back-button:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .service-item-image {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            margin: 1rem auto;
+            display: block;
+            border-radius: 15px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .service-item:hover .service-item-image {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="./index.html" class="logo-link">
+                    <img src="./logo.png" alt="Studio IDE" class="logo-image">
+                </a>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html#home" class="nav-link">Home</a></li>
+                <li><a href="./index.html#team" class="nav-link">Team</a></li>
+                <li><a href="./index.html#contact" class="nav-link">Contatti</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Back Button -->
+    <a href="./index.html" class="back-button">
+        ← Torna alla Home
+    </a>
+
+    <!-- Services Page -->
+    <div class="services-page">
+        <div class="services-header">
+            <h1>I Nostri Servizi</h1>
+            <p>Soluzioni digitali complete per il tuo locale. Dalla creazione del menu alla gestione dei dati, tutto ciò di cui hai bisogno.</p>
+        </div>
+
+        <div class="services-container">
+            <!-- Menu Digitali Interattivi -->
+            <div class="service-item">
+                <div class="service-item-header">
+                    <div class="service-item-icon">📋</div>
+                    <h2 class="service-item-title">Menu Digitali Interattivi</h2>
+                </div>
+                <p class="service-item-description">Menu completi per pub, bar e ristoranti con categorie, prezzi chiari e lettura ottimale da smartphone. Impaginazione chiara, divisa per categorie (panini, birre, cocktail, vini, ecc.) con prezzi ben visibili e lettura comoda anche al tavolo.</p>
+                <a href="./servizi/menu-digitali.html" class="service-item-link">
+                    Scopri di più →
+                </a>
+            </div>
+
+            <!-- Siti Vetrina Mobile -->
+            <div class="service-item">
+                <div class="service-item-header">
+                    <div class="service-item-icon">📱</div>
+                    <h2 class="service-item-title">Siti Vetrina Mobile</h2>
+                </div>
+                <p class="service-item-description">Siti ottimizzati per smartphone: niente PDF da zoomare, niente pagine lente e incasinate. Pulsanti grandi, testi leggibili, struttura semplice e intuitiva. Perfetti per essere consultati direttamente dal cellulare.</p>
+                <a href="./servizi/siti-vetrina-mobile.html" class="service-item-link">
+                    Scopri di più →
+                </a>
+            </div>
+
+            <!-- Progressive Web App -->
+            <div class="service-item">
+                <div class="service-item-header">
+                    <div class="service-item-icon">📲</div>
+                    <h2 class="service-item-title">Progressive Web App</h2>
+                </div>
+                <p class="service-item-description">Trasformo il tuo menu in una vera e propria "quasi app": icona sulla home del telefono, apertura veloce, funzionamento anche con connessione debole o assente, aggiornamenti automatici.</p>
+                <a href="./servizi/progressive-web-app.html" class="service-item-link">
+                    Scopri di più →
+                </a>
+            </div>
+
+            <!-- Funzioni Interattive -->
+            <div class="service-item">
+                <div class="service-item-header">
+                    <div class="service-item-icon">❤️</div>
+                    <h2 class="service-item-title">Funzioni Interattive</h2>
+                </div>
+                <p class="service-item-description">Aggiungo funzioni che fanno usare davvero il menu: cuore "Preferiti" per salvare i prodotti che piacciono di più, pulsante INFO con descrizioni, ingredienti e dettagli dei piatti/bevande.</p>
+                <a href="./servizi/funzioni-interattive.html" class="service-item-link">
+                    Scopri di più →
+                </a>
+            </div>
+
+            <!-- Barra Contatti -->
+            <div class="service-item">
+                <div class="service-item-header">
+                    <div class="service-item-icon">💬</div>
+                    <h2 class="service-item-title">Barra Contatti</h2>
+                </div>
+                <p class="service-item-description">Inserisco una barra fissa in basso con i tre canali principali: WhatsApp, Instagram e telefonata. Dal menu il cliente può contattarti o seguirti con un tocco.</p>
+                <a href="./servizi/barra-contatti.html" class="service-item-link">
+                    Scopri di più →
+                </a>
+            </div>
+
+            <!-- Google Analytics 4 -->
+            <div class="service-item">
+                <div class="service-item-header">
+                    <div class="service-item-icon">📊</div>
+                    <h2 class="service-item-title">Google Analytics 4</h2>
+                </div>
+                <p class="service-item-description">Configuro un sistema di analisi che traccia: quali pagine del menu vengono viste di più, quali prodotti vengono aperti in dettaglio, quali vengono messi tra i preferiti, quanti clic arrivano su WhatsApp, Instagram o chiamata. Trasformo il tuo menu in uno strumento di marketing, non solo in una lista prezzi.</p>
+                <a href="./servizi/google-analytics.html" class="service-item-link">
+                    Scopri di più →
+                </a>
+            </div>
+
+            <!-- Tracciamento Eventi -->
+            <div class="service-item">
+                <div class="service-item-header">
+                    <div class="service-item-icon">🎯</div>
+                    <h2 class="service-item-title">Tracciamento Eventi</h2>
+                </div>
+                <p class="service-item-description">Imposto eventi su misura (es. "prodotto visto", "preferito aggiunto", "click su contatto") così puoi capire cosa funziona e cosa no, prodotto per prodotto.</p>
+                <a href="./servizi/tracciamento-eventi.html" class="service-item-link">
+                    Scopri di più →
+                </a>
+            </div>
+
+            <!-- Privacy & GDPR -->
+            <div class="service-item">
+                <div class="service-item-header">
+                    <div class="service-item-icon">🔒</div>
+                    <h2 class="service-item-title">Privacy & GDPR</h2>
+                </div>
+                <p class="service-item-description">Implemento banner cookie, gestione del consenso (anche con Consent Mode v2) e pagina Privacy Policy strutturata, in modo che il sito sia in regola e tu possa usare i dati in modo trasparente.</p>
+                <a href="./servizi/privacy-gdpr.html" class="service-item-link">
+                    Scopri di più →
+                </a>
+            </div>
+
+            <!-- SEO & Ottimizzazione -->
+            <div class="service-item">
+                <div class="service-item-header">
+                    <div class="service-item-icon">🔍</div>
+                    <h2 class="service-item-title">SEO & Ottimizzazione</h2>
+                </div>
+                <p class="service-item-description">Mi occupo della parte "sotto il cofano": tag title e description per ogni pagina, struttura HTML corretta, sitemap, robots.txt, Open Graph e anteprime ottimizzate per condivisioni su WhatsApp, Facebook, Instagram, ecc.</p>
+                <a href="./servizi/seo-ottimizzazione.html" class="service-item-link">
+                    Scopri di più →
+                </a>
+            </div>
+
+            <!-- Performance & Sicurezza -->
+            <div class="service-item">
+                <div class="service-item-header">
+                    <div class="service-item-icon">⚡</div>
+                    <h2 class="service-item-title">Performance & Sicurezza</h2>
+                </div>
+                <p class="service-item-description">Ottimizzo caricamento, cache, immagini, script e uso HTTPS, Service Worker e buone pratiche di sicurezza. Risultato: sito veloce, stabile e compatibile con i principali browser e dispositivi.</p>
+                <a href="./servizi/performance-sicurezza.html" class="service-item-link">
+                    Scopri di più →
+                </a>
+            </div>
+
+            <!-- Design Personalizzato -->
+            <div class="service-item">
+                <div class="service-item-header">
+                    <div class="service-item-icon">🎨</div>
+                    <h2 class="service-item-title">Design Personalizzato</h2>
+                </div>
+                <p class="service-item-description">Studio colori, font e stile in linea con l'identità del tuo locale, per dare un'immagine moderna e coerente con insegna, logo e comunicazione social.</p>
+                <a href="./servizi/design-personalizzato.html" class="service-item-link">
+                    Scopri di più →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+
+    <!-- Banner Cookie Consenso -->
+    <div id="cookie-banner" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.95); color: #ffffff; padding: 1.5rem; z-index: 10000; border-top: 2px solid #FFC928; box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);">
+    <script>
+        // Controllo immediato del consenso PRIMA che il DOM sia completamente caricato
+        // Questo assicura che il banner venga mostrato/nascosto correttamente
+        (function() {
+            const CONSENT_KEY = window.CONSENT_KEY || 'cookie_consent_idelab2';
+            
+            // Funzione per gestire il banner - legge il consenso ogni volta
+            function handleBanner() {
+                const banner = document.getElementById('cookie-banner');
+                if (!banner) {
+                    // Se il banner non esiste ancora, riprova dopo un breve delay
+                    setTimeout(handleBanner, 50);
+                    return;
+                }
+                
+                // Leggi il consenso ogni volta (non solo all'inizio)
+                const consent = localStorage.getItem(CONSENT_KEY);
+                
+                // Se il consenso è già stato dato, nascondi il banner
+                if (consent === 'granted') {
+                    banner.style.display = 'none';
+                } else {
+                    // Se il consenso è negato o non esiste (null), mostra il banner
+                    // Questo assicura che il banner venga riproposto ad ogni visita
+                    banner.style.display = 'block';
+                }
+            }
+            
+            // Esegui quando il DOM è disponibile
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', handleBanner);
+            } else {
+                // Se il DOM è già pronto, esegui immediatamente
+                handleBanner();
+            }
+            
+            // Riprova anche dopo un breve delay per assicurarsi che il banner sia gestito
+            setTimeout(handleBanner, 200);
+        })();
+    </script>
+        <p style="margin: 0 0 1rem 0; font-size: 0.9rem; line-height: 1.5;">
+            Questo sito utilizza Google Analytics 4, Google Signals e dati demografici per migliorare l'esperienza utente. 
+            I dati vengono raccolti solo con il tuo consenso esplicito.
+        </p>
+        <div style="display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center;">
+            <a href="./servizi/privacy-gdpr.html" style="color: #FFC928; text-decoration: underline; font-size: 0.85rem;" id="cookie-policy-link">Privacy Policy</a>
+            <button id="cookie-reject" style="padding: 0.6rem 1.5rem; background: transparent; border: 2px solid #FFC928; color: #FFC928; border-radius: 0.5rem; cursor: pointer; font-weight: 600; font-size: 0.9rem;">
+                Rifiuta
+            </button>
+            <button id="cookie-accept" style="padding: 0.6rem 1.5rem; background: #FFC928; border: 2px solid #FFC928; color: #000000; border-radius: 0.5rem; cursor: pointer; font-weight: 600; font-size: 0.9rem;">
+                Accetta
+            </button>
+        </div>
+    </div>
+
+    <!-- Bottone modifica consenso cookie -->
+    <img src="./Cluffy/cookie.png" alt="Cookie" class="cookie-settings-btn" id="cookieSettingsBtn" aria-label="Impostazioni cookie" style="width: 44px; height: 44px; object-fit: contain; cursor: pointer;">
+
+    <!-- Banner modifica consenso -->
+    <div id="cookie-settings-banner" class="cookie-settings-banner" style="display: none;">
+        <div class="cookie-settings-content">
+            <h3 class="cookie-settings-title">Gestisci le tue preferenze cookie</h3>
+            <p class="cookie-settings-desc">Puoi modificare la tua scelta in qualsiasi momento.</p>
+            <div class="cookie-settings-status">
+                <p id="cookie-settings-status-text">Stato attuale: <strong id="cookie-current-status">Non impostato</strong></p>
+            </div>
+            <div class="cookie-settings-buttons">
+                <button id="cookie-settings-accept" class="cookie-settings-btn-action cookie-settings-accept">
+                    Accetta
+                </button>
+                <button id="cookie-settings-reject" class="cookie-settings-btn-action cookie-settings-reject">
+                    Rifiuta
+                </button>
+                <button id="cookie-settings-close" class="cookie-settings-btn-action cookie-settings-close">
+                    Chiudi
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="cookie-settings-overlay" class="cookie-settings-overlay" style="display: none;"></div>
+
+    <!-- Google Analytics Consent Management -->
+    <script src="./ga-consent.js"></script>
+    
+    <script>
+        // Gestione bottone cookie settings
+        (function() {
+            const CONSENT_KEY = window.CONSENT_KEY || 'cookie_consent_idelab2';
+            
+            const settingsBtn = document.getElementById('cookieSettingsBtn');
+            const settingsBanner = document.getElementById('cookie-settings-banner');
+            const settingsOverlay = document.getElementById('cookie-settings-overlay');
+            const acceptBtn = document.getElementById('cookie-settings-accept');
+            const rejectBtn = document.getElementById('cookie-settings-reject');
+            const closeBtn = document.getElementById('cookie-settings-close');
+            const statusText = document.getElementById('cookie-current-status');
+            const cookieBanner = document.getElementById('cookie-banner');
+            
+            if (!settingsBtn || !settingsBanner || !settingsOverlay) {
+                console.warn('Elementi cookie settings non trovati');
+                return;
+            }
+            
+            // Funzione per aggiornare lo stato visualizzato
+            function updateConsentStatus() {
+                const consent = localStorage.getItem(CONSENT_KEY);
+                if (statusText) {
+                    if (consent === 'granted') {
+                        statusText.textContent = 'Accettato';
+                        statusText.style.color = '#4CAF50';
+                    } else if (consent === 'denied') {
+                        statusText.textContent = 'Rifiutato';
+                        statusText.style.color = '#F44336';
+                    } else {
+                        statusText.textContent = 'Non impostato';
+                        statusText.style.color = '#FFC928';
+                    }
+                }
+            }
+            
+            // Funzione per mostrare/nascondere il bottone in base al banner cookie
+            function toggleSettingsButton() {
+                if (cookieBanner && cookieBanner.style.display !== 'none' && cookieBanner.offsetParent !== null) {
+                    // Banner cookie visibile, nascondi bottone
+                    settingsBtn.classList.add('hidden');
+                } else {
+                    // Banner cookie non visibile, mostra bottone
+                    settingsBtn.classList.remove('hidden');
+                }
+            }
+            
+            // Controlla periodicamente se il banner cookie è visibile
+            setInterval(toggleSettingsButton, 500);
+            toggleSettingsButton(); // Controllo iniziale
+            
+            // Funzione per aprire il banner modifica consenso
+            function openSettingsBanner() {
+                updateConsentStatus();
+                settingsBanner.style.display = 'block';
+                settingsOverlay.style.display = 'block';
+                
+                setTimeout(function() {
+                    settingsBanner.classList.add('open');
+                    settingsOverlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }, 10);
+            }
+            
+            // Funzione per chiudere il banner modifica consenso
+            function closeSettingsBanner() {
+                settingsBanner.classList.remove('open');
+                settingsOverlay.classList.remove('show');
+                
+                setTimeout(function() {
+                    settingsBanner.style.display = 'none';
+                    settingsOverlay.style.display = 'none';
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+            
+            // Click sul bottone per aprire il banner
+            settingsBtn.addEventListener('click', function() {
+                openSettingsBanner();
+            });
+            
+            // Click sull'overlay per chiudere
+            settingsOverlay.addEventListener('click', function() {
+                closeSettingsBanner();
+            });
+            
+            // Click su "Accetta"
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', function() {
+                    localStorage.setItem(CONSENT_KEY, 'granted');
+                    updateConsentStatus();
+                    
+                    // Avvia GA4 se disponibile
+                    if (window.loadGA4 && typeof window.loadGA4 === 'function') {
+                        window.loadGA4();
+                    }
+                    
+                    // Nascondi il banner principale se visibile
+                    if (cookieBanner) {
+                        cookieBanner.style.display = 'none';
+                    }
+                    
+                    // Chiudi il banner dopo un breve delay
+                    setTimeout(function() {
+                        closeSettingsBanner();
+                    }, 500);
+                    
+                    // Triggera evento storage per sincronizzare altre pagine
+                    try {
+                        window.dispatchEvent(new StorageEvent('storage', {
+                            key: CONSENT_KEY,
+                            newValue: 'granted',
+                            oldValue: localStorage.getItem(CONSENT_KEY),
+                            storageArea: localStorage
+                        }));
+                    } catch (e) {
+                        console.log('StorageEvent non supportato');
+                    }
+                });
+            }
+            
+            // Click su "Rifiuta"
+            if (rejectBtn) {
+                rejectBtn.addEventListener('click', function() {
+                    localStorage.setItem(CONSENT_KEY, 'denied');
+                    updateConsentStatus();
+                    
+                    // Ferma GA4 quando il consenso viene negato
+                    if (window.stopGA4 && typeof window.stopGA4 === 'function') {
+                        window.stopGA4();
+                    }
+                    
+                    // Chiudi il banner dopo un breve delay
+                    setTimeout(function() {
+                        closeSettingsBanner();
+                    }, 500);
+                    
+                    // Triggera evento storage per sincronizzare altre pagine
+                    try {
+                        window.dispatchEvent(new StorageEvent('storage', {
+                            key: CONSENT_KEY,
+                            newValue: 'denied',
+                            oldValue: localStorage.getItem(CONSENT_KEY),
+                            storageArea: localStorage
+                        }));
+                    } catch (e) {
+                        console.log('StorageEvent non supportato');
+                    }
+                });
+            }
+            
+            // Click su "Chiudi"
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    closeSettingsBanner();
+                });
+            }
+            
+            // Aggiorna lo stato iniziale
+            updateConsentStatus();
+            
+            // Ascolta i cambiamenti di localStorage per aggiornare lo stato in tempo reale
+            window.addEventListener('storage', function(e) {
+                if (e.key === CONSENT_KEY) {
+                    updateConsentStatus();
+                    // Se il consenso è stato accettato altrove, nascondi il banner principale
+                    if (localStorage.getItem(CONSENT_KEY) === 'granted') {
+                        if (cookieBanner) {
+                            cookieBanner.style.display = 'none';
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
+
