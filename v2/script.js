@@ -1,17 +1,18 @@
 // Inizializza dataLayer per GA4
 window.dataLayer = window.dataLayer || [];
 
-// LOG DI DEBUG - questo dovrebbe sempre apparire
-try {
-    console.log('=== SCRIPT.JS CARICATO ===', new Date().toISOString());
-    console.log('Larghezza finestra:', window.innerWidth, 'Altezza:', window.innerHeight);
-    console.log('URL corrente:', window.location.href);
-    console.log('Path script:', document.currentScript?.src || 'N/A');
-} catch (e) {
-    console.error('Errore nei log iniziali:', e);
-    // Forza un alert per vedere se c'è un errore
-    alert('ERRORE nello script.js: ' + e.message);
-}
+// ============================================
+// LOG DI DEBUG - QUESTO DOVREBBE SEMPRE APPARIRE
+// ============================================
+console.log('╔═══════════════════════════════════════╗');
+console.log('║   SCRIPT.JS CARICATO E ESECUTATO!    ║');
+console.log('╚═══════════════════════════════════════╝');
+console.log('Timestamp:', new Date().toISOString());
+console.log('Larghezza:', window.innerWidth, 'px');
+console.log('Altezza:', window.innerHeight, 'px');
+console.log('URL:', window.location.href);
+console.log('User Agent:', navigator.userAgent.substring(0, 50));
+console.log('===========================================');
 
 // Cattura errori globali
 window.addEventListener('error', (e) => {
