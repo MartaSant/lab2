@@ -1216,9 +1216,18 @@ body {
         display: none;
     }
     
-    /* Mostra paperella team desktop su desktop */
-    .duck-team {
-        display: block;
+    /* Mostra tutte le paperelle desktop su desktop */
+    .duck-hero,
+    .duck-team,
+    .duck-services,
+    .duck-contact {
+        display: block !important;
+    }
+    
+    /* Nascondi paperelle mobile su desktop */
+    .duck-team-mobile,
+    .duck-contact-mobile {
+        display: none !important;
     }
 
     .team-grid {
