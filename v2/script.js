@@ -227,10 +227,11 @@ if (window.innerWidth <= 768) {
         card.flipStartTime = null;
         card.classList.remove('active'); // Assicura che non ci sia classe active di default
         
-        // Reset esplicito del transform
+        // Reset esplicito del transform all'inizializzazione
         const cardInner = card.querySelector('.card-inner');
         if (cardInner) {
             cardInner.style.transform = 'rotateY(0deg)';
+            cardInner.style.transition = 'transform 0.6s'; // Assicura la transizione
         }
         
         card.addEventListener('click', (e) => {
@@ -241,6 +242,11 @@ if (window.innerWidth <= 768) {
             
             // Preveni eventi di default che potrebbero interferire
             e.stopPropagation();
+            e.preventDefault();
+            
+            // Ottieni cardInner dentro l'event listener per essere sicuri
+            const cardInnerEl = card.querySelector('.card-inner');
+            if (!cardInnerEl) return;
             
             const now = Date.now();
             const wasFlipped = card.isFlipped;
@@ -251,14 +257,18 @@ if (window.innerWidth <= 768) {
                 // Calcola durata del flip per GA4 PRIMA di resettare
                 const flipDuration = card.flipStartTime ? (now - card.flipStartTime) : 0;
                 
-                card.isFlipped = false;
-                card.flipStartTime = null;
+                // RIMUOVI la classe active PRIMA di tutto
                 card.classList.remove('active');
                 
-                // Reset esplicito del transform
-                if (cardInner) {
-                    cardInner.style.transform = 'rotateY(0deg)';
-                }
+                // Aggiorna lo stato
+                card.isFlipped = false;
+                card.flipStartTime = null;
+                
+                // FORZA il reset del transform con !important inline
+                cardInnerEl.style.setProperty('transform', 'rotateY(0deg)', 'important');
+                
+                // Forza un reflow per assicurare che il CSS venga applicato
+                void cardInnerEl.offsetHeight;
                 const cardName = card.querySelector('.team-name')?.textContent?.trim() || '';
                 
                 // Track GA4 event: card_flip_duration (solo se durata > 0)
@@ -292,9 +302,15 @@ if (window.innerWidth <= 768) {
                 // Card nella forma base: gira la card
                 card.isFlipped = true;
                 card.flipStartTime = now;
+                
+                // AGGIUNGI la classe active
                 card.classList.add('active');
                 
-                // Il CSS si occuperà del transform tramite la classe .active
+                // Forza il transform per sicurezza
+                cardInnerEl.style.setProperty('transform', 'rotateY(180deg)', 'important');
+                
+                // Forza un reflow
+                void cardInnerEl.offsetHeight;
             }
         });
     });

@@ -1020,6 +1020,11 @@ body {
     .team-slider .team-card:not(.active) .card-inner {
         transform: rotateY(0deg) !important;
     }
+    
+    /* MOBILE: Forza il reset anche se ci sono stili inline (override) */
+    .team-slider .team-card .card-inner[style*="rotateY(0deg)"] {
+        transform: rotateY(0deg) !important;
+    }
 
     /* Slider Navigation */
     .slider-nav {
