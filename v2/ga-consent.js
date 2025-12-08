@@ -83,16 +83,34 @@ function loadGA4() {
     script.onload = function() {
         console.log('Script GA4 caricato, inizializzo...');
         gtag('js', new Date());
+        // Configurazione esplicita del dominio per evitare errori del cookie
+        const currentDomain = window.location.hostname; // Es: martasant.github.io
+        const cookieDomain = currentDomain.startsWith('localhost') 
+            ? 'auto'  // Per sviluppo locale, usa auto
+            : currentDomain;  // Per produzione, usa il dominio esatto
+        
         gtag('config', GA_MEASUREMENT_ID, {
-            'send_page_view': true  // Assicura che page_view venga inviato
-            // Non specifichiamo cookie_domain per lasciare che GA4 rilevi automaticamente il dominio
-            // Questo funziona correttamente per GitHub Pages e domini custom
+            'send_page_view': true,  // Assicura che page_view venga inviato
+            'cookie_domain': cookieDomain,  // Dominio esplicito per evitare errori del cookie
+            'cookie_flags': 'SameSite=Lax'  // Flag sicuro per i cookie (Lax è più permissivo di Strict)
         });
         
-        // Log per verificare quale dominio viene rilevato automaticamente
-        console.log('[GA4] Dominio rilevato automaticamente:', window.location.hostname);
+        // Log per verificare quale dominio è stato configurato
+        console.log('[GA4] Dominio configurato per cookie:', cookieDomain);
+        console.log('[GA4] Dominio hostname:', window.location.hostname);
         console.log('[GA4] Dominio completo:', window.location.host);
         console.log('[GA4] URL completo:', window.location.href);
+        
+        // Verifica se il cookie GA4 esiste e mostra informazioni
+        setTimeout(() => {
+            const gaCookie = document.cookie.split('; ').find(row => row.startsWith('_ga_5NW6SFP8TW='));
+            if (gaCookie) {
+                console.log('[GA4] Cookie trovato:', gaCookie.split('=')[0]);
+                console.log('[GA4] Per vedere il dominio del cookie, vai in DevTools → Application → Cookies →', window.location.hostname);
+            } else {
+                console.log('[GA4] Cookie non ancora creato (potrebbe essere creato dopo il primo evento)');
+            }
+        }, 1000);
         ga4Loading = false;
         ga4Ready = true;
         window.ga4Loading = false;
