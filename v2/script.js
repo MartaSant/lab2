@@ -1,33 +1,10 @@
 // Inizializza dataLayer per GA4
 window.dataLayer = window.dataLayer || [];
 
-// ============================================
-// LOG DI DEBUG - QUESTO DOVREBBE SEMPRE APPARIRE
-// ============================================
-console.log('╔═══════════════════════════════════════╗');
-console.log('║   SCRIPT.JS CARICATO E ESECUTATO!    ║');
-console.log('╚═══════════════════════════════════════╝');
-console.log('Timestamp:', new Date().toISOString());
-console.log('Larghezza:', window.innerWidth, 'px');
-console.log('Altezza:', window.innerHeight, 'px');
-console.log('URL:', window.location.href);
-console.log('User Agent:', navigator.userAgent.substring(0, 50));
-console.log('===========================================');
-
-// Cattura errori globali
-window.addEventListener('error', (e) => {
-    console.error('ERRORE GLOBALE JavaScript:', e.error, e.filename, e.lineno);
-});
-
-window.addEventListener('unhandledrejection', (e) => {
-    console.error('PROMISE REJECTED:', e.reason);
-});
-
 // Service Worker Registration - Modalità sviluppo (Network Only)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        // Usa path assoluto dalla root per evitare problemi con sottocartelle
-        navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+        navigator.serviceWorker.register('./service-worker.js')
             .then((registration) => {
                 console.log('[Service Worker] Registrato con successo:', registration.scope);
                 
@@ -102,6 +79,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             const sectionId = target.id || '';
             const linkText = this.textContent.trim() || '';
             
+            // Track GA4 event: navigation_click
+            if (window.sendGA4Event) {
+                window.sendGA4Event('navigation_click', {
+                    'link_text': linkText,
+                    'section_id': sectionId,
+                    'link_href': href,
+                    'page_location': window.location.pathname
+                });
+            }
+            
             let offsetTop = target.offsetTop - 80;
             
             // Special handling for team section - scroll to show cards completely
@@ -138,6 +125,17 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 top: Math.max(0, offsetTop),
                 behavior: 'smooth'
             });
+            
+            // Track GA4 event: scroll_to_section (after scroll)
+            setTimeout(() => {
+                if (window.sendGA4Event) {
+                    window.sendGA4Event('scroll_to_section', {
+                        'section_id': sectionId,
+                        'section_name': linkText,
+                        'page_location': window.location.pathname
+                    });
+                }
+            }, 500);
         }
     });
 });
@@ -192,6 +190,17 @@ contactForm.addEventListener('submit', (e) => {
         return;
     }
     
+    // Track GA4 event: contact_form_submit
+    if (window.sendGA4Event) {
+        window.sendGA4Event('contact_form_submit', {
+            'form_name': 'contact_form',
+            'form_location': window.location.pathname,
+            'has_name': name ? 'yes' : 'no',
+            'has_email': email ? 'yes' : 'no',
+            'has_message': message ? 'yes' : 'no'
+        });
+    }
+    
     // Simulate form submission
     const submitButton = contactForm.querySelector('button[type="submit"]');
     const originalText = submitButton.textContent;
@@ -207,235 +216,71 @@ contactForm.addEventListener('submit', (e) => {
     }, 1500);
 });
 
-// Inizializza team cards quando il DOM è pronto
-function initTeamCards() {
-    console.log('initTeamCards chiamata - larghezza finestra:', window.innerWidth);
-    const teamCards = document.querySelectorAll('.team-card');
-    
-    if (teamCards.length === 0) {
-        console.log('Nessuna card trovata, riprovo tra poco...');
-        setTimeout(initTeamCards, 100);
-        return;
-    }
-    
-    console.log('Team cards trovate:', teamCards.length, 'larghezza:', window.innerWidth);
-    
-    // Add mouse move parallax effect to team cards (DESKTOP ONLY - completamente disattivato su mobile)
-    // Funzionalità desktop: parallax effect solo su desktop
+// Add mouse move parallax effect to team cards (desktop only)
+const teamCards = document.querySelectorAll('.team-card');
+
+teamCards.forEach(card => {
+    // Only apply parallax on desktop (non-touch devices)
     if (window.innerWidth > 768) {
-        teamCards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                const rotateX = (y - centerY) / 10;
-                const rotateY = (centerX - x) / 10;
-                
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            });
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
             
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-            });
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
         });
     }
-
-    // Team Slider for Mobile
-    let currentSlide = 0;
-    const totalSlides = 3;
-    const teamSlider = document.querySelector('.team-slider');
-    const dots = document.querySelectorAll('.dot');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
-
-    // Handle card flip on mobile (MOBILE ONLY - completamente disattivato su desktop)
-    // Logica semplice: tap per girare, tap di nuovo per tornare normale
-    if (window.innerWidth <= 768) {
-        console.log('Inizializzazione card flip mobile - numero card:', teamCards.length, 'larghezza:', window.innerWidth);
-        teamCards.forEach((card, index) => {
-        // Inizializza: tutte le card partono nella forma base (non girate)
-        card.isFlipped = false;
-        card.flipStartTime = null;
-        card.classList.remove('active'); // Assicura che non ci sia classe active di default
-        
-        // Reset esplicito del transform all'inizializzazione
-        const cardInner = card.querySelector('.card-inner');
-        if (cardInner) {
-            cardInner.style.transform = 'rotateY(0deg)';
-            cardInner.style.transition = 'transform 0.6s'; // Assicura la transizione
-        }
-        
-        console.log(`Event listener aggiunto alla card ${index}`);
-        
-        card.addEventListener('click', (e) => {
-            console.log('CLICK RILEVATO sulla card!', {
-                index: index,
-                target: e.target.tagName,
-                currentTarget: e.currentTarget.className
-            });
-            // Ignora click su pulsanti di navigazione
-            if (e.target.closest('.slider-btn') || e.target.closest('.dot')) {
-                console.log('Click ignorato: pulsante navigazione');
-                return;
-            }
-            
-            // Se il click è su un link dentro la card, previeni il comportamento di default
-            // ma permetti comunque il flip della card
-            if (e.target.closest('a') || e.target.tagName === 'A') {
-                console.log('Click su link, prevengo default ma permetto flip');
-                e.preventDefault();
-                // NON fare stopPropagation qui, vogliamo che arrivi alla card
-            }
-            
-            // Preveni eventi di default che potrebbero interferire
-            e.stopPropagation();
-            e.preventDefault();
-            
-            // Ottieni cardInner dentro l'event listener per essere sicuri
-            const cardInnerEl = card.querySelector('.card-inner');
-            if (!cardInnerEl) return;
-            
-            const now = Date.now();
-            const wasFlipped = card.isFlipped;
-            
-            console.log('Card tapped - stato attuale:', {
-                wasFlipped: wasFlipped,
-                target: e.target.tagName,
-                closestLink: e.target.closest('a') ? 'link trovato' : 'nessun link'
-            });
-            
-            // STEP 1: SWITCH dello stato (toggle)
-            card.isFlipped = !card.isFlipped;
-            
-            // Calcola durata del flip per GA4 (solo se stava girata)
-            const flipDuration = wasFlipped && card.flipStartTime ? (now - card.flipStartTime) : 0;
-            
-            // STEP 2: Verifica lo stato dopo lo switch e applica il transform
-            if (card.isFlipped) {
-                // Stato: ACTIVE - applica rotateY(180deg)
-                card.flipStartTime = now;
-                card.classList.add('active');
-                cardInnerEl.style.setProperty('transform', 'rotateY(180deg)', 'important');
-            } else {
-                // Stato: NON ACTIVE - applica rotateY(0deg)
-                card.flipStartTime = null;
-                card.classList.remove('active');
-                cardInnerEl.style.setProperty('transform', 'rotateY(0deg)', 'important');
-                
-                // Track GA4 event: card_flip_duration (solo se durata > 0)
-                if (flipDuration > 0 && window.sendGA4Event) {
-                    const cardName = card.querySelector('.team-name')?.textContent?.trim() || '';
-                    const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
-                    
-                    if (cardName === 'Kero') {
-                        window.sendGA4Event('kero_card_flip_duration', {
-                            'card_name': 'Kero',
-                            'card_role': cardRole,
-                            'flip_duration_msec': flipDuration,
-                            'page_location': window.location.pathname
-                        });
-                    } else if (cardName === 'Kram') {
-                        window.sendGA4Event('kram_card_flip_duration', {
-                            'card_name': 'Kram',
-                            'card_role': cardRole,
-                            'flip_duration_msec': flipDuration,
-                            'page_location': window.location.pathname
-                        });
-                    } else if (cardName === 'Eve') {
-                        window.sendGA4Event('eve_card_flip_duration', {
-                            'card_name': 'Eve',
-                            'card_role': cardRole,
-                            'flip_duration_msec': flipDuration,
-                            'page_location': window.location.pathname
-                        });
-                    }
-                }
-            }
-            
-            // Forza un reflow per assicurare che il transform venga applicato
-            void cardInnerEl.offsetHeight;
-        });
-    });
-    }
-}
-
-// Chiama initTeamCards quando il DOM è pronto
-console.log('Script caricato, stato DOM:', document.readyState, 'larghezza:', window.innerWidth);
-if (document.readyState === 'loading') {
-    console.log('DOM in caricamento, aspetto DOMContentLoaded...');
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOMContentLoaded evento, chiamo initTeamCards - larghezza:', window.innerWidth);
-        initTeamCards();
-    });
-} else {
-    // DOM già pronto
-    console.log('DOM già pronto, chiamo initTeamCards immediatamente - larghezza:', window.innerWidth);
-    initTeamCards();
-}
-
-// Listener per resize (utile quando apri/chiudi dev tools o cambi modalità)
-let resizeTimeout;
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        console.log('Finestra ridimensionata, larghezza:', window.innerWidth);
-        // Reinizializza se necessario (solo se siamo su mobile e prima eravamo su desktop o viceversa)
-        const teamCards = document.querySelectorAll('.team-card');
-        if (teamCards.length > 0) {
-            console.log('Reinizializzazione team cards dopo resize');
-            // Rimuovi event listener vecchi e riaggiungi
-            initTeamCards();
-        }
-    }, 300);
 });
 
-// Track GA4 event: card_hover (solo desktop, quando si passa il mouse sulle card - specifico per ogni card)
-if (window.innerWidth > 768) {
+// Team Slider for Mobile
+let currentSlide = 0;
+const totalSlides = 3;
+const teamSlider = document.querySelector('.team-slider');
+const dots = document.querySelectorAll('.dot');
+const prevBtn = document.querySelector('.prev-btn');
+const nextBtn = document.querySelector('.next-btn');
+
+// Handle card flip on mobile (tap to flip)
+if (window.innerWidth <= 768) {
     teamCards.forEach(card => {
-        const cardName = card.querySelector('.team-name')?.textContent?.trim() || '';
-        const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
-        
-        // Applica solo a Kero, Kram ed Eve
-        if (cardName === 'Kero' || cardName === 'Kram' || cardName === 'Eve') {
-            let hoverStartTime = null;
-            let hoverTracked = false;
+        // Salva lo stato direttamente sulla card
+        card.isFlipped = false;
+        card.addEventListener('click', (e) => {
+            // Don't flip if clicking on navigation buttons
+            if (e.target.closest('.slider-btn') || e.target.closest('.dot')) {
+                return;
+            }
+            // Toggle flip: se è girata torna normale, se è normale si gira
+            const wasFlipped = card.isFlipped;
+            card.isFlipped = !card.isFlipped;
+            if (card.isFlipped) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
             
-            card.addEventListener('mouseenter', () => {
-                hoverStartTime = Date.now();
-                hoverTracked = false;
-                
-                // Track GA4 event: card_hover (specifico per ogni card)
-                if (window.sendGA4Event) {
-                    const eventName = `${cardName.toLowerCase()}_card_hover`;
-                    window.sendGA4Event(eventName, {
-                        'card_name': cardName,
-                        'card_role': cardRole,
-                        'hover_action': 'mouse_enter',
-                        'page_location': window.location.pathname
-                    });
-                    hoverTracked = true;
-                }
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                if (hoverStartTime && hoverTracked && window.sendGA4Event) {
-                    const hoverDuration = Date.now() - hoverStartTime;
-                    const eventName = `${cardName.toLowerCase()}_card_hover`;
-                    window.sendGA4Event(eventName, {
-                        'card_name': cardName,
-                        'card_role': cardRole,
-                        'hover_action': 'mouse_leave',
-                        'hover_duration_msec': hoverDuration,
-                        'page_location': window.location.pathname
-                    });
-                }
-                hoverStartTime = null;
-            });
-        }
+            // Track GA4 event: team_card_flip
+            if (window.sendGA4Event) {
+                const cardName = card.querySelector('.team-name')?.textContent?.trim() || 'Unknown';
+                const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
+                window.sendGA4Event('team_card_flip', {
+                    'card_name': cardName,
+                    'card_role': cardRole,
+                    'flip_action': card.isFlipped ? 'flipped' : 'unflipped',
+                    'page_location': window.location.pathname
+                });
+            }
+        });
     });
 }
 
@@ -647,9 +492,24 @@ serviceCards.forEach((card, index) => {
         });
     });
     
-    // Service card click handling
+    // Track GA4 event: service_card_click
     card.addEventListener('click', (e) => {
-        // Service card click handling
+        // Verifica se il click è su un link interno
+        const link = card.querySelector('a');
+        if (link) {
+            const serviceName = card.querySelector('h3')?.textContent?.trim() || 'Unknown';
+            const serviceDescription = card.querySelector('p')?.textContent?.trim()?.substring(0, 50) || '';
+            const linkHref = link.getAttribute('href') || '';
+            
+            if (window.sendGA4Event) {
+                window.sendGA4Event('service_card_click', {
+                    'service_name': serviceName,
+                    'service_description': serviceDescription,
+                    'link_href': linkHref,
+                    'page_location': window.location.pathname
+                });
+            }
+        }
     });
 });
 
@@ -762,21 +622,58 @@ function createParticles(x, y) {
     }
 }
 
-// Social links handling
+// Track GA4 event: social_link_click
 document.querySelectorAll('.social-link').forEach(link => {
     link.addEventListener('click', function(e) {
-        // Social link click handling
+        const socialName = this.textContent.trim() || 'Unknown';
+        const socialHref = this.getAttribute('href') || '';
+        
+        if (window.sendGA4Event) {
+            window.sendGA4Event('social_link_click', {
+                'social_name': socialName,
+                'social_type': socialName.toLowerCase(),
+                'link_href': socialHref,
+                'page_location': window.location.pathname
+            });
+        }
     });
 });
 
-// Speech bubble click handling
+// Track GA4 event: speech_bubble_click - quando un utente clicca su una speech bubble
+// Questo aiuta a capire se gli utenti capiscono che devono cliccare la paperella o se provano a cliccare la bubble
 document.querySelectorAll('.duck-speech').forEach(speechBubble => {
     speechBubble.addEventListener('click', function(e) {
         // Previeni la propagazione per evitare che il click arrivi anche alla paperella
         e.stopPropagation();
+        
+        // Trova la paperella associata (parent con classe duck-guide)
+        const duckGuide = this.closest('.duck-guide');
+        const duckImage = duckGuide?.querySelector('.duck-image');
+        const duckText = this.textContent?.trim() || '';
+        const duckType = duckImage?.getAttribute('alt') || duckImage?.getAttribute('src')?.split('/').pop() || 'unknown';
+        const duckTarget = duckGuide?.dataset.target || duckGuide?.getAttribute('href') || '';
+        const isClickable = duckGuide?.hasAttribute('href') || duckGuide?.hasAttribute('data-target') || false;
+        
+        // Track GA4 event
+        if (window.sendGA4Event) {
+            window.sendGA4Event('speech_bubble_click', {
+                'speech_text': duckText,
+                'duck_type': duckType,
+                'target_section': duckTarget,
+                'is_duck_clickable': isClickable ? 'yes' : 'no',
+                'page_location': window.location.pathname,
+                'user_action': 'clicked_speech_bubble' // Indica che l'utente ha cliccato la bubble invece della paperella
+            });
+        }
+        
+        console.log('Speech bubble clicked:', {
+            text: duckText,
+            duckType: duckType,
+            isClickable: isClickable
+        });
     });
     
-    // Aggiungi stile cursor pointer per indicare che è cliccabile
+    // Aggiungi stile cursor pointer per indicare che è cliccabile (per test)
     speechBubble.style.cursor = 'pointer';
 });
 
@@ -868,9 +765,20 @@ duckGuides.forEach(duck => {
             }
         });
     } else if (duck.getAttribute('href')) {
-        // Duck con href (es. servizi.html)
+        // Track GA4 event: duck_guide_click per duck con href (es. servizi.html)
         duck.addEventListener('click', () => {
-            // Navigation handling
+            const duckText = duck.querySelector('.duck-speech')?.textContent?.trim() || '';
+            const duckImage = duck.querySelector('.duck-image')?.getAttribute('alt') || 'duck_guide';
+            const duckHref = duck.getAttribute('href') || '';
+            
+            if (window.sendGA4Event) {
+                window.sendGA4Event('duck_guide_click', {
+                    'duck_text': duckText,
+                    'duck_type': duckImage,
+                    'target_section': duckHref,
+                    'page_location': window.location.pathname
+                });
+            }
         });
     }
     
