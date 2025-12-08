@@ -1,3 +1,6 @@
+// Inizializza dataLayer per GA4
+window.dataLayer = window.dataLayer || [];
+
 // Service Worker Registration - Modalità sviluppo (Network Only)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -64,9 +67,28 @@ document.querySelectorAll('.nav-link').forEach(link => {
 // Smooth scroll for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+        // Se il link non inizia più con # (es. su mobile punta a servizi.html), non fare preventDefault
+        const href = this.getAttribute('href');
+        if (!href || !href.startsWith('#')) {
+            return; // Lascia che il browser gestisca la navigazione normalmente
+        }
+        
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const target = document.querySelector(href);
         if (target) {
+            const sectionId = target.id || '';
+            const linkText = this.textContent.trim() || '';
+            
+            // Track GA4 event: navigation_click
+            if (window.sendGA4Event) {
+                window.sendGA4Event('navigation_click', {
+                    'link_text': linkText,
+                    'section_id': sectionId,
+                    'link_href': href,
+                    'page_location': window.location.pathname
+                });
+            }
+            
             let offsetTop = target.offsetTop - 80;
             
             // Special handling for team section - scroll to show cards completely
@@ -80,14 +102,40 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                     const viewportHeight = window.innerHeight;
                     const gridOffset = teamGrid.offsetTop - teamSection.offsetTop;
                     // Scroll to show section title at top and cards below, fully visible
-                    offsetTop = teamSection.offsetTop + 220;
+                    let baseOffset = 200;
+                    // Su mobile aggiungi 30px in più
+                    if (window.innerWidth <= 768) {
+                        baseOffset += 30;
+                    }
+                    offsetTop = teamSection.offsetTop + baseOffset;
                 }
+            }
+            
+            // Special handling for services section - scroll slightly more down
+            if (target.id === 'services') {
+                offsetTop = target.offsetTop + 60;
+            }
+            
+            // Special handling for contact section - scroll 50px higher
+            if (target.id === 'contact') {
+                offsetTop = target.offsetTop + 60;
             }
             
             window.scrollTo({
                 top: Math.max(0, offsetTop),
                 behavior: 'smooth'
             });
+            
+            // Track GA4 event: scroll_to_section (after scroll)
+            setTimeout(() => {
+                if (window.sendGA4Event) {
+                    window.sendGA4Event('scroll_to_section', {
+                        'section_id': sectionId,
+                        'section_name': linkText,
+                        'page_location': window.location.pathname
+                    });
+                }
+            }, 500);
         }
     });
 });
@@ -108,7 +156,7 @@ const observer = new IntersectionObserver((entries) => {
 
 // Observe all elements that need animation
 const animatedElements = document.querySelectorAll(
-    '.section-title, .section-subtitle, .team-card, .service-card, .info-card, .contact-form'
+    '.section-title, .section-subtitle, .team-card, .service-card, .info-card, .contact-form, .form-title, .form-subtitle'
 );
 
 animatedElements.forEach(el => observer.observe(el));
@@ -140,6 +188,17 @@ contactForm.addEventListener('submit', (e) => {
     if (!name || !email || !message) {
         alert('Per favore, compila tutti i campi.');
         return;
+    }
+    
+    // Track GA4 event: contact_form_submit
+    if (window.sendGA4Event) {
+        window.sendGA4Event('contact_form_submit', {
+            'form_name': 'contact_form',
+            'form_location': window.location.pathname,
+            'has_name': name ? 'yes' : 'no',
+            'has_email': email ? 'yes' : 'no',
+            'has_message': message ? 'yes' : 'no'
+        });
     }
     
     // Simulate form submission
@@ -194,26 +253,54 @@ const nextBtn = document.querySelector('.next-btn');
 // Handle card flip on mobile (tap to flip)
 if (window.innerWidth <= 768) {
     teamCards.forEach(card => {
-        let isFlipped = false;
+        // Salva lo stato direttamente sulla card
+        card.isFlipped = false;
         card.addEventListener('click', (e) => {
             // Don't flip if clicking on navigation buttons
             if (e.target.closest('.slider-btn') || e.target.closest('.dot')) {
                 return;
             }
-            isFlipped = !isFlipped;
-            if (isFlipped) {
+            // Toggle flip: se è girata torna normale, se è normale si gira
+            const wasFlipped = card.isFlipped;
+            card.isFlipped = !card.isFlipped;
+            if (card.isFlipped) {
                 card.classList.add('active');
             } else {
                 card.classList.remove('active');
             }
+            
+            // Track GA4 event: team_card_flip
+            if (window.sendGA4Event) {
+                const cardName = card.querySelector('.team-name')?.textContent?.trim() || 'Unknown';
+                const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
+                window.sendGA4Event('team_card_flip', {
+                    'card_name': cardName,
+                    'card_role': cardRole,
+                    'flip_action': card.isFlipped ? 'flipped' : 'unflipped',
+                    'page_location': window.location.pathname
+                });
+            }
         });
     });
+}
+
+// Funzione per resettare tutte le card allo stato normale
+function resetAllCards() {
+    if (window.innerWidth <= 768) {
+        teamCards.forEach(card => {
+            card.classList.remove('active');
+            card.isFlipped = false;
+        });
+    }
 }
 
 function updateSlider() {
     if (teamSlider && window.innerWidth <= 768) {
         const translateX = -currentSlide * (100 / totalSlides);
         teamSlider.style.transform = `translateX(${translateX}%)`;
+        
+        // Reset tutte le card quando si cambia slide
+        resetAllCards();
         
         // Update dots
         dots.forEach((dot, index) => {
@@ -296,11 +383,61 @@ function handleSwipe() {
     }
 }
 
+// Gestione link Servizi nel menu (mobile -> servizi.html, desktop -> #services)
+function updateServicesLink() {
+    const servicesLink = document.querySelector('.nav-link-services');
+    if (servicesLink) {
+        if (window.innerWidth <= 768) {
+            servicesLink.href = './servizi.html';
+        } else {
+            servicesLink.href = '#services';
+        }
+    }
+}
+
+// Aggiorna il link al caricamento e al resize
+updateServicesLink();
+
+// Scroll al form quando si clicca sulla paperella "Compila il form" su mobile
+function setupDuckContactScroll() {
+    const duckContact = document.querySelector('.duck-contact');
+    if (duckContact) {
+        // Rimuovi listener esistenti clonando l'elemento
+        const newDuckContact = duckContact.cloneNode(true);
+        duckContact.parentNode.replaceChild(newDuckContact, duckContact);
+        
+        // Aggiungi listener solo su mobile
+        if (window.innerWidth <= 768) {
+            const currentDuck = document.querySelector('.duck-contact');
+            currentDuck.style.cursor = 'pointer';
+            currentDuck.addEventListener('click', function(e) {
+                e.preventDefault();
+                const formWrapper = document.querySelector('.form-wrapper');
+                const contactForm = document.getElementById('contactForm');
+                const target = formWrapper || contactForm;
+                
+                if (target) {
+                    const offsetTop = target.offsetTop - 100 + 1500; // Offset per l'header + 1500px più in basso
+                    window.scrollTo({
+                        top: Math.max(0, offsetTop),
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+    }
+}
+
+// Setup al caricamento
+setupDuckContactScroll();
+
 // Handle window resize
 let resizeTimer;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
+        updateServicesLink();
+        setupDuckContactScroll(); // Ricalcola il listener della paperella contatti
         if (window.innerWidth > 768) {
             // Reset slider position on desktop
             if (teamSlider) {
@@ -314,6 +451,7 @@ window.addEventListener('resize', () => {
         }
     }, 250);
 });
+
 
 // Add typing effect to hero title (optional enhancement)
 const titleLines = document.querySelectorAll('.title-line');
@@ -352,6 +490,26 @@ serviceCards.forEach((card, index) => {
             otherCard.style.transform = '';
             otherCard.style.opacity = '';
         });
+    });
+    
+    // Track GA4 event: service_card_click
+    card.addEventListener('click', (e) => {
+        // Verifica se il click è su un link interno
+        const link = card.querySelector('a');
+        if (link) {
+            const serviceName = card.querySelector('h3')?.textContent?.trim() || 'Unknown';
+            const serviceDescription = card.querySelector('p')?.textContent?.trim()?.substring(0, 50) || '';
+            const linkHref = link.getAttribute('href') || '';
+            
+            if (window.sendGA4Event) {
+                window.sendGA4Event('service_card_click', {
+                    'service_name': serviceName,
+                    'service_description': serviceDescription,
+                    'link_href': linkHref,
+                    'page_location': window.location.pathname
+                });
+            }
+        }
     });
 });
 
@@ -464,6 +622,220 @@ function createParticles(x, y) {
     }
 }
 
+// Track GA4 event: social_link_click
+document.querySelectorAll('.social-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        const socialName = this.textContent.trim() || 'Unknown';
+        const socialHref = this.getAttribute('href') || '';
+        
+        if (window.sendGA4Event) {
+            window.sendGA4Event('social_link_click', {
+                'social_name': socialName,
+                'social_type': socialName.toLowerCase(),
+                'link_href': socialHref,
+                'page_location': window.location.pathname
+            });
+        }
+    });
+});
+
+// Track GA4 event: speech_bubble_click - quando un utente clicca su una speech bubble
+// Questo aiuta a capire se gli utenti capiscono che devono cliccare la paperella o se provano a cliccare la bubble
+document.querySelectorAll('.duck-speech').forEach(speechBubble => {
+    speechBubble.addEventListener('click', function(e) {
+        // Previeni la propagazione per evitare che il click arrivi anche alla paperella
+        e.stopPropagation();
+        
+        // Trova la paperella associata (parent con classe duck-guide)
+        const duckGuide = this.closest('.duck-guide');
+        const duckImage = duckGuide?.querySelector('.duck-image');
+        const duckText = this.textContent?.trim() || '';
+        const duckType = duckImage?.getAttribute('alt') || duckImage?.getAttribute('src')?.split('/').pop() || 'unknown';
+        const duckTarget = duckGuide?.dataset.target || duckGuide?.getAttribute('href') || '';
+        const isClickable = duckGuide?.hasAttribute('href') || duckGuide?.hasAttribute('data-target') || false;
+        
+        // Track GA4 event
+        if (window.sendGA4Event) {
+            window.sendGA4Event('speech_bubble_click', {
+                'speech_text': duckText,
+                'duck_type': duckType,
+                'target_section': duckTarget,
+                'is_duck_clickable': isClickable ? 'yes' : 'no',
+                'page_location': window.location.pathname,
+                'user_action': 'clicked_speech_bubble' // Indica che l'utente ha cliccato la bubble invece della paperella
+            });
+        }
+        
+        console.log('Speech bubble clicked:', {
+            text: duckText,
+            duckType: duckType,
+            isClickable: isClickable
+        });
+    });
+    
+    // Aggiungi stile cursor pointer per indicare che è cliccabile (per test)
+    speechBubble.style.cursor = 'pointer';
+});
+
 console.log('%cStudio IDE', 'font-size: 20px; font-weight: bold; color: #6366f1;');
 console.log('%cSviluppato con ❤️ dal team', 'color: #8b5cf6;');
+
+// ============================================
+// DUCK GUIDES - Paperelle Interattive
+// ============================================
+
+const duckGuides = document.querySelectorAll('.duck-guide');
+
+// Observer per mostrare le paperelle quando la sezione è visibile
+const duckObserverOptions = {
+    threshold: 0.3,
+    rootMargin: '0px'
+};
+
+const duckObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        } else {
+            // Opzionale: nascondi quando esce dalla vista
+            // entry.target.classList.remove('visible');
+        }
+    });
+}, duckObserverOptions);
+
+duckGuides.forEach(duck => {
+    duckObserver.observe(duck);
+    
+    // Navigazione al click
+    if (duck.dataset.target) {
+        duck.addEventListener('click', () => {
+            const target = document.querySelector(duck.dataset.target);
+            const duckText = duck.querySelector('.duck-speech')?.textContent?.trim() || '';
+            const duckImage = duck.querySelector('.duck-image')?.getAttribute('alt') || 'duck_guide';
+            
+            // Track GA4 event: duck_guide_click
+            if (window.sendGA4Event) {
+                window.sendGA4Event('duck_guide_click', {
+                    'duck_text': duckText,
+                    'duck_type': duckImage,
+                    'target_section': duck.dataset.target || '',
+                    'page_location': window.location.pathname
+                });
+            }
+            
+            if (target) {
+                let offsetTop = target.offsetTop - 80;
+                
+                // Special handling for team section when clicked from duck - scroll more down
+                if (target.id === 'team') {
+                    const teamSection = document.getElementById('team');
+                    const teamGrid = teamSection.querySelector('.team-grid');
+                    
+                    if (teamGrid) {
+                        // Scroll further down to show cards completely
+                        let baseOffset = 230;
+                        // Su mobile aggiungi 30px in più
+                        if (window.innerWidth <= 768) {
+                            baseOffset += 30;
+                        }
+                        offsetTop = teamSection.offsetTop + baseOffset;
+                    }
+                }
+                
+                // Special handling for services section when clicked from duck - scroll more down
+                if (target.id === 'services') {
+                    offsetTop = target.offsetTop + 60;
+                }
+                
+                // Special handling for contact section when clicked from duck - scroll 50px higher
+                if (target.id === 'contact') {
+                    offsetTop = target.offsetTop + 60;
+                }
+                
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+                
+                // Animazione di feedback
+                duck.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    duck.style.transform = '';
+                }, 200);
+            }
+        });
+    } else if (duck.getAttribute('href')) {
+        // Track GA4 event: duck_guide_click per duck con href (es. servizi.html)
+        duck.addEventListener('click', () => {
+            const duckText = duck.querySelector('.duck-speech')?.textContent?.trim() || '';
+            const duckImage = duck.querySelector('.duck-image')?.getAttribute('alt') || 'duck_guide';
+            const duckHref = duck.getAttribute('href') || '';
+            
+            if (window.sendGA4Event) {
+                window.sendGA4Event('duck_guide_click', {
+                    'duck_text': duckText,
+                    'duck_type': duckImage,
+                    'target_section': duckHref,
+                    'page_location': window.location.pathname
+                });
+            }
+        });
+    }
+    
+    // Animazione continua più fluida
+    setInterval(() => {
+        if (duck.classList.contains('visible')) {
+            const randomDelay = Math.random() * 2000;
+            setTimeout(() => {
+                duck.style.animation = 'none';
+                setTimeout(() => {
+                    duck.style.animation = '';
+                }, 10);
+            }, randomDelay);
+        }
+    }, 5000);
+});
+
+// Speech bubble sempre visibile - nessuna animazione al hover necessaria
+
+// Paperelle decorative aggiuntive (opzionali, usando altre paperelle)
+function addDecorativeDucks() {
+    const sections = document.querySelectorAll('section');
+    const duckImages = ['e.png', 'f.png', 'g.png', 'h.png'];
+    let duckIndex = 0;
+    
+    sections.forEach((section, index) => {
+        if (index > 0 && index < sections.length - 1 && Math.random() > 0.5) {
+            const decorativeDuck = document.createElement('div');
+            decorativeDuck.className = 'duck-decorative';
+            decorativeDuck.style.cssText = `
+                position: absolute;
+                width: 40px;
+                height: auto;
+                opacity: 0.3;
+                pointer-events: none;
+                z-index: 1;
+                ${index % 2 === 0 ? 'right: 5%;' : 'left: 5%;'}
+                top: ${20 + Math.random() * 30}%;
+                animation: float 10s ease-in-out infinite;
+                animation-delay: ${index * 0.5}s;
+            `;
+            
+            const img = document.createElement('img');
+            img.src = `./paperelle/${duckImages[duckIndex % duckImages.length]}`;
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            decorativeDuck.appendChild(img);
+            
+            section.style.position = 'relative';
+            section.appendChild(decorativeDuck);
+            duckIndex++;
+        }
+    });
+}
+
+// Attiva paperelle decorative dopo il caricamento
+window.addEventListener('load', () => {
+    setTimeout(addDecorativeDucks, 1000);
+});
 

@@ -33,9 +33,16 @@ self.addEventListener('activate', (event) => {
 
 // Fetch - Strategia Network Only per sviluppo
 self.addEventListener('fetch', (event) => {
-    // Strategia: Network Only - sempre dalla rete, ignora la cache
+    // Strategia: Network Only - sempre dalla rete, ignora completamente la cache
     event.respondWith(
-        fetch(event.request)
+        fetch(event.request, {
+            cache: 'no-store',  // Ignora completamente la cache del browser
+            headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
+        })
             .then((response) => {
                 // Se la richiesta ha successo, restituisci la risposta dalla rete
                 // NON salviamo in cache durante lo sviluppo
