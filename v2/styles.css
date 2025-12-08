@@ -490,8 +490,11 @@ body {
     transform-style: preserve-3d;
 }
 
-.team-card:hover .card-inner {
-    transform: rotateY(180deg);
+/* Hover effect solo su desktop - completamente disattivato su mobile */
+@media (min-width: 769px) {
+    .team-card:hover .card-inner {
+        transform: rotateY(180deg);
+    }
 }
 
 .card-front,
@@ -998,19 +1001,24 @@ body {
         box-sizing: border-box;
     }
 
-    /* Disabilita hover su mobile per le card */
+    /* MOBILE: Disabilita completamente hover e funzionalità desktop */
     .team-card:hover .card-inner {
         transform: none !important;
     }
     
-    /* Reset di default per tutte le card su mobile */
+    /* MOBILE: Reset di default - tutte le card partono nella forma base */
     .team-slider .team-card .card-inner {
         transform: rotateY(0deg) !important;
     }
     
-    /* Maintain flip animation on mobile - use tap instead of hover */
+    /* MOBILE: Quando la card ha classe .active (tap), gira la card */
     .team-slider .team-card.active .card-inner {
         transform: rotateY(180deg) !important;
+    }
+    
+    /* MOBILE: Quando la classe .active viene rimossa, torna alla forma base */
+    .team-slider .team-card:not(.active) .card-inner {
+        transform: rotateY(0deg) !important;
     }
 
     /* Slider Navigation */

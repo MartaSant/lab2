@@ -184,12 +184,12 @@ contactForm.addEventListener('submit', (e) => {
     }, 1500);
 });
 
-// Add mouse move parallax effect to team cards (desktop only)
+// Add mouse move parallax effect to team cards (DESKTOP ONLY - completamente disattivato su mobile)
 const teamCards = document.querySelectorAll('.team-card');
 
-teamCards.forEach(card => {
-    // Only apply parallax on desktop (non-touch devices)
-    if (window.innerWidth > 768) {
+// Funzionalità desktop: parallax effect solo su desktop
+if (window.innerWidth > 768) {
+    teamCards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -207,8 +207,8 @@ teamCards.forEach(card => {
         card.addEventListener('mouseleave', () => {
             card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
         });
-    }
-});
+    });
+}
 
 // Team Slider for Mobile
 let currentSlide = 0;
@@ -218,53 +218,53 @@ const dots = document.querySelectorAll('.dot');
 const prevBtn = document.querySelector('.prev-btn');
 const nextBtn = document.querySelector('.next-btn');
 
-// Handle card flip on mobile (tap to flip)
+// Handle card flip on mobile (MOBILE ONLY - completamente disattivato su desktop)
+// Logica semplice: tap per girare, tap di nuovo per tornare normale
 if (window.innerWidth <= 768) {
     teamCards.forEach(card => {
-        // Salva lo stato direttamente sulla card
+        // Inizializza: tutte le card partono nella forma base (non girate)
         card.isFlipped = false;
-        card.flipStartTime = null; // Traccia quando inizia il flip
+        card.flipStartTime = null;
+        card.classList.remove('active'); // Assicura che non ci sia classe active di default
+        
+        // Reset esplicito del transform
+        const cardInner = card.querySelector('.card-inner');
+        if (cardInner) {
+            cardInner.style.transform = 'rotateY(0deg)';
+        }
         
         card.addEventListener('click', (e) => {
-            // Don't flip if clicking on navigation buttons
+            // Ignora click su pulsanti di navigazione
             if (e.target.closest('.slider-btn') || e.target.closest('.dot')) {
                 return;
             }
             
-            // Toggle flip: se è girata torna normale, se è normale si gira
-            const wasFlipped = card.isFlipped;
+            // Preveni eventi di default che potrebbero interferire
+            e.stopPropagation();
+            
             const now = Date.now();
+            const wasFlipped = card.isFlipped;
             
-            // Se la carta viene unflippata, calcola la durata
-            let flipDuration = 0;
-            if (wasFlipped && card.flipStartTime) {
-                flipDuration = now - card.flipStartTime;
-            }
-            
-            card.isFlipped = !card.isFlipped;
-            
-            if (card.isFlipped) {
-                // Card appena flippata: salva il tempo di inizio
-                card.flipStartTime = now;
-                card.classList.add('active');
-                console.log('Card flippata, classe active aggiunta');
-            } else {
-                // Card unflippata: reset del tempo
+            // TOGGLE: se è girata torna normale, se è normale si gira
+            if (wasFlipped) {
+                // Card già girata: torna alla posizione base
+                // Calcola durata del flip per GA4 PRIMA di resettare
+                const flipDuration = card.flipStartTime ? (now - card.flipStartTime) : 0;
+                
+                card.isFlipped = false;
                 card.flipStartTime = null;
                 card.classList.remove('active');
-                // Forza il reset del transform per sicurezza
-                const cardInner = card.querySelector('.card-inner');
+                
+                // Reset esplicito del transform
                 if (cardInner) {
                     cardInner.style.transform = 'rotateY(0deg)';
                 }
-                console.log('Card unflippata, classe active rimossa');
-                
-                // Track GA4 event: card_flip_duration (specifico per ogni card)
                 const cardName = card.querySelector('.team-name')?.textContent?.trim() || '';
+                
+                // Track GA4 event: card_flip_duration (solo se durata > 0)
                 if (flipDuration > 0 && window.sendGA4Event) {
                     const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
                     
-                    // Eventi specifici per ogni card
                     if (cardName === 'Kero') {
                         window.sendGA4Event('kero_card_flip_duration', {
                             'card_name': 'Kero',
@@ -288,6 +288,13 @@ if (window.innerWidth <= 768) {
                         });
                     }
                 }
+            } else {
+                // Card nella forma base: gira la card
+                card.isFlipped = true;
+                card.flipStartTime = now;
+                card.classList.add('active');
+                
+                // Il CSS si occuperà del transform tramite la classe .active
             }
         });
     });
