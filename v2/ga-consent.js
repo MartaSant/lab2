@@ -83,31 +83,17 @@ function loadGA4() {
     script.onload = function() {
         console.log('Script GA4 caricato, inizializzo...');
         gtag('js', new Date());
-        // Configurazione esplicita del dominio per evitare errori del cookie
-        const currentDomain = window.location.hostname; // Es: martasant.github.io
-        let cookieDomain;
-        
-        if (currentDomain.startsWith('localhost')) {
-            cookieDomain = 'auto';  // Per sviluppo locale, usa auto
-        } else if (currentDomain.endsWith('.github.io')) {
-            // Per GitHub Pages, usa il dominio con punto iniziale per funzionare su tutti i sottodomini
-            cookieDomain = '.github.io';
-        } else {
-            // Per altri domini, usa il dominio esatto
-            cookieDomain = currentDomain;
-        }
-        
+        // Non specifichiamo cookie_domain - lasciamo che GA4 rilevi automaticamente il dominio
+        // Questo è il modo più sicuro per evitare errori "dominio non valido"
         gtag('config', GA_MEASUREMENT_ID, {
-            'send_page_view': true,  // Assicura che page_view venga inviato
-            'cookie_domain': cookieDomain,  // Dominio esplicito per evitare errori del cookie
-            'cookie_flags': 'SameSite=Lax'  // Flag sicuro per i cookie (Lax è più permissivo di Strict)
+            'send_page_view': true  // Assicura che page_view venga inviato
+            // Non specifichiamo cookie_domain per lasciare che GA4 lo rilevi automaticamente
+            // Non specifichiamo cookie_flags per evitare problemi con SameSite
         });
         
-        // Log per verificare quale dominio è stato configurato
-        console.log('[GA4] Dominio configurato per cookie:', cookieDomain);
+        // Log per debug
+        console.log('[GA4] Configurazione completata - dominio rilevato automaticamente da GA4');
         console.log('[GA4] Dominio hostname:', window.location.hostname);
-        console.log('[GA4] Dominio completo:', window.location.host);
-        console.log('[GA4] URL completo:', window.location.href);
         
         // Verifica se il cookie GA4 esiste e mostra informazioni
         setTimeout(() => {
