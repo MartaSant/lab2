@@ -84,7 +84,9 @@ function loadGA4() {
         console.log('Script GA4 caricato, inizializzo...');
         gtag('js', new Date());
         gtag('config', GA_MEASUREMENT_ID, {
-            'send_page_view': true  // Assicura che page_view venga inviato
+            'send_page_view': true,  // Assicura che page_view venga inviato
+            'cookie_domain': 'auto',  // Rileva automaticamente il dominio (funziona per GitHub Pages e domini custom)
+            'cookie_flags': 'SameSite=None;Secure'  // Necessario per cross-domain tracking se necessario
         });
         ga4Loading = false;
         ga4Ready = true;
