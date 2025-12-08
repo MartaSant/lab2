@@ -26,7 +26,8 @@ window.addEventListener('unhandledrejection', (e) => {
 // Service Worker Registration - Modalità sviluppo (Network Only)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js')
+        // Usa path assoluto dalla root per evitare problemi con sottocartelle
+        navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
             .then((registration) => {
                 console.log('[Service Worker] Registrato con successo:', registration.scope);
                 
