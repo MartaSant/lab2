@@ -1,3 +1,13 @@
+// ============================================
+// SCRIPT.JS CARICATO - DEBUG
+// ============================================
+console.log('%c═══════════════════════════════════════', 'font-size: 16px; font-weight: bold; color: #6366f1;');
+console.log('%cSCRIPT.JS CARICATO CON SUCCESSO', 'font-size: 18px; font-weight: bold; color: #6366f1; background: #1e293b; padding: 10px; border-radius: 8px;');
+console.log('%c═══════════════════════════════════════', 'font-size: 16px; font-weight: bold; color: #6366f1;');
+console.log('📍 URL:', window.location.href);
+console.log('💻 User Agent:', navigator.userAgent);
+console.log('📏 Window size:', window.innerWidth, 'x', window.innerHeight);
+
 // Inizializza dataLayer per GA4
 window.dataLayer = window.dataLayer || [];
 
@@ -716,8 +726,9 @@ function trackSpeechBubbleClick(element, isDesktop) {
 
 // Funzione per inizializzare il tracking delle speech bubble
 function initSpeechBubbleTracking() {
-    console.log('🚀 [INIT] Funzione initSpeechBubbleTracking chiamata');
-    const isDesktop = window.innerWidth > 768;
+    try {
+        console.log('🚀 [INIT] Funzione initSpeechBubbleTracking chiamata');
+        const isDesktop = window.innerWidth > 768;
     console.log(`%c[INIT SPEECH BUBBLE TRACKING - ${isDesktop ? 'DESKTOP' : 'MOBILE'}]`, 'font-size: 12px; font-weight: bold; color: #8b5cf6; background: #1e293b; padding: 4px 8px; border-radius: 4px;');
     console.log('🚀 [INIT] Window width:', window.innerWidth);
     
@@ -823,20 +834,33 @@ function initSpeechBubbleTracking() {
         console.log('🟡 [DEBUG] Z-index:', computedStyle.zIndex, 'Position:', computedStyle.position);
     });
     
-    console.log('✅ [INIT] Tracking speech bubble inizializzato completamente');
+        console.log('✅ [INIT] Tracking speech bubble inizializzato completamente');
+    } catch (error) {
+        console.error('❌ [INIT] Errore in initSpeechBubbleTracking:', error);
+        console.error('Stack:', error.stack);
+    }
 }
 
 // Inizializza il tracking quando il DOM è pronto
-console.log('🚀 [SETUP] Stato DOM:', document.readyState);
-if (document.readyState === 'loading') {
-    console.log('🚀 [SETUP] DOM in caricamento, aspetto DOMContentLoaded');
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 [SETUP] DOMContentLoaded evento ricevuto');
+try {
+    console.log('🚀 [SETUP] Stato DOM:', document.readyState);
+    if (document.readyState === 'loading') {
+        console.log('🚀 [SETUP] DOM in caricamento, aspetto DOMContentLoaded');
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 [SETUP] DOMContentLoaded evento ricevuto');
+            try {
+                initSpeechBubbleTracking();
+            } catch (error) {
+                console.error('❌ [SETUP] Errore in DOMContentLoaded:', error);
+            }
+        });
+    } else {
+        console.log('🚀 [SETUP] DOM già pronto, inizializzo subito');
         initSpeechBubbleTracking();
-    });
-} else {
-    console.log('🚀 [SETUP] DOM già pronto, inizializzo subito');
-    initSpeechBubbleTracking();
+    }
+} catch (error) {
+    console.error('❌ [SETUP] Errore nella configurazione iniziale:', error);
+    console.error('Stack:', error.stack);
 }
 
 // Reinizializza dopo un breve delay per assicurarsi che tutti gli elementi siano caricati
@@ -853,20 +877,29 @@ setTimeout(() => {
 }, 1000);
 
 // Debug: listener globale per vedere tutti i click (solo in sviluppo)
-if (window.innerWidth > 768) {
-    document.addEventListener('click', function(e) {
-        const target = e.target;
-        const isSpeechBubble = target.closest('.duck-speech, .duck-team-speech-bubble, .duck-services-speech-bubble');
-        if (isSpeechBubble) {
-            console.log('🔴 [GLOBAL CLICK] Click su speech bubble rilevato globalmente:', {
-                target: target,
-                closest: isSpeechBubble,
-                className: target.className,
-                tagName: target.tagName
-            });
-        }
-    }, true); // Usa capture phase per intercettare prima
-}
+console.log('🔴 [GLOBAL] Aggiungo listener globale per click');
+document.addEventListener('click', function(e) {
+    const target = e.target;
+    console.log('🔴 [GLOBAL CLICK] Click rilevato su:', {
+        target: target,
+        tagName: target.tagName,
+        className: target.className,
+        id: target.id,
+        textContent: target.textContent?.substring(0, 50)
+    });
+    
+    const isSpeechBubble = target.closest('.duck-speech, .duck-team-speech-bubble, .duck-services-speech-bubble');
+    if (isSpeechBubble) {
+        console.log('%c🔴 [GLOBAL CLICK] SPEECH BUBBLE CLICCATA!', 'font-size: 16px; font-weight: bold; color: red; background: yellow; padding: 10px;');
+        console.log('🔴 [GLOBAL CLICK] Dettagli:', {
+            target: target,
+            closest: isSpeechBubble,
+            className: target.className,
+            tagName: target.tagName,
+            textContent: target.textContent
+        });
+    }
+}, true); // Usa capture phase per intercettare prima
 
 console.log('%cStudio IDE', 'font-size: 20px; font-weight: bold; color: #6366f1;');
 console.log('%cSviluppato con ❤️ dal team', 'color: #8b5cf6;');
