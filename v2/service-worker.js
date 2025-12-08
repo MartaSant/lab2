@@ -35,15 +35,10 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
     
-    // Permetti le richieste cross-origin ai font e a Google Tag Manager
+    // Per tutte le richieste cross-origin (font, GA4, ecc.) NON intervenire.
+    // Lascia che il browser gestisca normalmente per evitare errori CORS/preflight.
     if (url.origin !== self.location.origin) {
-        // Per richieste cross-origin (font, GA4, ecc.), lascia passare direttamente
-        if (url.hostname.includes('fonts.gstatic.com') || 
-            url.hostname.includes('googletagmanager.com') ||
-            url.hostname.includes('google-analytics.com')) {
-            event.respondWith(fetch(event.request));
-            return;
-        }
+        return; // niente respondWith -> passa direttamente
     }
     
     // Strategia: Network Only - sempre dalla rete, ignora completamente la cache
