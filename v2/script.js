@@ -251,43 +251,27 @@ if (window.innerWidth <= 768) {
             const now = Date.now();
             const wasFlipped = card.isFlipped;
             
-            console.log('Card tapped:', {
-                wasFlipped: wasFlipped,
-                isFlipped: card.isFlipped,
-                hasActive: card.classList.contains('active')
-            });
+            // STEP 1: SWITCH dello stato (toggle)
+            card.isFlipped = !card.isFlipped;
             
-            // TOGGLE: se è girata torna normale, se è normale si gira
-            if (wasFlipped) {
-                console.log('Card già girata, torno alla posizione base');
-                // Card già girata: torna alla posizione base
-                // Calcola durata del flip per GA4 PRIMA di resettare
-                const flipDuration = card.flipStartTime ? (now - card.flipStartTime) : 0;
-                
-                // RIMUOVI la classe active immediatamente
-                card.classList.remove('active');
-                
-                // Aggiorna lo stato
-                card.isFlipped = false;
+            // Calcola durata del flip per GA4 (solo se stava girata)
+            const flipDuration = wasFlipped && card.flipStartTime ? (now - card.flipStartTime) : 0;
+            
+            // STEP 2: Verifica lo stato dopo lo switch e applica il transform
+            if (card.isFlipped) {
+                // Stato: ACTIVE - applica rotateY(180deg)
+                card.flipStartTime = now;
+                card.classList.add('active');
+                cardInnerEl.style.setProperty('transform', 'rotateY(180deg)', 'important');
+            } else {
+                // Stato: NON ACTIVE - applica rotateY(0deg)
                 card.flipStartTime = null;
-                
-                // Applica rotateY(-180deg) per animazione fluida di ritorno
-                // Questo crea un'animazione visibile perché parte da 180deg e va a -180deg
-                cardInnerEl.style.setProperty('transform', 'rotateY(-180deg)', 'important');
-                
-                // Forza un reflow per avviare l'animazione
-                void cardInnerEl.offsetHeight;
-                
-                // Dopo la transizione, rimuovi lo stile inline e applica 0deg
-                setTimeout(() => {
-                    cardInnerEl.style.removeProperty('transform');
-                    // Il CSS applicherà rotateY(0deg) tramite :not(.active)
-                    void cardInnerEl.offsetHeight;
-                }, 600); // Aspetta la fine della transizione CSS (0.6s)
-                const cardName = card.querySelector('.team-name')?.textContent?.trim() || '';
+                card.classList.remove('active');
+                cardInnerEl.style.setProperty('transform', 'rotateY(0deg)', 'important');
                 
                 // Track GA4 event: card_flip_duration (solo se durata > 0)
                 if (flipDuration > 0 && window.sendGA4Event) {
+                    const cardName = card.querySelector('.team-name')?.textContent?.trim() || '';
                     const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
                     
                     if (cardName === 'Kero') {
@@ -313,21 +297,10 @@ if (window.innerWidth <= 768) {
                         });
                     }
                 }
-            } else {
-                console.log('Card nella forma base, giro la card');
-                // Card nella forma base: gira la card
-                card.isFlipped = true;
-                card.flipStartTime = now;
-                
-                // AGGIUNGI la classe active
-                card.classList.add('active');
-                
-                // Forza il transform per sicurezza
-                cardInnerEl.style.setProperty('transform', 'rotateY(180deg)', 'important');
-                
-                // Forza un reflow
-                void cardInnerEl.offsetHeight;
             }
+            
+            // Forza un reflow per assicurare che il transform venga applicato
+            void cardInnerEl.offsetHeight;
         });
     });
 }
