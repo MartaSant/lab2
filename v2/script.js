@@ -257,18 +257,27 @@ if (window.innerWidth <= 768) {
                 // Calcola durata del flip per GA4 PRIMA di resettare
                 const flipDuration = card.flipStartTime ? (now - card.flipStartTime) : 0;
                 
-                // RIMUOVI la classe active PRIMA di tutto
-                card.classList.remove('active');
+                // Applica rotateY(-180deg) per animazione fluida di ritorno
+                cardInnerEl.style.setProperty('transform', 'rotateY(-180deg)', 'important');
                 
-                // Aggiorna lo stato
-                card.isFlipped = false;
-                card.flipStartTime = null;
-                
-                // FORZA il reset del transform con !important inline
-                cardInnerEl.style.setProperty('transform', 'rotateY(0deg)', 'important');
-                
-                // Forza un reflow per assicurare che il CSS venga applicato
+                // Forza un reflow per avviare l'animazione
                 void cardInnerEl.offsetHeight;
+                
+                // Dopo un breve delay, rimuovi active e torna a 0deg
+                setTimeout(() => {
+                    // RIMUOVI la classe active
+                    card.classList.remove('active');
+                    
+                    // Aggiorna lo stato
+                    card.isFlipped = false;
+                    card.flipStartTime = null;
+                    
+                    // FORZA il reset del transform a 0deg
+                    cardInnerEl.style.setProperty('transform', 'rotateY(0deg)', 'important');
+                    
+                    // Forza un reflow per assicurare che il CSS venga applicato
+                    void cardInnerEl.offsetHeight;
+                }, 50); // Piccolo delay per permettere l'animazione
                 const cardName = card.querySelector('.team-name')?.textContent?.trim() || '';
                 
                 // Track GA4 event: card_flip_duration (solo se durata > 0)
