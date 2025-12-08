@@ -1,6 +1,28 @@
 // Inizializza dataLayer per GA4
 window.dataLayer = window.dataLayer || [];
 
+// Funzione helper per calcolare l'engagement time (tempo trascorso dalla sessione)
+function getEngagementTime() {
+    // Usa sessionStorage per tracciare il tempo di inizio sessione
+    const sessionStartKey = 'session_start_time';
+    let sessionStartTime = sessionStorage.getItem(sessionStartKey);
+    
+    if (!sessionStartTime) {
+        // Prima visita della sessione, salva il tempo corrente
+        sessionStartTime = Date.now();
+        sessionStorage.setItem(sessionStartKey, sessionStartTime.toString());
+    } else {
+        sessionStartTime = parseInt(sessionStartTime);
+    }
+    
+    // Calcola il tempo trascorso in millisecondi
+    const engagementTime = Date.now() - sessionStartTime;
+    
+    // Converti in secondi e poi in millisecondi per GA4 (GA4 si aspetta millisecondi)
+    // Ma limitiamo a max 1 ora (3600000 ms) per evitare valori troppo alti
+    return Math.min(engagementTime, 3600000);
+}
+
 // Service Worker Registration - Modalità sviluppo (Network Only)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -273,11 +295,13 @@ if (window.innerWidth <= 768) {
             if (window.sendGA4Event) {
                 const cardName = card.querySelector('.team-name')?.textContent?.trim() || 'Unknown';
                 const cardRole = card.querySelector('.team-role')?.textContent?.trim() || 'Unknown';
+                const engagementTime = getEngagementTime();
                 window.sendGA4Event('team_card_flip', {
                     'card_name': cardName,
                     'card_role': cardRole,
                     'flip_action': card.isFlipped ? 'flipped' : 'unflipped',
-                    'page_location': window.location.pathname
+                    'page_location': window.location.pathname,
+                    'flip_engagement_time_msec': engagementTime // Tempo in millisecondi dalla sessione (rinominato per evitare conflitti con parametri riservati GA4)
                 });
             }
         });
