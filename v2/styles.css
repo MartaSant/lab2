@@ -492,8 +492,8 @@ body {
 
 /* Hover effect solo su desktop - completamente disattivato su mobile */
 @media (min-width: 769px) {
-    .team-card:hover .card-inner {
-        transform: rotateY(180deg);
+.team-card:hover .card-inner {
+    transform: rotateY(180deg);
     }
 }
 
@@ -535,8 +535,8 @@ body {
 
 /* Hover effect solo su desktop */
 @media (min-width: 769px) {
-    .team-card:hover .team-image {
-        transform: scale(1.1);
+.team-card:hover .team-image {
+    transform: scale(1.1);
     }
 }
 
@@ -553,8 +553,8 @@ body {
 
 /* Hover effect solo su desktop */
 @media (min-width: 769px) {
-    .team-card:hover .image-overlay {
-        opacity: 1;
+.team-card:hover .image-overlay {
+    opacity: 1;
     }
 }
 

@@ -184,45 +184,55 @@ contactForm.addEventListener('submit', (e) => {
     }, 1500);
 });
 
-// Add mouse move parallax effect to team cards (DESKTOP ONLY - completamente disattivato su mobile)
-const teamCards = document.querySelectorAll('.team-card');
-
-// Funzionalità desktop: parallax effect solo su desktop
-if (window.innerWidth > 768) {
-    teamCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+// Inizializza team cards quando il DOM è pronto
+function initTeamCards() {
+    const teamCards = document.querySelectorAll('.team-card');
+    
+    if (teamCards.length === 0) {
+        console.log('Nessuna card trovata, riprovo tra poco...');
+        setTimeout(initTeamCards, 100);
+        return;
+    }
+    
+    console.log('Team cards trovate:', teamCards.length);
+    
+    // Add mouse move parallax effect to team cards (DESKTOP ONLY - completamente disattivato su mobile)
+    // Funzionalità desktop: parallax effect solo su desktop
+    if (window.innerWidth > 768) {
+        teamCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
             
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 10;
-            const rotateY = (centerX - x) / 10;
-            
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+            });
         });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-        });
-    });
-}
+    }
 
-// Team Slider for Mobile
-let currentSlide = 0;
-const totalSlides = 3;
-const teamSlider = document.querySelector('.team-slider');
-const dots = document.querySelectorAll('.dot');
-const prevBtn = document.querySelector('.prev-btn');
-const nextBtn = document.querySelector('.next-btn');
+    // Team Slider for Mobile
+    let currentSlide = 0;
+    const totalSlides = 3;
+    const teamSlider = document.querySelector('.team-slider');
+    const dots = document.querySelectorAll('.dot');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
 
-// Handle card flip on mobile (MOBILE ONLY - completamente disattivato su desktop)
-// Logica semplice: tap per girare, tap di nuovo per tornare normale
-if (window.innerWidth <= 768) {
-    console.log('Inizializzazione card flip mobile - numero card:', teamCards.length);
-    teamCards.forEach((card, index) => {
+    // Handle card flip on mobile (MOBILE ONLY - completamente disattivato su desktop)
+    // Logica semplice: tap per girare, tap di nuovo per tornare normale
+    if (window.innerWidth <= 768) {
+        console.log('Inizializzazione card flip mobile - numero card:', teamCards.length, 'larghezza:', window.innerWidth);
+        teamCards.forEach((card, index) => {
         // Inizializza: tutte le card partono nella forma base (non girate)
         card.isFlipped = false;
         card.flipStartTime = null;
@@ -326,6 +336,15 @@ if (window.innerWidth <= 768) {
             void cardInnerEl.offsetHeight;
         });
     });
+    }
+}
+
+// Chiama initTeamCards quando il DOM è pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTeamCards);
+} else {
+    // DOM già pronto
+    initTeamCards();
 }
 
 // Track GA4 event: card_hover (solo desktop, quando si passa il mouse sulle card - specifico per ogni card)
