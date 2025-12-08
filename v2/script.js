@@ -927,14 +927,39 @@ console.error('🔴 [TEST FINALE] Prova a cliccare ovunque sulla pagina per vede
 // Test immediato: aggiungi listener direttamente qui
 (function() {
     console.error('🔴 [IMMEDIATE] Aggiungo listener click immediato...');
-    document.body.addEventListener('click', function(e) {
-        console.error('🔴🔴🔴 [IMMEDIATE CLICK] CLICK RILEVATO SU:', e.target.tagName, e.target.className);
-        const isBubble = e.target.closest('.duck-speech, .duck-team-speech-bubble, .duck-services-speech-bubble');
-        if (isBubble) {
-            console.error('🔴🔴🔴 [IMMEDIATE CLICK] SPEECH BUBBLE CLICCATA!!!');
+    console.error('🔴 [IMMEDIATE] Body esiste?', !!document.body);
+    console.error('🔴 [IMMEDIATE] Document readyState:', document.readyState);
+    
+    function addClickListener() {
+        if (!document.body) {
+            console.error('🔴 [IMMEDIATE] Body non disponibile, riprovo tra 100ms...');
+            setTimeout(addClickListener, 100);
+            return;
         }
-    }, true);
-    console.error('🔴 [IMMEDIATE] Listener aggiunto al body');
+        
+        console.error('🔴 [IMMEDIATE] Body disponibile, aggiungo listener...');
+        document.body.addEventListener('click', function(e) {
+            console.error('🔴🔴🔴 [IMMEDIATE CLICK] CLICK RILEVATO SU:', e.target.tagName, e.target.className);
+            console.error('🔴 [IMMEDIATE CLICK] Target:', e.target);
+            const isBubble = e.target.closest('.duck-speech, .duck-team-speech-bubble, .duck-services-speech-bubble');
+            console.error('🔴 [IMMEDIATE CLICK] È speech bubble?', !!isBubble);
+            if (isBubble) {
+                console.error('🔴🔴🔴 [IMMEDIATE CLICK] SPEECH BUBBLE CLICCATA!!!');
+                console.error('🔴 [IMMEDIATE CLICK] Bubble element:', isBubble);
+            }
+        }, true);
+        console.error('🔴 [IMMEDIATE] Listener aggiunto al body');
+    }
+    
+    // Prova subito, se non funziona aspetta DOMContentLoaded
+    if (document.body) {
+        addClickListener();
+    } else {
+        console.error('🔴 [IMMEDIATE] Body non disponibile, aspetto DOMContentLoaded...');
+        document.addEventListener('DOMContentLoaded', addClickListener);
+        // Backup: riprova dopo un delay
+        setTimeout(addClickListener, 1000);
+    }
 })();
 
 // ============================================
