@@ -1,12 +1,16 @@
 // ============================================
 // SCRIPT.JS CARICATO - DEBUG
 // ============================================
+// Alert per verificare che lo script venga caricato
+alert('SCRIPT.JS CARICATO! Controlla la console.');
+
 console.log('%c═══════════════════════════════════════', 'font-size: 16px; font-weight: bold; color: #6366f1;');
 console.log('%cSCRIPT.JS CARICATO CON SUCCESSO', 'font-size: 18px; font-weight: bold; color: #6366f1; background: #1e293b; padding: 10px; border-radius: 8px;');
 console.log('%c═══════════════════════════════════════', 'font-size: 16px; font-weight: bold; color: #6366f1;');
 console.log('📍 URL:', window.location.href);
 console.log('💻 User Agent:', navigator.userAgent);
 console.log('📏 Window size:', window.innerWidth, 'x', window.innerHeight);
+console.error('❌ ERRORE TEST - Se vedi questo, lo script funziona');
 
 // Inizializza dataLayer per GA4
 window.dataLayer = window.dataLayer || [];
