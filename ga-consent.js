@@ -74,6 +74,22 @@ function loadGA4() {
         'ad_personalization': 'denied'
     });
     
+    // Inizializza GA4 immediatamente nel dataLayer (prima che lo script esterno si carichi)
+    // Questo assicura che il page_view venga tracciato anche se lo script esterno fallisce
+    gtag('js', new Date());
+    gtag('config', GA_MEASUREMENT_ID, {
+        'send_page_view': true,
+        'page_title': document.title,
+        'page_location': window.location.href,
+        'page_path': window.location.pathname
+    });
+    
+    console.log('GA4 configurato nel dataLayer, page_view inviato', {
+        measurementId: GA_MEASUREMENT_ID,
+        pageTitle: document.title,
+        pageLocation: window.location.href
+    });
+    
     // Carica lo script GA4 con retry mechanism
     let retryCount = 0;
     const maxRetries = 3;
@@ -106,11 +122,15 @@ function loadGA4() {
             });
             
             try {
-                gtag('js', new Date());
+                // Lo script esterno è caricato, ora aggiorna la configurazione
+                // (la configurazione base è già stata fatta prima)
                 gtag('config', GA_MEASUREMENT_ID, {
-                    'send_page_view': true,  // Assicura che page_view venga inviato
-                    'debug_mode': false
+                    'send_page_view': true,
+                    'page_title': document.title,
+                    'page_location': window.location.href,
+                    'page_path': window.location.pathname
                 });
+                
                 ga4Loading = false;
                 ga4Ready = true;
                 window.ga4Loading = false;
@@ -135,7 +155,7 @@ function loadGA4() {
                             'page_location': window.location.href,
                             'page_path': window.location.pathname
                         });
-                        console.log('Page view inviato manualmente', {
+                        console.log('Page view inviato manualmente dopo caricamento script', {
                             title: document.title,
                             location: window.location.href,
                             path: window.location.pathname,
@@ -172,23 +192,37 @@ function loadGA4() {
                 }, retryDelay);
             } else {
                 console.error('Impossibile caricare GA4 dopo', maxRetries, 'tentativi. Possibili cause: ad blocker, firewall, o problemi di rete.');
-                // Prova comunque a inizializzare con gtag inline se possibile
+                // Anche se lo script esterno non si carica, il dataLayer è già stato inizializzato
+                // e il page_view è già stato inviato. Aggiorniamo solo il consenso.
                 try {
                     if (window.dataLayer && typeof window.gtag === 'function') {
-                        console.log('Tentativo di inizializzazione GA4 senza script esterno...');
-                        gtag('js', new Date());
-                        gtag('config', GA_MEASUREMENT_ID, {
-                            'send_page_view': true
-                        });
+                        console.log('GA4 già inizializzato nel dataLayer, aggiorno solo il consenso...');
                         gtag('consent', 'update', {
                             'ad_storage': 'granted',
                             'analytics_storage': 'granted',
                             'ad_user_data': 'granted',
                             'ad_personalization': 'granted'
                         });
+                        
+                        // Forza un altro page_view per sicurezza
+                        gtag('event', 'page_view', {
+                            'page_title': document.title,
+                            'page_location': window.location.href,
+                            'page_path': window.location.pathname
+                        });
+                        console.log('Page view inviato tramite dataLayer (fallback)', {
+                            title: document.title,
+                            location: window.location.href,
+                            path: window.location.pathname
+                        });
+                        
+                        ga4Loading = false;
+                        ga4Ready = true;
+                        window.ga4Loading = false;
+                        window.ga4Ready = true;
                     }
                 } catch (e) {
-                    console.error('Anche l\'inizializzazione inline è fallita:', e);
+                    console.error('Errore nell\'aggiornamento del consenso:', e);
                 }
             }
         };

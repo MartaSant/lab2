@@ -33,7 +33,21 @@ self.addEventListener('activate', (event) => {
 
 // Fetch - Strategia Network Only per sviluppo
 self.addEventListener('fetch', (event) => {
+    const url = new URL(event.request.url);
+    const requestOrigin = url.origin;
+    const currentOrigin = self.location.origin;
+    
+    // Permetti che le richieste cross-origin (script esterni, font, API) passino direttamente
+    // senza essere intercettate dal Service Worker
+    // Questo include: Google Analytics, Google Fonts, CDN, API esterne, ecc.
+    if (requestOrigin !== currentOrigin) {
+        // Per richieste cross-origin, lascia passare direttamente senza intercettare
+        // Questo risolve il problema con GA4, Google Fonts, e altri script esterni
+        return;
+    }
+    
     // Strategia: Network Only - sempre dalla rete, ignora completamente la cache
+    // Solo per richieste same-origin (stesso dominio)
     event.respondWith(
         fetch(event.request, {
             cache: 'no-store',  // Ignora completamente la cache del browser
