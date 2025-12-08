@@ -920,9 +920,22 @@ console.log('%cStudio IDE', 'font-size: 20px; font-weight: bold; color: #6366f1;
 console.log('%cSviluppato con ❤️ dal team', 'color: #8b5cf6;');
 
 // Test finale: verifica che il listener globale sia stato aggiunto
-console.log('🔴 [TEST FINALE] Verifica listener globale...');
-console.log('🔴 [TEST FINALE] Document listeners:', document.addEventListener.toString().substring(0, 50));
-console.log('🔴 [TEST FINALE] Prova a cliccare ovunque sulla pagina per vedere i log!');
+console.error('🔴🔴🔴 [TEST FINALE] LISTENER GLOBALE AGGIUNTO - CLICCA OVUNQUE! 🔴🔴🔴');
+console.error('🔴 [TEST FINALE] Verifica listener globale...');
+console.error('🔴 [TEST FINALE] Prova a cliccare ovunque sulla pagina per vedere i log!');
+
+// Test immediato: aggiungi listener direttamente qui
+(function() {
+    console.error('🔴 [IMMEDIATE] Aggiungo listener click immediato...');
+    document.body.addEventListener('click', function(e) {
+        console.error('🔴🔴🔴 [IMMEDIATE CLICK] CLICK RILEVATO SU:', e.target.tagName, e.target.className);
+        const isBubble = e.target.closest('.duck-speech, .duck-team-speech-bubble, .duck-services-speech-bubble');
+        if (isBubble) {
+            console.error('🔴🔴🔴 [IMMEDIATE CLICK] SPEECH BUBBLE CLICCATA!!!');
+        }
+    }, true);
+    console.error('🔴 [IMMEDIATE] Listener aggiunto al body');
+})();
 
 // ============================================
 // DUCK GUIDES - Paperelle Interattive
