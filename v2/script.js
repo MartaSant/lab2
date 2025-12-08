@@ -680,9 +680,20 @@ function trackSpeechBubbleClick(element, isDesktop) {
     const duckTarget = duckGuide?.dataset.target || duckGuide?.getAttribute('href') || '';
     const isClickable = duckGuide?.hasAttribute('href') || duckGuide?.hasAttribute('data-target') || false;
     
+    // Debug visibile in console
+    const deviceLabel = isDesktop ? 'DESKTOP' : 'MOBILE';
+    console.log(`%c[SPEECH BUBBLE CLICK - ${deviceLabel}]`, 'font-size: 14px; font-weight: bold; color: #6366f1; background: #1e293b; padding: 4px 8px; border-radius: 4px;');
+    console.log('📢 Testo:', duckText);
+    console.log('🦆 Tipo paperella:', duckType);
+    console.log('🎯 Target:', duckTarget || 'nessuno');
+    console.log('👆 Cliccabile:', isClickable ? 'Sì' : 'No');
+    console.log('💻 Dispositivo:', isDesktop ? 'Desktop' : 'Mobile');
+    console.log('📍 Pagina:', window.location.pathname);
+    console.log('🔗 Elemento:', element);
+    
     // Track GA4 event
     if (window.sendGA4Event) {
-        window.sendGA4Event('speech_bubble_click', {
+        const eventParams = {
             'speech_text': duckText,
             'duck_type': duckType,
             'target_section': duckTarget,
@@ -690,15 +701,14 @@ function trackSpeechBubbleClick(element, isDesktop) {
             'page_location': window.location.pathname,
             'user_action': 'clicked_speech_bubble',
             'device_type': isDesktop ? 'desktop' : 'mobile'
-        });
+        };
+        
+        console.log('📊 Invio evento GA4:', eventParams);
+        window.sendGA4Event('speech_bubble_click', eventParams);
+        console.log('✅ Evento GA4 inviato con successo');
+    } else {
+        console.warn('⚠️ sendGA4Event non disponibile');
     }
-    
-    console.log('Speech bubble clicked:', {
-        text: duckText,
-        duckType: duckType,
-        isClickable: isClickable,
-        device: isDesktop ? 'desktop' : 'mobile'
-    });
 }
 
 // Track GA4 event: speech_bubble_click - quando un utente clicca su una speech bubble
@@ -706,8 +716,17 @@ function trackSpeechBubbleClick(element, isDesktop) {
 
 // Funzione per inizializzare il tracking delle speech bubble
 function initSpeechBubbleTracking() {
+    const isDesktop = window.innerWidth > 768;
+    console.log(`%c[INIT SPEECH BUBBLE TRACKING - ${isDesktop ? 'DESKTOP' : 'MOBILE'}]`, 'font-size: 12px; font-weight: bold; color: #8b5cf6; background: #1e293b; padding: 4px 8px; border-radius: 4px;');
+    
     // Traccia tutte le .duck-speech (visibili su desktop e mobile)
-    document.querySelectorAll('.duck-speech').forEach(speechBubble => {
+    const duckSpeechElements = document.querySelectorAll('.duck-speech');
+    console.log(`📋 Trovate ${duckSpeechElements.length} speech bubble .duck-speech`);
+    duckSpeechElements.forEach((speechBubble, index) => {
+        const style = window.getComputedStyle(speechBubble);
+        const isVisible = style.display !== 'none' && style.visibility !== 'hidden';
+        console.log(`  ${index + 1}. ${speechBubble.textContent?.trim() || 'N/A'} - Visibile: ${isVisible ? 'Sì' : 'No'}`);
+        
         speechBubble.addEventListener('click', function(e) {
             // Verifica se l'elemento è visibile al momento del click
             const style = window.getComputedStyle(this);
@@ -727,7 +746,14 @@ function initSpeechBubbleTracking() {
     });
     
     // Traccia le speech bubble autonome (solo desktop, ma aggiungiamo il listener sempre)
-    document.querySelectorAll('.duck-team-speech-bubble, .duck-services-speech-bubble').forEach(speechBubble => {
+    const autonomousBubbles = document.querySelectorAll('.duck-team-speech-bubble, .duck-services-speech-bubble');
+    console.log(`📋 Trovate ${autonomousBubbles.length} speech bubble autonome (desktop)`);
+    autonomousBubbles.forEach((speechBubble, index) => {
+        const style = window.getComputedStyle(speechBubble);
+        const isVisible = style.display !== 'none' && style.visibility !== 'hidden';
+        const bubbleText = speechBubble.querySelector('p')?.textContent?.trim() || speechBubble.textContent?.trim() || 'N/A';
+        console.log(`  ${index + 1}. ${bubbleText} - Visibile: ${isVisible ? 'Sì' : 'No'} - Classe: ${speechBubble.className}`);
+        
         speechBubble.addEventListener('click', function(e) {
             // Verifica se l'elemento è visibile al momento del click
             const style = window.getComputedStyle(this);
